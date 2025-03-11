@@ -1,0 +1,288 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@font-face {
+  font-family: "Harmonia Sans";
+  src: url("/fonts/HarmoniaSans/HarmoniaSansProCyr-Light.woff2") format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSansProCyr-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Harmonia Sans";
+  src: url("/fonts/HarmoniaSans/HarmoniaSansProCyr-Regular.woff2")
+      format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSansProCyr-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Harmonia Sans";
+
+  src: url("/fonts/HarmoniaSans/HarmoniaSansProCyr-SemiBd.woff2")
+      format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSansProCyr-SemiBd.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Harmonia Sans";
+
+  src: url("/fonts/HarmoniaSans/HarmoniaSansProCyr-Bold.woff2") format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSansProCyr-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Harmonia Sans";
+
+  src: url("/fonts/HarmoniaSans/HarmoniaSansProCyr-Black.woff2") format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSansProCyr-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-Thin.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-Thin.woff") format("woff");
+  font-weight: 100;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-ThinItalic.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-ThinItalic.woff") format("woff");
+  font-weight: 100;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-ExtraLight.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-ExtraLight.woff") format("woff");
+  font-weight: 200;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-ExtraLightItalic.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-ExtraLightItalic.woff") format("woff");
+  font-weight: 200;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-Light.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-Light.woff") format("woff");
+  font-weight: 300;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-LightItalic.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-LightItalic.woff") format("woff");
+  font-weight: 300;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-Regular.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-Regular.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-Italic.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-Italic.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-Medium.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-Medium.woff") format("woff");
+  font-weight: 500;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-MediumItalic.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-MediumItalic.woff") format("woff");
+  font-weight: 500;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-SemiBold.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-SemiBold.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-SemiBoldItalic.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-SemiBoldItalic.woff") format("woff");
+  font-weight: 600;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-Bold.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-Bold.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-BoldItalic.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-BoldItalic.woff") format("woff");
+  font-weight: 700;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-ExtraBold.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-ExtraBold.woff") format("woff");
+  font-weight: 800;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-ExtraBoldItalic.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-ExtraBoldItalic.woff") format("woff");
+  font-weight: 800;
+  font-style: italic;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-Black.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-Black.woff") format("woff");
+  font-weight: 900;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: "Roboto";
+  src: url("/fonts/Roboto/Roboto-BlackItalic.woff2") format("woff2"),
+    url("/fonts/Roboto/Roboto-BlackItalic.woff") format("woff");
+  font-weight: 900;
+  font-style: italic;
+}
+
+:root {
+  --pm-naranja: #f1a252;
+  --pm-azul: #5688a9;
+  --pm-text-1: #fff;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+a,
+.cursor-pointer,
+.menu-link,
+a * {
+  cursor: pointer !important;
+}
+
+ul {
+  list-style: none;
+}
+
+body {
+  background-color: #fafafa;
+}
+
+.menu-link {
+  position: relative;
+  transition: color 200ms ease;
+  display: inline-block;
+}
+
+.menu-link::after {
+  content: "";
+  position: absolute;
+  width: 0;
+  height: 2px;
+  bottom: -4px;
+  left: 0;
+  background-color: var(--pm-naranja);
+  transition: width 200ms ease;
+}
+
+.menu-link:hover {
+  color: var(--pm-naranja);
+}
+
+.menu-link:hover::after {
+  width: 100%;
+}
+
+@media (max-width: 770px) {
+  .hero-image {
+    width: 100vw;
+    height: clamp(600px, calc(100vh - 122px), 100vw);
+  }
+}
+
+.brand-image-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: auto;
+}
+
+.brand-container {
+  transition: transform 0.3s ease-in-out;
+  width: 50%;
+  height: auto;
+  overflow: hidden;
+}
+
+.brand-container:hover {
+  transform: scale(1.1);
+}
+
+.separator-line {
+  border-top: 1px solid rgba(0, 0, 0, 0.2); /* Subtle line */
+}
+
+.starsContainer {
+  height: 1.25rem;
+  margin: 0.5rem 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.productStar {
+  width: 1.25rem;
+  margin: 0 0.125rem;
+}

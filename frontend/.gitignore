@@ -1,0 +1,32 @@
+# Dependencias
+node_modules
+.npm
+.pnpm/
+.yarn/
+.yarn-cache/
+
+# Builds y caché
+.next/
+out/
+dist/
+.turbo
+
+# Variables de entorno
+.env*
+!.env.example
+
+# Logs y archivos del sistema
+
+*.log
+.cache/
+.DS_Store
+
+# Configuración de IDE
+.vscode/
+.idea/
+
+*.swp
+
+# Testing
+coverage/
+.nyc_output/

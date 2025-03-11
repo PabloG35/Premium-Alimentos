@@ -1,0 +1,1528 @@
+[{
+  "_id": {
+    "$oid": "674c8aaa66e7d0651944c02b"
+  },
+  "name": "Taste of The Wild Pacific Stream Adulto 28 Lb",
+  "description": "Taste of the Wild Pacific Stream está diseñado para proporcionar proteínas de alta calidad provenientes del salmón, siendo una excelente opción para perros con sensibilidades alimentarias. Es rico en ácidos grasos omega para una piel y pelaje saludables, y contiene probióticos específicos que apoyan la digestión y el sistema inmunológico. Además, es libre de huevo, lo que lo hace adecuado para perros con alergias a este ingrediente.",
+  "price": 1799,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069481/dpjxux4ldmwxo09ezmkv.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069481/po7uywsudkrimb3pgfm3.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069481/tvju7pjlkpx3snmqnewd.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069481/hqobltmm4zltjyct7y49.jpg"
+  ],
+  "category": "Taste of The Wild",
+  "subCategory": "Adulto",
+  "sizes": [
+    "28 Lb"
+  ],
+  "bestseller": true,
+  "date": {
+    "$numberLong": "1733069482085"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Salmón 25%",
+      "Harina de pescado oceánico ",
+      "Harina de salmón",
+      "Salmón con sabor ahumado",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Camote",
+      "Guisantes",
+      "Harina de guisantes",
+      "Lentejas",
+      "Pulpa de tomate"
+    ],
+    "Grasas": [
+      "Aceite de canola (conservada con tocoferoles mixtos)",
+      "Ácidos grasos Omega-6 (2.4%)",
+      "Ácidos grasos Omega-3 (0.3%)"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio"
+    ],
+    "Otros": [
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Taurina",
+      "Arándanos",
+      "Frambuesas",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8fe26a5f956aaaca9a1e"
+  },
+  "name": "Blue Buffalo Life Protection Formula Cachorro 30 Lb | Todas las razas",
+  "description": "Blue Buffalo Life Protection proporciona una combinación de proteínas de alta calidad, granos enteros y ácidos grasos omega esenciales para promover el desarrollo muscular, la energía y la salud de la piel y el pelaje en los cachorros. Esta fórmula está enriquecida con antioxidantes, vitaminas y minerales para respaldar el crecimiento y el bienestar general de los cachorros.",
+  "price": 1999,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070817/ervadjoohfhqyhp0juwx.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070817/dh9lycg1wxxmxjrv8v5u.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070817/az4nzn1wqetzgqsaghta.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070817/pmqp6uviv3ksfxgn3n6c.jpg"
+  ],
+  "category": "Blue Buffalo",
+  "subCategory": "Adulto",
+  "sizes": [
+    "30 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733070818115"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Pollo 27%",
+      "Producto de huevo",
+      "Harina de pescado (fuente de ácidos grasos Omega-3)",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium)"
+    ],
+    "Carbohidratos": [
+      "Arroz integral",
+      "Avena",
+      "Cebada",
+      "Guisantes",
+      "Pulpa de tomate"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Aceite de pescado (fuente de ARA y DHA)",
+      "Ácidos grasos Omega-6 (3.0%)",
+      "Ácidos grasos Omega-3 (0.75%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio",
+      "Fósforo"
+    ],
+    "Otros": [
+      "Raíz de achicoria seca",
+      "Alfalfa",
+      "Cloruro de colina",
+      "L-lisina",
+      "Arándanos",
+      "Cranberries",
+      "Perejil",
+      "Cúrcuma",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8f616a5f956aaaca9a18"
+  },
+  "name": "Diamond Naturals Pollo y Arroz Cachorro 40 Lb | Razas Pequeñas y Medianas",
+  "description": "Diamond Naturals está diseñado para cachorros de razas pequeñas y medianas, así como para perros adultos en lactancia. Proporciona DHA para el desarrollo cerebral y visual, un balance adecuado de grasa, proteína y nutrientes esenciales para un crecimiento saludable. Está enriquecido con superalimentos y probióticos garantizados para una digestión óptima.",
+  "price": 1899,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070689/rtmh4yctj4erscwxjult.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070689/qdsvqmrslueo1tppzbom.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070689/nzfmvdbiaaprcxsr3plc.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070689/btdswdvtgj5q4v8tn21u.jpg"
+  ],
+  "category": "Diamond Naturals",
+  "subCategory": "Cachorro",
+  "sizes": [
+    "40 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733101919995"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 32%",
+      "Producto de huevo",
+      "Harina de pescado",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Arroz blanco molido",
+      "Cebada perlada",
+      "Hierba Miscanthus molida"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Aceite de salmón (fuente de DHA)",
+      "Ácidos grasos Omega-6 (3.4%)",
+      "Ácidos grasos Omega-3 (0.5%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio",
+      "Fósforo"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Kale",
+      "Chía",
+      "Calabaza",
+      "Arándanos",
+      "Naranjas",
+      "Quinoa",
+      "Kelp seco",
+      "Coco",
+      "Espinaca",
+      "Zanahorias",
+      "Papaya",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8a7f66e7d0651944c029"
+  },
+  "name": "Taste of The Wild High Praire Cachorro 28 Lb",
+  "description": "Taste of the Wild High Prairie está diseñado para proporcionar energía altamente digestible y proteínas de alta calidad a partir del bisonte y el venado criados en pastos. Este alimento ofrece sabores únicos con carne asada, vegetales, legumbres y frutas, en un tamaño de croqueta pequeño que facilita su masticación para los cachorros. Es adecuado para cachorros, madres gestantes o lactantes y 'otros' perros adultos. Contiene DHA para el desarrollo cerebral y visual, y probióticos específicos para perros que promueven la salud digestiva e inmunológica.",
+  "price": 1499,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069438/mr6gyad8rsujwmnefe82.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069438/ejtdjlviwncoqs59o6u6.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069438/aehjwemkn7ickahivxqy.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069438/w7eqocuqwtbj5ik7pndl.jpg"
+  ],
+  "category": "Taste of The Wild",
+  "subCategory": "Cachorro",
+  "sizes": [
+    "28 Lb"
+  ],
+  "bestseller": true,
+  "date": {
+    "$numberLong": "1733069439380"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Búfalo de agua 28%",
+      "Harina de cordero",
+      "Producto de huevo",
+      "Bisonte asado",
+      "Venado asado",
+      "Carne de res",
+      "Harina de pescado oceánico",
+      "Aceite de salmón (fuente de DHA)",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Camote",
+      "Garbanzos",
+      "Guisantes",
+      "Harina de guisantes",
+      "Pulpa de tomate"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Ácidos grasos Omega-6 (2.8%)",
+      "Ácidos grasos Omega-3 (0.3%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio"
+    ],
+    "Otros": [
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Taurina",
+      "Arándanos",
+      "Frambuesas",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8e9e6a5f956aaaca9a12"
+  },
+  "name": "Diamond Naturals Cordero y Arroz Cachorro 40 Lb | Razas Grandes",
+  "description": "Diamond Naturals Formula de Cordero y Arroz para razas grandes está diseñado para cachorros de razas grandes en crecimiento. Proporciona niveles adecuados de nutrientes, incluyendo calcio y fósforo para el desarrollo óseo, DHA para el desarrollo cerebral y visual, y L-carnitina para convertir la grasa en energía. Además, está enriquecido con superalimentos y probióticos garantizados para apoyar una digestión saludable.",
+  "price": 1499,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070493/syxz87buslolnabey49d.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070494/qlm5c6hrfne7cfeml0xg.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070494/w2ejlbhlks5xltxcaiqs.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070494/sqhnwhxscfpmi0sv3b0u.jpg"
+  ],
+  "category": "Diamond Naturals",
+  "subCategory": "Cachorro",
+  "sizes": [
+    "40 Lb"
+  ],
+  "bestseller": true,
+  "date": {
+    "$numberLong": "1733070494603"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Cordero",
+      "Harina de cordero 27%",
+      "Producto de huevo",
+      "Harina de pescado",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Arroz integral",
+      "Cebada perlada",
+      "Sorgo",
+      "Arroz blanco molido",
+      "Pulpa de tomate"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Aceite de salmón (fuente de DHA)",
+      "Ácidos grasos Omega-6 (2.0%)",
+      "Ácidos grasos Omega-3 (0.3%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio",
+      "Fósforo",
+      "Potasio"
+    ],
+    "Otros": [
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Taurina",
+      "L-carnitina",
+      "Kale",
+      "Chía",
+      "Calabaza",
+      "Arándanos",
+      "Naranjas",
+      "Quinoa",
+      "Kelp seco",
+      "Coco",
+      "Espinaca",
+      "Zanahorias",
+      "Papaya",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8edb6a5f956aaaca9a14"
+  },
+  "name": "Diamond Naturals Extreme Adulto 40 Lb | Todas las razas",
+  "description": "Diamond Naturals Extreme está formulado para perros altamente activos y deportivos. Proporciona niveles adecuados de proteína y grasa, con el 91% de la proteína proveniente de ingredientes de pollo y huevo. Está enriquecido con glucosamina y condroitina para las articulaciones, superalimentos y probióticos garantizados para apoyar la salud digestiva y general.",
+  "price": 2099,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070555/pq0jh8iypexa2omptzox.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070554/tbrrunkv6sodmk1oomag.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070555/byav62sglm0ze3povqr9.jpg"
+  ],
+  "category": "Diamond Naturals",
+  "subCategory": "Adulto",
+  "sizes": [
+    "40 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733101919996"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 32%",
+      "Pollo",
+      "Producto de huevo",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Arroz blanco molido",
+      "Cebada perlada",
+      "Hierba Miscanthus molida",
+      "Pulpa de remolacha"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Ácidos grasos Omega-6 (3.5%)",
+      "Ácidos grasos Omega-3 (0.5%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio",
+      "Potasio"
+    ],
+    "Otros": [
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Glucosamina",
+      "Condroitina",
+      "L-carnitina",
+      "Kale",
+      "Chía",
+      "Calabaza",
+      "Arándanos",
+      "Naranjas",
+      "Quinoa",
+      "Kelp seco",
+      "Coco",
+      "Espinaca",
+      "Zanahorias",
+      "Papaya",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8fbb6a5f956aaaca9a1c"
+  },
+  "name": "Diamond Naturals Skin & Coat Adulto 30 Lb | Piel/Pelo sensible",
+  "description": "Diamond Naturals Skin & Coat está formulado con salmón real como primer ingrediente, ideal para mantener una piel y pelaje saludables en todas las etapas de vida. Enriquecido con probióticos garantizados y superalimentos, ofrece una nutrición completa y balanceada para el bienestar de los perros.",
+  "price": 1499,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070779/tof388i03h9wpsnbt838.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070779/ngwatmq0lisflywlcdkb.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070779/g8t85ydgsxrcme7jlgcg.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070779/gx1slyz8ynjoyyadoj5e.jpg"
+  ],
+  "category": "Diamond Naturals",
+  "subCategory": "Adulto",
+  "sizes": [
+    "30 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733070779969"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de salmón 25%",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Papas",
+      "Lentejas",
+      "Guisantes",
+      "Harina de guisantes",
+      "Pulpa de tomate"
+    ],
+    "Grasas": [
+      "Aceite de canola (conservada con tocoferoles mixtos)",
+      "Ácidos grasos Omega-6 (2.5%)",
+      "Ácidos grasos Omega-3 (0.4%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio"
+    ],
+    "Otros": [
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Taurina",
+      "L-carnitina",
+      "Kale",
+      "Chía",
+      "Calabaza",
+      "Arándanos",
+      "Naranjas",
+      "Kelp seco",
+      "Coco",
+      "Espinaca",
+      "Zanahorias",
+      "Papaya",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8bbe66e7d0651944c036"
+  },
+  "name": "Diamond Naturals Cordero y Arroz Adulto 40 Lb | Razas Grandes",
+  "description": "Diamond Naturals Formula de Cordero y Arroz para razas grandes está formulado con proteínas de cordero criado en pastos, siendo una excelente fuente de proteínas de alta calidad. Además, incluye niveles garantizados de zinc, selenio, vitamina E, y ácidos grasos omega para la salud de la piel y el pelaje. Enriquecido con superalimentos y probióticos para mejorar la digestión.",
+  "price": 1499,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069758/f6ytksetglvzkq4ytt2d.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069758/qosu1syobtmiscbcrxlz.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069758/dutrw9nldkcgg7vjkrp5.jpg"
+  ],
+  "category": "Diamond Naturals",
+  "subCategory": "Adulto",
+  "sizes": [
+    "40 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733069758897"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de cordero 23%",
+      "Producto de huevo",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Arroz blanco molido",
+      "Cebada perlada",
+      "Sorgo",
+      "Salvado de arroz",
+      "Avena"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Ácidos grasos Omega-6 (2.2%)",
+      "Ácidos grasos Omega-3 (0.4%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Taurina",
+      "L-carnitina",
+      "Kale",
+      "Chía",
+      "Calabaza",
+      "Arándanos",
+      "Naranjas",
+      "Quinoa",
+      "Kelp seco",
+      "Coco",
+      "Espinaca",
+      "Zanahorias",
+      "Papaya",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c5dbcebbe0752e7e062f5"
+  },
+  "name": "Royal Canin Bulldog Frances Adulto 17 Lb",
+  "description": "Royal Canin Bulldog Francés Adulto está formulado específicamente para Bulldogs Franceses de 12 meses en adelante. Con un diseño único de croquetas para mandíbulas braquicefálicas, apoya la masa muscular, la salud de la piel y reduce el mal olor de las heces. Esta nutrición especializada ayuda a los Bulldogs Franceses a mantener músculos fuertes, reduce los problemas digestivos y promueve el bienestar general.",
+  "price": 1999,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733057979/qfimrhotlp90qejhw5we.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733057979/h7n9q4lh52ny5vzroijw.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733057978/zx1iii819tnjvha0vqqk.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733057978/nq9ioxccmjmuqlmbfgod.jpg"
+  ],
+  "category": "Royal Canin",
+  "subCategory": "Adulto",
+  "sizes": [
+    "17 Lb"
+  ],
+  "bestseller": true,
+  "date": {
+    "$numberLong": "1733057980017"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 24%",
+      "L-carnitina",
+      "Proteínas L.I.P."
+    ],
+    "Carbohidratos": [
+      "Arroz integral",
+      "Cebada",
+      "Trigo",
+      "Maíz"
+    ],
+    "Grasas": [
+      "Grasa de pollo",
+      "Aceite de pescado (EPA y DHA)"
+    ],
+    "Vitaminas y Minerales": [
+      "Vitamina E",
+      "Vitamina C",
+      "Zinc",
+      "Selenio",
+      "Ácidos grasos Omega-3",
+      "Ácidos grasos Omega-6"
+    ],
+    "Otros": [
+      "Pulpa de remolacha (fibra para la digestión)",
+      "Prebióticos"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8b9266e7d0651944c034"
+  },
+  "name": "Diamond Naturals Carne y Arroz Adulto 40 Lb | Todas las razas",
+  "description": "Diamond Naturals Formula Carne y Arroz está diseñado para proporcionar una nutrición equilibrada con proteínas de carne de res de animales criados en pastos, ácidos grasos omega para la salud de la piel y el pelaje, y enriquecido con superalimentos y probióticos. Esta fórmula está elaborada para satisfacer los niveles nutricionales establecidos por los perfiles de nutrientes de la AAFCO para el mantenimiento de perros adultos.",
+  "price": 1499,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069713/ugik1xdsczneqlxxkmci.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069713/dzpkddf0svtnder9n3x4.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069713/mwglkx9w1kjc9k2gw3nv.jpg"
+  ],
+  "category": "Diamond Naturals",
+  "subCategory": "Adulto",
+  "sizes": [
+    "40 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733069714045"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de res 25%",
+      "Harina de huevo",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Sorgo",
+      "Arroz blanco molido",
+      "Salvado de arroz",
+      "Cebada perlada"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Ácidos grasos Omega-6 (2.4%)",
+      "Ácidos grasos Omega-3 (0.4%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Taurina",
+      "Glucosamina",
+      "Condroitina",
+      "Kale",
+      "Chía",
+      "Calabaza",
+      "Arándanos",
+      "Naranjas",
+      "Quinoa",
+      "Kelp seco",
+      "Coco",
+      "Espinaca",
+      "Zanahorias",
+      "Papaya",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c6c46a5bfd2f971c52730"
+  },
+  "name": "Royal Canin Bulldog Frances Cachorro 6.6 Lb",
+  "description": "Royal Canin Bulldog Francés Cachorro está formulado específicamente para cachorros de Bulldog Francés de hasta 12 meses de edad. Durante esta etapa de crecimiento crucial, este alimento ayuda a fortalecer las defensas naturales del cachorro gracias a un complejo patentado de antioxidantes, incluyendo vitamina E. Además, apoya la salud de la piel y mejora la digestión mediante proteínas altamente digestibles y prebióticos.",
+  "price": 1549,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733061702/jvo0vzmgddcqpd9a5xe8.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733061702/kawy5a6msrlldjdxb8l8.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733061702/lqtocvkwhgy3ea1vjymv.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733061702/m6ezvntbca6rwc0elk49.jpg"
+  ],
+  "category": "Royal Canin",
+  "subCategory": "Cachorro",
+  "sizes": [
+    "6.6 Lb"
+  ],
+  "bestseller": true,
+  "date": {
+    "$numberLong": "1733061702823"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 30%",
+      "Proteína de cerdo deshidratada",
+      "Proteínas L.I.P."
+    ],
+    "Carbohidratos": [
+      "Arroz",
+      "Trigo"
+    ],
+    "Grasas": [
+      "Grasas animales",
+      "Aceite de soja",
+      "Aceite de pescado"
+    ],
+    "Vitaminas y Minerales": [
+      "Vitamina A",
+      "Vitamina D3",
+      "Vitamina E",
+      "Hierro",
+      "Yodo",
+      "Cobre",
+      "Manganeso",
+      "Zinc",
+      "Selenio"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Fructo-oligosacáridos",
+      "Extracto de levadura",
+      "Extracto de caléndula (fuente de luteína)",
+      "Glucosamina",
+      "Condroitina",
+      "Extracto de yucca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8f076a5f956aaaca9a16"
+  },
+  "name": "Diamond Naturals Light Adulto 30 Lb | Todas las razas",
+  "description": "Diamond Naturals está formulado para perros menos activos o con sobrepeso, ofreciendo menos calorías sin sacrificar la nutrición. Contiene proteína de cordero criado en pastos, L-carnitina para convertir la grasa en energía, y glucosamina y condroitina para el soporte de las articulaciones. Enriquecido con superalimentos y probióticos garantizados para mejorar la digestión.",
+  "price": 1499,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070599/bslqmywruosw1sebmmrr.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070599/rfc7gnupxl6ocahf31l4.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070599/qkt2kt2umcliw6tdrdrs.jpg"
+  ],
+  "category": "Diamond Naturals",
+  "subCategory": "Adulto",
+  "sizes": [
+    "30 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733070599578"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de cordero 18%",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Arroz integral",
+      "Avena",
+      "Cebada perlada",
+      "Arroz blanco molido",
+      "Sorgo",
+      "Hierba Miscanthus molida",
+      "Mijo"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Ácidos grasos Omega-6 (1.25%)",
+      "Ácidos grasos Omega-3 (0.25%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio",
+      "Potasio"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Glucosamina",
+      "Condroitina",
+      "L-carnitina",
+      "Kale",
+      "Chía",
+      "Calabaza",
+      "Arándanos",
+      "Naranjas",
+      "Quinoa",
+      "Kelp seco",
+      "Coco",
+      "Espinaca",
+      "Zanahorias",
+      "Papaya",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8ad666e7d0651944c02d"
+  },
+  "name": "Taste of The Wild Pacific Stream Cachorro 28 Lb",
+  "description": "Taste of the Wild Pacific Stream está diseñado para proporcionar proteínas de alta calidad provenientes del salmón, siendo rico en ácidos grasos omega para una piel y pelaje saludables. Con DHA para el desarrollo cerebral y visual, esta fórmula es adecuada para cachorros, madres gestantes o lactantes, y 'otros' perros adultos. Contiene probióticos específicos para la especie que ayudan a la digestión y al sistema inmune.",
+  "price": 1799,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069525/rdz9yejl9jjct5lhzqmw.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069525/dresiynxy2twuncqxx0q.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069525/mtu7o5h7zbowlozcfed1.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069525/m0exqp9jofek86nb3mrr.jpg"
+  ],
+  "category": "Taste of The Wild",
+  "subCategory": "Cachorro",
+  "sizes": [
+    "28 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733069526417"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Salmón  27%",
+      "Harina de pescado oceánico",
+      "Harina de salmón",
+      "Salmón con sabor ahumado",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Camote",
+      "Guisantes",
+      "Harina de guisantes",
+      "Lentejas",
+      "Pulpa de tomate"
+    ],
+    "Grasas": [
+      "Aceite de canola (conservada con tocoferoles mixtos)",
+      "Aceite de salmón (fuente de DHA)",
+      "Ácidos grasos Omega-6 (2.4%)",
+      "Ácidos grasos Omega-3 (0.3%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio"
+    ],
+    "Otros": [
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Taurina",
+      "Kale",
+      "Chía",
+      "Calabaza",
+      "Arándanos",
+      "Frambuesas",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c8f936a5f956aaaca9a1a"
+  },
+  "name": "Diamond Naturals Senior 35 Lb | Todas las razas 8+ años",
+  "description": "Diamond Naturals Senior está formulado específicamente para satisfacer las necesidades de los perros envejecidos, con niveles de proteína y grasa cuidadosamente determinados. Incluye probióticos y fibra para facilitar la digestión, además de glucosamina y condroitina para el soporte de las articulaciones. También está enriquecido con superalimentos, selenio y vitamina E como antioxidantes.",
+  "price": 1499,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070738/ncgffws1kyruxcarowit.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070738/frxsvhpo6giu1exy8z9s.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070738/prt38xhonujwb0gpgbag.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733070738/ousvrzm49dbujnzuqltt.jpg"
+  ],
+  "category": "Diamond Naturals",
+  "subCategory": "Senior",
+  "sizes": [
+    "35 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733070739303"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 25%",
+      "Huevo",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Arroz integral",
+      "Cebada perlada",
+      "Arroz blanco molido",
+      "Avena",
+      "Salvado de arroz"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Ácidos grasos Omega-6 (2.2%)",
+      "Ácidos grasos Omega-3 (0.3%)",
+      "Semilla de lino"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio",
+      "Fósforo"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Taurina",
+      "Glucosamina",
+      "Condroitina",
+      "L-carnitina",
+      "Kale",
+      "Chía",
+      "Calabaza",
+      "Arándanos",
+      "Naranjas",
+      "Quinoa",
+      "Kelp seco",
+      "Coco",
+      "Espinaca",
+      "Zanahorias",
+      "Papaya",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c89e566e7d0651944c026"
+  },
+  "name": "Taste of The Wild High Praire Adulto 28 Lb",
+  "description": "Taste of the Wild High Prairie combina bisonte y venado asado para proporcionar proteínas altamente digestibles con un sabor único. Con 32% de proteína, esta receta está diseñada para satisfacer las necesidades nutricionales de los perros adultos, brindando la energía necesaria para mantenerse activos. Vegetales, legumbres y frutas aportan antioxidantes para ayudar a mantener la vitalidad general y mejorar la salud del sistema digestivo e inmunológico con probióticos específicos.",
+  "price": 1799,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069285/divuiinfwhqvkenchpzc.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069285/ptbjjyz7rjxaaxjaxqri.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069285/vnev7av4f8lzyaomrt2m.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069285/oq5mogm3lpk6sfdsvd8v.jpg"
+  ],
+  "category": "Taste of The Wild",
+  "subCategory": "Adulto",
+  "sizes": [
+    "28 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733069285690"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Búfalo de agua 28%",
+      "Harina de cordero",
+      "Harina de pollo",
+      "Producto de huevo",
+      "Bisonte asado",
+      "Venado asado",
+      "Carne de res",
+      "Harina de pescado oceánico",
+      "Proteínas fermentadas (Lactobacillus plantarum, Bacillus subtilis, Lactobacillus acidophilus, Enterococcus faecium, Bifidobacterium animalis)"
+    ],
+    "Carbohidratos": [
+      "Camote",
+      "Guisantes",
+      "Harina de guisantes",
+      "Pulpa de tomate"
+    ],
+    "Grasas": [
+      "Grasa de pollo (conservada con tocoferoles mixtos)",
+      "Ácidos grasos Omega-6 (2.8%)",
+      "Ácidos grasos Omega-3 (0.3%)"
+    ],
+    "Vitaminas y Minerales": [
+      "Zinc proteínato",
+      "Selenio",
+      "Vitamina A",
+      "Vitamina E",
+      "Hierro",
+      "Cobre",
+      "Manganeso",
+      "Yodo",
+      "Vitamina B12",
+      "Ácido fólico",
+      "Biotina",
+      "Niacina",
+      "Calcio"
+    ],
+    "Otros": [
+      "Raíz de achicoria seca",
+      "Cloruro de colina",
+      "Taurina",
+      "Arándanos",
+      "Frambuesas",
+      "Extracto de yuca"
+    ]
+  },
+  "stock": 0,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c84fe2124f9c7ea8be308"
+  },
+  "name": "Royal Canin Dachshund Cachorro 3.3 Lb",
+  "description": "Royal Canin Dachshund Puppy está diseñado para cachorros de raza Dachshund de hasta 10 meses de edad. Esta fórmula ayuda a desarrollar el sistema inmunológico del cachorro, apoya el desarrollo saludable de huesos y articulaciones, y promueve una digestión óptima gracias a proteínas de alta digestibilidad y prebióticos. Además, ayuda a mantener un crecimiento equilibrado.",
+  "price": 999,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068030/qhfboasneuelenptds9b.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068030/ebrrjptfkonho8sft8u4.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068030/oh2lrflr1kvor2tufqid.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068030/d2cvditrx9na0nlwblzb.jpg"
+  ],
+  "category": "Royal Canin",
+  "subCategory": "Cachorro",
+  "sizes": [
+    "3.3 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733068030823"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 28%",
+      "Gluten de trigo (proteína vegetal purificada)",
+      "L-carnitina",
+      "Proteínas L.I.P."
+    ],
+    "Carbohidratos": [
+      "Arroz",
+      "Maíz"
+    ],
+    "Grasas": [
+      "Grasas animales (vacuno y/o pollo)",
+      "Aceite de soja",
+      "Aceite de pescado"
+    ],
+    "Vitaminas y Minerales": [
+      "Vitamina A",
+      "Vitamina D3",
+      "Vitamina E",
+      "Vitamina C",
+      "Vitamina B1",
+      "Vitamina B2",
+      "Niacina",
+      "Pantotenato de calcio",
+      "Vitamina B6",
+      "Vitamina B12",
+      "Biotina",
+      "Ácido fólico",
+      "Colina",
+      "Cobre",
+      "Hierro",
+      "Manganeso",
+      "Yodo",
+      "Zinc",
+      "Selenio"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Fructo-oligosacáridos (FOS)",
+      "Manano-oligosacáridos (MOS)",
+      "Zeolita",
+      "Taurina",
+      "Extracto de rosa de la India (rico en luteína)",
+      "Betaglucanos",
+      "Cloruro de glucosamina",
+      "Sulfato de condroitina",
+      "Extracto de yuca",
+      "Betacarotenos"
+    ]
+  },
+  "stock": 4,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c86c42124f9c7ea8be30c"
+  },
+  "name": "Royal Canin Jack Russel Cachorro 3.3 Lb",
+  "description": "Royal Canin Jack Russell Terrier Puppy está formulado específicamente para cachorros de raza Jack Russell Terrier de hasta 10 meses de edad. Esta fórmula ayuda a desarrollar el sistema inmunológico, promueve un crecimiento armonioso con niveles adecuados de energía y nutrientes, y apoya la salud digestiva con proteínas de alta digestibilidad y prebióticos.",
+  "price": 999,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068484/itl20floahllfabxgbdh.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068484/wm4nkqtffgdprmxuunfj.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068484/dgl4awhoushdenoiq4je.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068484/pbcurqkqvr549kmbtscu.jpg"
+  ],
+  "category": "Royal Canin",
+  "subCategory": "Cachorro",
+  "sizes": [
+    "3.3 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733068484732"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 30%",
+      "Gluten de maíz",
+      "Proteínas L.I.P."
+    ],
+    "Carbohidratos": [
+      "Arroz",
+      "Maíz",
+      "Trigo"
+    ],
+    "Grasas": [
+      "Grasas animales",
+      "Aceite de pescado",
+      "Aceite de soja",
+      "Aceite de borraja (Omega 6)"
+    ],
+    "Vitaminas y Minerales": [
+      "Vitamina A",
+      "Vitamina D3",
+      "Hierro",
+      "Yodo",
+      "Cobre",
+      "Manganeso",
+      "Zinc",
+      "Selenio",
+      "EPA/DHA (Omega 3)",
+      "Fósforo"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Fructo-oligosacáridos",
+      "Manano-oligosacáridos",
+      "Extracto de caléndula (fuente de luteína)",
+      "Glucosamina",
+      "Condroitina",
+      "Extracto de té (fuente de polifenoles)",
+      "Clinoptilolita de origen sedimentario"
+    ]
+  },
+  "stock": 1,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c85e02124f9c7ea8be30a"
+  },
+  "name": "Royal Canin Jack Russel Adulto 6.6 Lb",
+  "description": "Royal Canin Jack Russell Adult está diseñado específicamente para Jack Russell Terriers adultos a partir de los 10 meses de edad. Esta fórmula ayuda a mantener la masa muscular y la vitalidad, promueve la salud de la piel y el pelaje con ácidos grasos esenciales, y contribuye a la salud dental al reducir la formación de sarro. La croqueta está adaptada para facilitar la masticación de los Jack Russells.",
+  "price": 899,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068256/rsa6rdr28qg6yvnihbvt.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068256/auojydrukhbpnosikkzd.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068256/u4ugh9ulj6velyweunm5.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733068256/oxcjrt4uznxhuvxjkyhc.jpg"
+  ],
+  "category": "Royal Canin",
+  "subCategory": "Adulto",
+  "sizes": [
+    "6.6 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733068256879"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 30%",
+      "Gluten de maíz",
+      "Proteínas L.I.P."
+    ],
+    "Carbohidratos": [
+      "Arroz",
+      "Maíz",
+      "Trigo"
+    ],
+    "Grasas": [
+      "Grasas animales",
+      "Aceite de pescado",
+      "Aceite de soja",
+      "Aceite de borraja (Omega 6)"
+    ],
+    "Vitaminas y Minerales": [
+      "Vitamina A",
+      "Vitamina D3",
+      "Hierro",
+      "Yodo",
+      "Cobre",
+      "Manganeso",
+      "Zinc",
+      "Selenio",
+      "EPA/DHA (Omega 3)",
+      "Fósforo"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Fructo-oligosacáridos",
+      "Manano-oligosacáridos",
+      "Extracto de caléndula (fuente de luteína)",
+      "Glucosamina",
+      "Condroitina",
+      "Extracto de té (fuente de polifenoles)",
+      "Clinoptilolita de origen sedimentario"
+    ]
+  },
+  "stock": 1,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c89a866e7d0651944c024"
+  },
+  "name": "Royal Canin Maltese Adulto 1.1 Lb",
+  "description": "Royal Canin Maltese Adult está diseñado específicamente para perros de raza Bichón Maltés adultos a partir de los 10 meses de edad. Esta fórmula exclusiva ayuda a mantener un pelaje largo y saludable, reduce el olor y volumen de las heces, satisface los apetitos más exigentes y favorece la salud dental con croquetas adaptadas y quelantes de calcio.",
+  "price": 599,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069224/ofjx5s6fv2xhrf7v77c4.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069224/bw7tmejdwue6dxpa63zq.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069224/avkidjl6wkkqirat37rf.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069224/l3imhsydsldz48d5bsfc.jpg"
+  ],
+  "category": "Royal Canin",
+  "subCategory": "Adulto",
+  "sizes": [
+    "1.1 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733069224876"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 24%",
+      "Proteínas de cerdo deshidratadas",
+      "Proteínas L.I.P."
+    ],
+    "Carbohidratos": [
+      "Maíz",
+      "Arroz",
+      "Harina de maíz"
+    ],
+    "Grasas": [
+      "Grasas animales",
+      "Aceite de soja",
+      "Aceite de pescado",
+      "Aceite de borraja (Omega 6)"
+    ],
+    "Vitaminas y Minerales": [
+      "Vitamina A",
+      "Vitamina D3",
+      "Biotina",
+      "Hierro",
+      "Yodo",
+      "Cobre",
+      "Manganeso",
+      "Zinc",
+      "Selenio",
+      "Ácidos grasos Omega 3 (EPA/DHA)",
+      "Ácidos grasos Omega 6"
+    ],
+    "Otros": [
+      "Pulpa de achicoria",
+      "Fructo-oligosacáridos",
+      "Extracto de rosa de la India (fuente de luteína)",
+      "Glucosamina",
+      "Condroitina",
+      "Extracto de té (fuente de polifenoles)",
+      "Clinoptilolita de origen sedimentario"
+    ]
+  },
+  "stock": 1,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c893c66e7d0651944c022"
+  },
+  "name": "Royal Canin Cavalier King Charles Cachorro 3.3 Lb",
+  "description": "Royal Canin Cavalier King Charles Puppy está diseñado específicamente para cachorros de raza Cavalier King Charles Spaniel de 8 semanas a 10 meses de edad. Esta fórmula apoya el desarrollo del sistema inmunológico, promueve una salud cardíaca óptima y mantiene una digestión saludable mediante proteínas de alta calidad y prebióticos. El tamaño y la forma de las croquetas están diseñados para facilitar la masticación.",
+  "price": 999,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069116/sqoadsfp6qy0xqnj8ri0.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069116/dley43bqbaoaj5faxhek.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069115/ju9hhmrjatzvgqrtv0om.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733069115/xa1ulh2acupank9xmvsh.jpg"
+  ],
+  "category": "Royal Canin",
+  "subCategory": "Cachorro",
+  "sizes": [
+    "3.3 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733069116743"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 28%",
+      "Gluten de trigo",
+      "Proteínas L.I.P."
+    ],
+    "Carbohidratos": [
+      "Arroz cervecero",
+      "Maíz",
+      "Gluten de maíz"
+    ],
+    "Grasas": [
+      "Grasa de pollo",
+      "Aceite vegetal",
+      "Aceite de pescado (EPA & DHA)"
+    ],
+    "Vitaminas y Minerales": [
+      "Vitamina E",
+      "Vitamina C",
+      "Vitamina B1",
+      "Vitamina B6",
+      "Vitamina B12",
+      "Vitamina A",
+      "Vitamina D3",
+      "Ácido fólico",
+      "Niacina",
+      "Biotina",
+      "Colina",
+      "Cobre",
+      "Zinc",
+      "Manganeso",
+      "Selenio",
+      "Magnesio"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Fructo-oligosacáridos",
+      "Betaglucanos",
+      "Taurina",
+      "L-carnitina",
+      "Extracto de caléndula (fuente de luteína)",
+      "Extracto de yucca",
+      "Extracto de romero"
+    ]
+  },
+  "stock": 1,
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "674c6e731e0e9159c404c2e7"
+  },
+  "name": "Royal Canin Dachshund Adulto 3.3 Lb",
+  "description": "Royal Canin Dachshund Adult está diseñado específicamente para satisfacer las necesidades nutricionales de los Dachshunds de raza pura a partir de los 10 meses de edad. Esta fórmula ayuda a mantener el tono muscular, apoya las articulaciones y huesos, y reduce el mal olor y volumen de las heces. El diseño exclusivo de las croquetas facilita que el Dachshund las recoja y mastique adecuadamente.",
+  "price": 999,
+  "image": [
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733062495/dachshundAdulto_main_qpqhmy.png",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733062494/dachshundAdulto_4_yibozr.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733062494/dachshundAdulto_3_gqbc58.jpg",
+    "https://res.cloudinary.com/dsi7rct9f/image/upload/v1733062494/dachshundAdulto_2_uff3ar.jpg"
+  ],
+  "category": "Royal Canin",
+  "subCategory": "Adulto",
+  "sizes": [
+    "3.3 Lb"
+  ],
+  "bestseller": false,
+  "date": {
+    "$numberLong": "1733062259439"
+  },
+  "ingredients": {
+    "Proteina": [
+      "Harina de pollo 26%",
+      "Gluten de trigo",
+      "L-carnitina"
+    ],
+    "Carbohidratos": [
+      "Arroz cervecero",
+      "Arroz integral",
+      "Avena"
+    ],
+    "Grasas": [
+      "Grasa de pollo",
+      "Aceite de pescado",
+      "Aceite vegetal",
+      "Aceite de cártamo (fuente de GLA)"
+    ],
+    "Vitaminas y Minerales": [
+      "Vitamina E",
+      "Vitamina C",
+      "Vitamina B1",
+      "Vitamina B6",
+      "Vitamina B12",
+      "Vitamina A",
+      "Vitamina D3",
+      "Ácido fólico",
+      "Niacina",
+      "Biotina",
+      "Zinc",
+      "Hierro",
+      "Manganeso",
+      "Cobre",
+      "Calcio",
+      "Fósforo",
+      "Magnesio"
+    ],
+    "Otros": [
+      "Pulpa de remolacha",
+      "Fructo-oligosacáridos",
+      "Cloruro de colina",
+      "DL-metionina",
+      "Glucosamina",
+      "Sulfato de condroitina",
+      "Taurina",
+      "Extracto de té verde",
+      "Extracto de romero",
+      "Extracto de caléndula"
+    ]
+  },
+  "stock": 1,
+  "__v": 0
+}]

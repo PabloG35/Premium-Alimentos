@@ -1,0 +1,181 @@
+// src/pages/auth/index.js
+import { useState, useContext, useEffect } from "react";
+import { useRouter } from "next/router";
+import Layout from "@/components/Layout";
+import { AuthContext } from "@/context/AuthContext";
+
+export default function Login() {
+  const router = useRouter();
+  const { token, login, registerUser } = useContext(AuthContext);
+  const [modo, setModo] = useState("login"); // "login" o "register"
+  const [correo, setCorreo] = useState("");
+  const [contraseña, setContraseña] = useState("");
+  const [nombre, setNombre] = useState("");
+  const [apellido, setApellido] = useState("");
+  const [mensaje, setMensaje] = useState("");
+
+  useEffect(() => {
+    // Si ya hay token (sesión iniciada), redirige a /perfil
+    if (token) {
+      router.push("/perfil");
+    }
+  }, [token, router]);
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setMensaje("");
+    try {
+      // login se encarga de enviar { correo, contraseña } al backend y actualizar el estado
+      await login({ correo, contraseña });
+      router.push("/perfil");
+    } catch (error) {
+      console.error("Error al iniciar sesión:", error);
+      setMensaje("Error en el servidor");
+    }
+  };
+
+  const handleRegisterSubmit = async (e) => {
+    e.preventDefault();
+    setMensaje("");
+    try {
+      await registerUser({
+        nombre_usuario: `${nombre} ${apellido}`,
+        correo,
+        contraseña,
+      });
+      // Luego de registrar, redirige a la misma página de login ("/auth")
+      router.push("/auth");
+    } catch (error) {
+      console.error("Error al crear cuenta:", error);
+      setMensaje("Error en el servidor");
+    }
+  };
+
+  return (
+    <Layout>
+      <div className="w-full min-h-screen flex items-center justify-center bg-gray-100">
+        <div className="w-full max-w-md">
+          {modo === "login" ? (
+            <form
+              onSubmit={handleLoginSubmit}
+              className="bg-white p-8 rounded shadow-md"
+            >
+              <h1 className="text-2xl font-bold mb-6 text-center">
+                Iniciar Sesión
+              </h1>
+              {mensaje && (
+                <p className="text-red-500 mb-4 text-center">{mensaje}</p>
+              )}
+              <input
+                type="email"
+                placeholder="Correo electrónico"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+                className="w-full p-4 border rounded mb-4"
+                required
+              />
+              <input
+                type="password"
+                placeholder="Contraseña"
+                value={contraseña}
+                onChange={(e) => setContraseña(e.target.value)}
+                className="w-full p-4 border rounded mb-6"
+                required
+              />
+              <button
+                type="submit"
+                className="w-full bg-green-500 text-white py-3 rounded hover:bg-green-600 transition-colors duration-200 mb-6"
+              >
+                Iniciar Sesión
+              </button>
+              <div className="text-center space-y-2">
+                <p className="text-sm">
+                  No tienes una cuenta?{" "}
+                  <span
+                    className="text-pm-naranja inline-flex items-center cursor-pointer font-bold"
+                    onClick={() => setModo("register")}
+                  >
+                    Crear cuenta
+                    <img
+                      src="/SVGs/derecha.svg"
+                      alt="Ir"
+                      className="w-4 h-4 ml-1"
+                    />
+                  </span>
+                </p>
+              </div>
+            </form>
+          ) : (
+            <form
+              onSubmit={handleRegisterSubmit}
+              className="bg-white p-8 rounded shadow-md"
+            >
+              <h1 className="text-2xl font-bold mb-6 text-center">
+                Crear Cuenta
+              </h1>
+              {mensaje && (
+                <p className="text-red-500 mb-4 text-center">{mensaje}</p>
+              )}
+              <div className="flex gap-4 mb-4">
+                <input
+                  type="text"
+                  placeholder="Nombre"
+                  value={nombre}
+                  onChange={(e) => setNombre(e.target.value)}
+                  className="w-full p-4 border rounded"
+                  required
+                />
+                <input
+                  type="text"
+                  placeholder="Apellido"
+                  value={apellido}
+                  onChange={(e) => setApellido(e.target.value)}
+                  className="w-full p-4 border rounded"
+                  required
+                />
+              </div>
+              <input
+                type="email"
+                placeholder="Correo electrónico"
+                value={correo}
+                onChange={(e) => setCorreo(e.target.value)}
+                className="w-full p-4 border rounded mb-4"
+                required
+              />
+              <input
+                type="password"
+                placeholder="Contraseña"
+                value={contraseña}
+                onChange={(e) => setContraseña(e.target.value)}
+                className="w-full p-4 border rounded mb-6"
+                required
+              />
+              <button
+                type="submit"
+                className="w-full bg-green-500 text-white py-3 rounded hover:bg-green-600 transition-colors duration-200 mb-6"
+              >
+                Crear Cuenta
+              </button>
+              <div className="text-center">
+                <p className="text-sm">
+                  Ya tienes una cuenta?{" "}
+                  <span
+                    className="text-pm-naranja inline-flex items-center cursor-pointer font-bold"
+                    onClick={() => setModo("login")}
+                  >
+                    Iniciar Sesión
+                    <img
+                      src="/SVGs/derecha.svg"
+                      alt="Ir"
+                      className="w-4 h-4 ml-1"
+                    />
+                  </span>
+                </p>
+              </div>
+            </form>
+          )}
+        </div>
+      </div>
+    </Layout>
+  );
+}
