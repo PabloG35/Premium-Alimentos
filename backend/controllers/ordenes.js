@@ -1,4 +1,4 @@
-// ordenes.controller.js
+// controllers/ordenes.js
 import pool from "../db.js";
 import mercadopago from "../config/mercadopago.js";
 
@@ -35,9 +35,7 @@ const crearOrden = async (req, res) => {
         quantity: item.cantidad,
         currency_id: "MXN",
       })),
-      payer: {
-        email: "comprador@email.com",
-      },
+      payer: { email: "comprador@email.com" },
       back_urls: {
         success: "http://localhost:3000",
         failure: "http://localhost:3000/carrito",
@@ -68,7 +66,6 @@ const crearOrden = async (req, res) => {
       pago_url,
     });
   } catch (error) {
-    console.error("Error al crear la orden:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -92,7 +89,6 @@ const obtenerOrdenes = async (req, res) => {
     );
     return res.json({ ordenes: ordenes.rows });
   } catch (error) {
-    console.error("Error al obtener órdenes:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -122,14 +118,13 @@ const obtenerTodasOrdenes = async (req, res) => {
     );
     return res.json({ ordenes: ordenes.rows });
   } catch (error) {
-    console.error("Error al obtener todas las órdenes:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
 const editarEstadoOrden = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.query;
     const { nuevoEstado } = req.body;
     const estadosValidos = [
       "Preparando",
@@ -149,18 +144,16 @@ const editarEstadoOrden = async (req, res) => {
     );
     return res.json({ msg: `Orden actualizada a estado: ${nuevoEstado}` });
   } catch (error) {
-    console.error("Error al actualizar estado de la orden:", error);
     return res.status(500).json({ msg: "Error en el servidor" });
   }
 };
 
 const eliminarOrden = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.query;
     await pool.query("DELETE FROM ordenes WHERE id_orden = $1", [id]);
     return res.json({ message: "Orden eliminada correctamente" });
   } catch (error) {
-    console.error("Error al eliminar la orden:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };

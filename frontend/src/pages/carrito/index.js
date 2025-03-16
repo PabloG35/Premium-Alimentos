@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
+import Layout from "@/src/components/Layout";
 
 export default function Carrito() {
   const router = useRouter();
@@ -8,13 +8,14 @@ export default function Carrito() {
   const [totals, setTotals] = useState({ subtotal: 0, envio: 0, total: 0 });
   const [loading, setLoading] = useState(true);
   const [mensaje, setMensaje] = useState("");
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   // Fetch cart items from API
   const fetchCart = async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/carrito`,
+        `${BACKEND_URL}/api/carrito`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -34,7 +35,7 @@ export default function Carrito() {
     try {
       const token = localStorage.getItem("token");
       const resTotals = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/carrito/total`,
+        `${BACKEND_URL}/api/carrito/total`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -67,7 +68,7 @@ export default function Carrito() {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/carrito/${id_producto}`,
+        `${BACKEND_URL}/api/carrito/${id_producto}`,
         {
           method: "DELETE",
           headers: {

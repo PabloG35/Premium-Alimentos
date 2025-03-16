@@ -1,7 +1,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/router";
-import Navbar from "@/components/Navbar";
-import Footer from "@/components/Footer";
+import Navbar from "@/src/components/Navbar";
+import Footer from "@/src/components/Footer";
 import Image from "next/image";
 import ReviewsSlider from "./ReviewsSlider"; // Ajusta la ruta si es necesario
 
@@ -77,10 +77,12 @@ export default function ProductDetail() {
   const [qty, setQty] = useState(1);
   const [selectedImage, setSelectedImage] = useState(0);
 
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   useEffect(() => {
     if (id) {
       // Fetch del producto
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/productos/${id}`)
+      fetch(`${BACKEND_URL}/api/productos/${id}`)
         .then((res) => res.json())
         .then((data) => {
           setProducto(data);
@@ -91,7 +93,7 @@ export default function ProductDetail() {
           setLoading(false);
         });
       // Fetch de las reseñas
-      fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/resenas/${id}`)
+      fetch(`${BACKEND_URL}/api/usuario/resenas/producto/${id}`)
         .then((res) => res.json())
         .then((data) => {
           setReviews(data.resenas || []);

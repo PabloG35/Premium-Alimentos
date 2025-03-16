@@ -1,7 +1,7 @@
+// controllers/productos.js
 import pool from "../db.js";
 import cloudinary from "../config/cloudinary.js";
 
-// Obtener todos los productos
 const obtenerProductos = async (req, res) => {
   try {
     const productos = await pool.query(
@@ -24,10 +24,9 @@ const obtenerProductos = async (req, res) => {
   }
 };
 
-// Obtener un solo producto por su ID
 const obtenerProductoPorId = async (req, res) => {
   try {
-    const { id_producto } = req.params;
+    const { id_producto } = req.query;
     const result = await pool.query(
       `SELECT p.*, 
          p.ingredientes::json AS ingredientes,
@@ -52,7 +51,6 @@ const obtenerProductoPorId = async (req, res) => {
   }
 };
 
-// Obtener los productos más recientes (máx. 8)
 const obtenerProductosRecientes = async (req, res) => {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Método no permitido" });
@@ -79,7 +77,6 @@ const obtenerProductosRecientes = async (req, res) => {
   }
 };
 
-// Obtener el producto más vendido
 const obtenerProductoMasVendido = async (req, res) => {
   try {
     const result = await pool.query(
@@ -107,7 +104,6 @@ const obtenerProductoMasVendido = async (req, res) => {
   }
 };
 
-// Añadir un nuevo producto
 const agregarProducto = async (req, res) => {
   try {
     const {
@@ -120,7 +116,6 @@ const agregarProducto = async (req, res) => {
       ingredientes,
       edad,
     } = req.body;
-    console.log("🟡 Archivos recibidos en backend:", req.files);
     if (!nombre || !precio || !stock || !marca || !raza || !edad) {
       return res
         .status(400)
@@ -173,10 +168,9 @@ const agregarProducto = async (req, res) => {
   }
 };
 
-// Editar un producto
 const editarProducto = async (req, res) => {
   try {
-    const { id_producto } = req.params;
+    const { id_producto } = req.query;
     const {
       nombre,
       precio,
@@ -228,11 +222,7 @@ const editarProducto = async (req, res) => {
 
 const eliminarProducto = async (req, res) => {
   try {
-    const { id_producto } = req.params;
-    if (!id_producto) {
-      return res.status(400).json({ error: "El id_producto es requerido." });
-    }
-    console.log("Iniciando eliminación del producto con id:", id_producto);
+    const { id_producto } = req.query;
     const imagenesResult = await pool.query(
       `SELECT url_imagen FROM imagenes_producto WHERE id_producto = $1`,
       [id_producto]
@@ -283,7 +273,7 @@ const eliminarProducto = async (req, res) => {
 
 const actualizarStock = async (req, res) => {
   try {
-    const { id_producto } = req.params;
+    const { id_producto } = req.query;
     const { stock } = req.body;
     const stockActualizado = await pool.query(
       "UPDATE productos SET stock = $1 WHERE id_producto = $2 RETURNING *",
@@ -305,7 +295,6 @@ const actualizarStock = async (req, res) => {
 const subirImagenProducto = async (req, res) => {
   try {
     if (!req.file) {
-      console.error("❌ No se recibió ninguna imagen");
       return res.status(400).json({ error: "No se ha subido ninguna imagen" });
     }
     const result = await new Promise((resolve, reject) => {

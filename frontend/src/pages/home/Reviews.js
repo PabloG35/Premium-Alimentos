@@ -7,9 +7,11 @@ const Reviews = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [autoAdvance, setAutoAdvance] = useState(true);
 
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
   // Cargar las 12 reseñas más recientes
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/resenas/recientes`)
+    fetch(`${BACKEND_URL}/api/usuario/resenas/recientes`)
       .then((res) => res.json())
       .then((data) => setReviews(data.resenas))
       .catch((err) => console.error("Error al cargar reseñas:", err));
@@ -21,9 +23,7 @@ const Reviews = () => {
       reviews.forEach((review) => {
         const prodId = review.id_producto;
         if (!products[prodId]) {
-          fetch(
-            `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/productos/${prodId}`
-          )
+          fetch(`${BACKEND_URL}/api/productos/${prodId}`)
             .then((res) => res.json())
             .then((data) =>
               setProducts((prev) => ({ ...prev, [prodId]: data }))

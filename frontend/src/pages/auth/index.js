@@ -1,8 +1,8 @@
 // src/pages/auth/index.js
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
-import { AuthContext } from "@/context/AuthContext";
+import Layout from "@/src/components/Layout";
+import { AuthContext } from "@/src/context/AuthContext";
 
 export default function Login() {
   const router = useRouter();

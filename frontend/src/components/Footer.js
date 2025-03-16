@@ -6,6 +6,8 @@ export default function Footer() {
   const [mensaje, setMensaje] = useState("");
 
   const handleRegistro = async () => {
+    const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
     // Validar que se ingrese un correo
     if (!correo) {
       setMensaje("Por favor, ingresa un correo.");
@@ -14,7 +16,7 @@ export default function Footer() {
 
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/usuarios/registroSuscripcion`,
+        `${BACKEND_URL}/api/usuario/usuarios/registroSuscripciones`,
         {
           method: "POST",
           headers: {

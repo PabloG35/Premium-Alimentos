@@ -1,8 +1,8 @@
 // src/pages/perfil/index.js
-import ProtectedRoute from "@/components/ProtectedRoute";
+import ProtectedRoute from "@/src/components/ProtectedRoute";
 import { useContext } from "react";
-import { AuthContext } from "@/context/AuthContext";
-import Layout from "@/components/Layout";
+import { AuthContext } from "@/src/context/AuthContext";
+import Layout from "@/src/components/Layout";
 
 const Perfil = () => {
   const { user, logout } = useContext(AuthContext);

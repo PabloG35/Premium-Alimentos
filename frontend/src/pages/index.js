@@ -1,12 +1,12 @@
-import Layout from "@/components/Layout";
-import Section from "../components/Section";
-import BrandsSection from "./home/BrandsSection";
-import ExtraInfo from "@/pages/home/ExtraInfo";
-import FavDelMes from "@/pages/home/FavDelMes";
-import HeroCarousel from "./home/HeroCarousel";
-import ProductosRecientes from "@/pages/home/ProductosRecientes";
-import Reviews from "@/pages/home/Reviews";
-import TextoEnMovimiento from "@/pages/home/TextoEnMovimiento";
+import Layout from "@/src/components/Layout";
+import Section from "@/src/components/Section";
+import BrandsSection from "@/src/pages/home/BrandsSection";
+import ExtraInfo from "@/src/pages/home/ExtraInfo";
+import FavDelMes from "@/src/pages/home/FavDelMes";
+import HeroCarousel from "@/src/pages/home/HeroCarousel";
+import ProductosRecientes from "@/src/pages/home/ProductosRecientes";
+import Reviews from "@/src/pages/home/Reviews";
+import TextoEnMovimiento from "@/src/pages/home/TextoEnMovimiento";
 
 export default function Home() {
   return (

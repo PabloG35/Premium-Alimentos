@@ -15,7 +15,7 @@ export const AuthProvider = ({ children }) => {
   const logout = async () => {
     const storedToken = localStorage.getItem("token");
     try {
-      const res = await fetch(`${BACKEND_URL}/api/usuarios/logout`, {
+      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) return;
     try {
-      const res = await fetch(`${BACKEND_URL}/api/usuarios/perfil`, {
+      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/perfil`, {
         headers: { Authorization: `Bearer ${storedToken}` },
       });
       if (res.ok) {
@@ -57,7 +57,7 @@ export const AuthProvider = ({ children }) => {
   // Función para iniciar sesión
   const login = async (credentials) => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/usuarios/login`, {
+      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
@@ -79,7 +79,7 @@ export const AuthProvider = ({ children }) => {
   // Función para registrar un nuevo usuario
   const registerUser = async (userData) => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/usuarios/registro`, {
+      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/registro`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),

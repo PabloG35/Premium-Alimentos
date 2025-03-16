@@ -2,8 +2,8 @@
 import Link from "next/link";
 import Image from "next/image";
 import { useContext, useEffect, useState } from "react";
-import { AuthContext } from "@/context/AuthContext";
-import { CartContext } from "@/context/CartContext";
+import { AuthContext } from "@/src/context/AuthContext";
+import { CartContext } from "@/src/context/CartContext";
 
 export default function Navbar() {
   const { token } = useContext(AuthContext);

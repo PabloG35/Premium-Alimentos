@@ -1,14 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
-import ProductTemplate from "@/components/ProductTemplate";
+import ProductTemplate from "@/src/components/ProductTemplate";
 
 const FavDelMes = () => {
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   // Cargar el producto más vendido (favorito del mes)
   useEffect(() => {
-    fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/productos/masvendido`)
+    fetch(`${BACKEND_URL}/api/productos/masvendido`)
       .then((res) => res.json())
       .then((data) => setProduct(data))
       .catch((err) =>

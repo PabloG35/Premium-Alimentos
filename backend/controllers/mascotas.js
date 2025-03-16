@@ -1,4 +1,4 @@
-// mascotas.controller.js
+// controllers/mascotas.js
 import pool from "../db.js";
 
 const obtenerMascotas = async (req, res) => {
@@ -13,7 +13,6 @@ const obtenerMascotas = async (req, res) => {
     );
     return res.json({ mascotas: mascotas.rows });
   } catch (error) {
-    console.error("Error al obtener mascotas:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -21,7 +20,7 @@ const obtenerMascotas = async (req, res) => {
 const editarMascota = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
-    const { id_mascota } = req.params;
+    const { id_mascota } = req.query;
     const {
       nombre,
       edad,
@@ -82,7 +81,6 @@ const editarMascota = async (req, res) => {
       mascota: resultado.rows[0],
     });
   } catch (error) {
-    console.error("Error al actualizar mascota:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -90,7 +88,7 @@ const editarMascota = async (req, res) => {
 const eliminarMascota = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
-    const { id_mascota } = req.params;
+    const { id_mascota } = req.query;
     const mascota = await pool.query(
       "DELETE FROM mascotas WHERE id_mascota = $1 AND id_usuario = $2 RETURNING *",
       [id_mascota, id_usuario]
@@ -102,7 +100,6 @@ const eliminarMascota = async (req, res) => {
     }
     return res.json({ message: "Mascota eliminada correctamente" });
   } catch (error) {
-    console.error("Error al eliminar mascota:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -146,12 +143,13 @@ const añadirMascota = async (req, res) => {
         foto_url,
       ]
     );
-    return res.status(201).json({
-      message: "Mascota añadida correctamente",
-      mascota: nuevaMascota.rows[0],
-    });
+    return res
+      .status(201)
+      .json({
+        message: "Mascota añadida correctamente",
+        mascota: nuevaMascota.rows[0],
+      });
   } catch (error) {
-    console.error("Error al añadir mascota:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -176,7 +174,6 @@ const subirFotoMascota = async (req, res) => {
       mascota: resultado.rows[0],
     });
   } catch (error) {
-    console.error("Error al subir foto de mascota:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };

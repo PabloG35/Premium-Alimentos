@@ -1,44 +1,22 @@
 // pages/api/usuario/mascotas/[id_mascota].js
-import nc from 'next-connect';
-import jwt from 'jsonwebtoken';
-import { editarMascota, eliminarMascota } from '@/controllers/mascotas.js';
+import { editarMascota, eliminarMascota } from "@/controllers/mascotas";
+import cors from "@/middleware/cors";
+import { verifyToken } from "@/middleware/verifyToken";
 
-function verifyToken(req, res) {
-  const authHeader = req.headers.authorization;
-  if (!authHeader) {
-    res.status(401).json({ error: 'Acceso denegado. No hay token' });
-    return null;
-  }
-  const token = authHeader.replace('Bearer ', '');
-  try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    req.usuario = decoded;
-    return decoded;
-  } catch (error) {
-    res.status(403).json({ error: 'Token inválido o expirado' });
-    return null;
+export default async function handler(req, res) {
+  cors(req, res);
+  if (req.method === "OPTIONS") return;
+  const { id_mascota } = req.query;
+  if (req.method === "PUT") {
+    const tokenOk = verifyToken(req, res);
+    if (!tokenOk) return;
+    return await editarMascota(req, res);
+  } else if (req.method === "DELETE") {
+    const tokenOk = verifyToken(req, res);
+    if (!tokenOk) return;
+    return await eliminarMascota(req, res);
+  } else {
+    res.setHeader("Allow", ["PUT", "DELETE"]);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
   }
 }
-
-const handler = nc({
-  onError(error, req, res) {
-    res.status(500).json({ error: 'Error interno del servidor' });
-  },
-  onNoMatch(req, res) {
-    res.status(405).json({ error: `Method ${req.method} Not Allowed` });
-  },
-});
-
-handler.use((req, res, next) => {
-  if (verifyToken(req, res)) next();
-});
-
-handler.put(async (req, res) => {
-  await editarMascota(req, res);
-});
-
-handler.delete(async (req, res) => {
-  await eliminarMascota(req, res);
-});
-
-export default handler;

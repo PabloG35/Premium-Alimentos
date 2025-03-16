@@ -1,29 +1,35 @@
 // pages/api/productos/index.js
-import nc from 'next-connect';
-import { obtenerProductos, agregarProducto } from '@/controllers/productos.js';
-import { verificarRol } from '@/middleware/authRoles.js'; // Asegúrate de adaptarlo a helper si es necesario
-import upload from '@/config/multer.js';
+import { obtenerProductos, agregarProducto } from "@/controllers/productos.js";
+import { verifyRol } from "@/middleware/verificarRol";
+import cors from "@/middleware/cors";
+import upload from "@/middleware/upload";
 
-// Creamos un handler con next-connect
-const handler = nc({
-  onError(error, req, res) {
-    res.status(500).json({ error: 'Internal server error' });
-  },
-  onNoMatch(req, res) {
-    res.status(405).end(`Method ${req.method} Not Allowed`);
-  },
-});
+function runMiddleware(req, res, fn) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result) => {
+      if (result instanceof Error) reject(result);
+      else resolve(result);
+    });
+  });
+}
 
-// GET /api/productos
-handler.get(async (req, res) => {
-  await obtenerProductos(req, res);
-});
-
-// Para POST, primero se verifica el rol (CEO o Director) y luego se procesa el file upload
-handler.use(verificarRol(["CEO", "Director"]));
-handler.use(upload.array("imagenes", 4));
-handler.post(async (req, res) => {
-  await agregarProducto(req, res);
-});
-
-export default handler;
+export default async function handler(req, res) {
+  cors(req, res);
+  if (req.method === "OPTIONS") return;
+  if (req.method === "GET") {
+    return await obtenerProductos(req, res);
+  } else if (req.method === "POST") {
+    const usuario = await verifyRol(req, res, ["CEO", "Director"]);
+    if (!usuario) return;
+    req.usuario = usuario;
+    try {
+      await runMiddleware(req, res, upload.array("imagenes", 4));
+    } catch (error) {
+      return res.status(500).json({ error: "Error en el upload" });
+    }
+    return await agregarProducto(req, res);
+  } else {
+    res.setHeader("Allow", ["GET", "POST"]);
+    return res.status(405).end(`Method ${req.method} Not Allowed`);
+  }
+}

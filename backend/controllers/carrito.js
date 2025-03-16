@@ -1,4 +1,4 @@
-// carrito.controller.js
+// controllers/carrito.js
 import pool from "../db.js";
 
 const obtenerCarrito = async (req, res) => {

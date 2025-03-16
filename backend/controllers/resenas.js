@@ -1,6 +1,6 @@
+// controllers/resenas.js
 import pool from "../db.js";
 
-// Agregar una reseña
 const agregarResena = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
@@ -17,15 +17,13 @@ const agregarResena = async (req, res) => {
       .status(201)
       .json({ message: "Reseña agregada", resena: nuevaResena.rows[0] });
   } catch (error) {
-    console.error("Error al agregar reseña:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-// Obtener todas las reseñas de un producto
 const obtenerResenasPorProducto = async (req, res) => {
   try {
-    const { id_producto } = req.params;
+    const { id_producto } = req.query;
     const resenas = await pool.query(
       `SELECT r.id_reseña, r.calificacion, r.comentario, r.fecha_reseña, u.nombre_usuario 
        FROM resenas r
@@ -36,15 +34,13 @@ const obtenerResenasPorProducto = async (req, res) => {
     );
     return res.json({ id_producto, resenas: resenas.rows });
   } catch (error) {
-    console.error("Error al obtener reseñas:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-// Actualizar una reseña
 const actualizarResena = async (req, res) => {
   try {
-    const { id_resena } = req.params;
+    const { id_resena } = req.query;
     const { calificacion, comentario } = req.body;
     const { id_usuario } = req.usuario;
     const resenaExistente = await pool.query(
@@ -76,15 +72,13 @@ const actualizarResena = async (req, res) => {
       resena: resultado.rows[0],
     });
   } catch (error) {
-    console.error("❌ Error al editar la reseña:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-// Eliminar una reseña
 const eliminarResena = async (req, res) => {
   try {
-    const { id_resena } = req.params;
+    const { id_resena } = req.query;
     const { id_usuario } = req.usuario;
     const resenaExistente = await pool.query(
       "SELECT * FROM resenas WHERE id_reseña = $1 AND id_usuario = $2",
@@ -98,15 +92,13 @@ const eliminarResena = async (req, res) => {
     await pool.query("DELETE FROM resenas WHERE id_reseña = $1", [id_resena]);
     return res.json({ message: "Reseña eliminada correctamente" });
   } catch (error) {
-    console.error("❌ Error al eliminar la reseña:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-// Obtener calificación promedio de un producto
 const obtenerPromedioResenas = async (req, res) => {
   try {
-    const { id_producto } = req.params;
+    const { id_producto } = req.query;
     const resultado = await pool.query(
       `SELECT ROUND(AVG(calificacion), 1) AS promedio FROM resenas WHERE id_producto = $1`,
       [id_producto]
@@ -115,7 +107,6 @@ const obtenerPromedioResenas = async (req, res) => {
     const estrellas = "⭐".repeat(Math.round(promedio));
     return res.json({ id_producto, promedio, estrellas });
   } catch (error) {
-    console.error("Error al obtener promedio de reseñas:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -131,7 +122,6 @@ const obtenerResenasRecientes = async (req, res) => {
     );
     return res.json({ resenas: resenas.rows });
   } catch (error) {
-    console.error("Error al obtener reseñas recientes:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };

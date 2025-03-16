@@ -1,7 +1,7 @@
 // src/pages/carrito/envio.js
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
+import Layout from "@/src/components/Layout";
 
 export default function Envio() {
   const router = useRouter();

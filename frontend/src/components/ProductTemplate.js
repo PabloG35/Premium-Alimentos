@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
-import { AuthContext } from "@/context/AuthContext";
-import { CartContext } from "@/context/CartContext"; // Importamos el contexto del carrito
+import { AuthContext } from "@/src/context/AuthContext";
+import { CartContext } from "@/src/context/CartContext"; 
 
 export default function ProductTemplate({
   product,
@@ -25,15 +25,14 @@ export default function ProductTemplate({
   const [fetchedRating, setFetchedRating] = useState(null);
   const { token } = useContext(AuthContext);
   const { addToCart } = useContext(CartContext); // Extraemos la función del contexto
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   // Extraemos idProducto de forma segura
   const idProducto = product?.id_producto || null;
 
   useEffect(() => {
     if (showRating && idProducto) {
-      fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/resenas/promedio/${idProducto}`
-      )
+      fetch(`${BACKEND_URL}/api/usuario/resenas/promedio/${idProducto}`)
         .then((res) => res.json())
         .then((data) => {
           setFetchedRating(data.promedio);

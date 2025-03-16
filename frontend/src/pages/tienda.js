@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import Layout from "@/components/Layout";
+import Layout from "@/src/components/Layout";
 import Link from "next/link";
-import ProductTemplate from "@/components/ProductTemplate";
+import ProductTemplate from "@/src/components/ProductTemplate";
 import styles from "../styles/tienda.module.css";
 
 export default function Tienda() {
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter();
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -43,19 +44,22 @@ export default function Tienda() {
   useEffect(() => {
     const fetchProductos = async () => {
       try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/productos`
-        );
+        const res = await fetch(`${BACKEND_URL}/api/productos`, {
+          mode: "cors",
+        });
+        if (!res.ok) {
+          throw new Error(`HTTP error! status: ${res.status}`);
+        }
         const data = await res.json();
         setProductos(data);
-        setLoading(false);
       } catch (error) {
         console.error("Error al obtener productos:", error);
+      } finally {
         setLoading(false);
       }
     };
     fetchProductos();
-  }, []);
+  }, [BACKEND_URL]);
 
   useEffect(() => {
     if (router.query.marca) {

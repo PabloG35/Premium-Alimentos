@@ -1,5 +1,0 @@
-import jwt_decode from "jwt-decode";
-
-const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZF91c3VhcmlvIjoiY2E3N2ZmNGQtMDk3Ni00ODI1LWJjYmEtZDlmYzAyODAxNjEwIiwiY29ycmVvIjoicGFibG9nYXhpb2xhQHByZW1pdW1hbGltZW50b3MuY29tIiwiaWF0IjoxNzQxNjc1NjY2LCJleHAiOjE3NDIyODA0NjZ9.9lMojD9cbjfyNkV1knnXhWjkqqx_gP6w7hRJnB8H0fs";
-const decoded = jwt_decode(token);
-console.log("jwt_decode output:", decoded);

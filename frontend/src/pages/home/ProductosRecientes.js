@@ -1,11 +1,12 @@
 // src/componentes/pages/home/ProductosRecientes
-
 import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import styles from "../../styles/productosRecientes.module.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import ProductTemplate from "../../components/ProductTemplate";
+import ProductTemplate from "@/src/components/ProductTemplate";
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const CustomNextArrow = ({ className, style, onClick, pauseAutoplay }) => {
   const handleClick = () => {
@@ -46,7 +47,7 @@ export default function RecentProductsCarousel() {
   useEffect(() => {
     const fetchRecentProducts = async () => {
       try {
-        const url = `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/productos/recientes`;
+        const url = `${BACKEND_URL}/api/productos/recientes`;
         console.log("Fetching productos recientes desde:", url);
         const res = await fetch(url, { mode: "cors" });
         if (!res.ok) {

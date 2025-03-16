@@ -1,6 +1,6 @@
-import "../styles/globals.css";
-import { CartProvider } from "../context/CartContext";
-import { AuthProvider } from "../context/AuthContext";
+import "@/styles/globals.css";
+import { CartProvider } from "@/src/context/CartContext";
+import { AuthProvider } from "@/src/context/AuthContext";
 
 function MyApp({ Component, pageProps }) {
   return (

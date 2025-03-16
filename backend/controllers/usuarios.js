@@ -1,14 +1,14 @@
+// controllers/usuarios.js
+
 import pool from "../db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const SECRET_KEY = process.env.JWT_SECRET || "clave_super_secreta";
 
-// Registrar Usuario
 const registrarUsuario = async (req, res) => {
   try {
     const { nombre_usuario, correo, contraseña } = req.body;
-    // Verifica si ya existe un usuario con ese correo
     const usuarioExistente = await pool.query(
       "SELECT * FROM usuarios WHERE correo = $1",
       [correo]
@@ -32,7 +32,6 @@ const registrarUsuario = async (req, res) => {
   }
 };
 
-// Iniciar Sesión
 const iniciarSesion = async (req, res) => {
   try {
     const { correo, contraseña } = req.body;
@@ -60,7 +59,7 @@ const iniciarSesion = async (req, res) => {
     );
     return res.status(200).json({
       message: "Inicio de sesión exitoso",
-      token, // Se envía el token directamente, sin JSON.stringify
+      token,
       user: {
         id_usuario: usuario.rows[0].id_usuario,
         correo: usuario.rows[0].correo,
@@ -74,7 +73,6 @@ const iniciarSesion = async (req, res) => {
   }
 };
 
-// Actualizar perfil del usuario
 const actualizarPerfil = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
@@ -126,7 +124,6 @@ const actualizarPerfil = async (req, res) => {
   }
 };
 
-// Crear usuario con rol específico (SOLO CEO)
 const crearAdmin = async (req, res) => {
   try {
     const { nombre, email, password, rol } = req.body;
@@ -163,7 +160,6 @@ const crearAdmin = async (req, res) => {
   }
 };
 
-// Obtener el perfil del usuario autenticado
 const obtenerPerfil = async (req, res) => {
   try {
     const usuario = await pool.query(
@@ -180,10 +176,9 @@ const obtenerPerfil = async (req, res) => {
   }
 };
 
-// Eliminar usuario (CEO puede eliminar cualquiera, Director solo usuarios normales)
 const eliminarUsuario = async (req, res) => {
   try {
-    const { id } = req.params;
+    const { id } = req.query;
     const { rol } = req.usuario;
     const usuarioAEliminar = await pool.query(
       "SELECT id_usuario, rol FROM usuarios WHERE id_usuario = $1",
@@ -206,7 +201,6 @@ const eliminarUsuario = async (req, res) => {
   }
 };
 
-// Cerrar sesión
 const cerrarSesion = async (req, res) => {
   try {
     return res.json({ msg: "Sesión cerrada correctamente" });
@@ -216,7 +210,6 @@ const cerrarSesion = async (req, res) => {
   }
 };
 
-// Obtener todos los usuarios (para panel admin)
 const obtenerUsuarios = async (req, res) => {
   try {
     const usuarios = await pool.query(
@@ -224,7 +217,7 @@ const obtenerUsuarios = async (req, res) => {
     );
     return res.json({ usuarios: usuarios.rows });
   } catch (error) {
-    console.error("❌ Error al obtener usuarios:", error);
+    console.error("Error al obtener usuarios:", error);
     return res.status(500).json({ error: "Error en el servidor" });
   }
 };
