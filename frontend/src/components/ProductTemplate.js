@@ -2,7 +2,7 @@ import React, { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import Image from "next/image";
 import { AuthContext } from "@/src/context/AuthContext";
-import { CartContext } from "@/src/context/CartContext"; 
+import { CartContext } from "@/src/context/CartContext";
 
 export default function ProductTemplate({
   product,
@@ -24,8 +24,11 @@ export default function ProductTemplate({
   const router = useRouter();
   const [fetchedRating, setFetchedRating] = useState(null);
   const { token } = useContext(AuthContext);
-  const { addToCart } = useContext(CartContext); // Extraemos la función del contexto
+  const { addToCart } = useContext(CartContext);
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+  // Si stock es 0 o menor, consideramos que está agotado.
+  const isOutOfStock = product?.stock <= 0;
 
   // Extraemos idProducto de forma segura
   const idProducto = product?.id_producto || null;
@@ -46,11 +49,10 @@ export default function ProductTemplate({
 
   const rating = fetchedRating !== null ? fetchedRating : 0;
 
-  // Función por defecto para agregar al carrito usando el método del CartContext
+  // Función por defecto para agregar al carrito
   const handleAddToCartDefault = async () => {
     if (!idProducto) return;
     try {
-      // Usamos addToCart del contexto, que internamente llama a fetchCart y actualiza el estado
       await addToCart({ id_producto: idProducto, cantidad: 1 });
       alert("Producto agregado al carrito");
     } catch (error) {
@@ -59,11 +61,23 @@ export default function ProductTemplate({
     }
   };
 
-  // Si se pasa onAddToCart se usa esa función; de lo contrario, se usa la función por defecto
   const handleCartClick = onAddToCart ? onAddToCart : handleAddToCartDefault;
 
   return (
-    <div className={customClasses.container || ""}>
+    <div
+      className={`${customClasses.container || ""} relative ${
+        isOutOfStock ? "opacity-50" : ""
+      }`}
+    >
+      {/* Si el producto está agotado, mostramos un badge en la esquina superior derecha */}
+      {isOutOfStock && (
+        <div
+          className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1"
+          style={{ zIndex: 10 }}
+        >
+          Agotado
+        </div>
+      )}
       {showImage && (
         <div className={customClasses.imageContainer || ""}>
           {product.imagenes && product.imagenes.length > 0 ? (
@@ -136,7 +150,10 @@ export default function ProductTemplate({
           {showAddButton && (
             <button
               onClick={handleCartClick}
-              className={customClasses.addButton || ""}
+              disabled={isOutOfStock}
+              className={`${customClasses.addButton || ""} ${
+                isOutOfStock ? "bg-gray-400 cursor-not-allowed" : ""
+              }`}
             >
               {buttonText}
             </button>
@@ -144,7 +161,10 @@ export default function ProductTemplate({
           {showBuyButton && (
             <button
               onClick={onBuyNow}
-              className={customClasses.buyButton || ""}
+              disabled={isOutOfStock}
+              className={`${customClasses.buyButton || ""} ${
+                isOutOfStock ? "bg-gray-400 cursor-not-allowed" : ""
+              }`}
             >
               {buttonText}
             </button>

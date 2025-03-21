@@ -2,7 +2,7 @@
 import upload from "@/middleware/upload";
 import { subirFotoMascota } from "@/controllers/mascotas";
 import cors from "@/middleware/cors";
-import { verifyToken } from "@/middleware/verifyToken";
+import { verifyToken } from "@/middleware/verificarToken";
 
 function runUpload(req, res) {
   return new Promise((resolve, reject) => {

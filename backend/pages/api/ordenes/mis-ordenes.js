@@ -1,7 +1,7 @@
 // pages/api/ordenes/mis-ordenes.js
 import { obtenerOrdenes } from "@/controllers/ordenes.js";
 import cors from "@/middleware/cors";
-import { verifyToken } from "@/middleware/verifyToken";
+import { verifyToken } from "@/middleware/verificarToken";
 
 export default async function handler(req, res) {
   cors(req, res);

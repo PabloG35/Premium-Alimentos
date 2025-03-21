@@ -61,3 +61,4 @@ playwright-report/
 # Si usas herramientas específicas que generan carpetas adicionales, inclúyelas:
 # Ejemplo: directorios de CI/CD o de servicios
 .github/actions/
+.vercel

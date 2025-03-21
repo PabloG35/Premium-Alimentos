@@ -6,7 +6,9 @@ dotenv.config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
-  // Opcional: Configuraciones adicionales
+  ssl: {
+    rejectUnauthorized: false, // Esto desactiva la verificación del certificado
+  },
   max: 20,
   idleTimeoutMillis: 30000,
   connectionTimeoutMillis: 2000,

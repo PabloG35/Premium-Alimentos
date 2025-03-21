@@ -73,7 +73,10 @@ const obtenerProductosRecientes = async (req, res) => {
     return res.json(productos.rows);
   } catch (error) {
     console.error("❌ Error al obtener productos recientes:", error);
-    return res.status(500).json({ error: "Error interno del servidor" });
+    // Para depurar, devuelve el error completo (solo en desarrollo)
+    return res
+      .status(500)
+      .json({ error: "Error interno del servidor", details: error.message });
   }
 };
 

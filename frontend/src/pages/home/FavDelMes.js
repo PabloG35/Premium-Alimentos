@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import ProductTemplate from "@/src/components/ProductTemplate";
+import { useRouter } from "next/router";
 
 const FavDelMes = () => {
   const [product, setProduct] = useState(null);
   const [selectedImage, setSelectedImage] = useState(0);
+  const router = useRouter();
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   // Cargar el producto más vendido (favorito del mes)
@@ -15,14 +17,21 @@ const FavDelMes = () => {
       .catch((err) =>
         console.error("Error al cargar el producto más vendido:", err)
       );
-  }, []);
+  }, [BACKEND_URL]);
 
   if (!product) {
     return <p className="text-center">Cargando producto favorito del mes...</p>;
   }
 
-  // Invertir el arreglo de imágenes para mostrar el orden esperado
-  const images = product.imagenes ? product.imagenes.slice().reverse() : [];
+  // Filtrar duplicados en las imágenes
+  const images = product.imagenes
+    ? product.imagenes.reduce((acc, curr) => {
+        if (!acc.find((item) => item.url_imagen === curr.url_imagen)) {
+          acc.push(curr);
+        }
+        return acc;
+      }, [])
+    : [];
 
   return (
     <div className="w-full h-[70vh]">
@@ -30,7 +39,7 @@ const FavDelMes = () => {
         {/* Columna Izquierda: Slider de imágenes */}
         <div className="md:w-3/5 flex gap-4 h-full">
           {/* Miniaturas verticales */}
-          <div className="w-20 h-full flex flex-col gap-2">
+          <div className="w-20 h-full flex flex-col gap-2 overflow-auto">
             {images.map((img, idx) => (
               <div
                 key={idx}
@@ -105,7 +114,7 @@ const FavDelMes = () => {
             showTitle={true}
             showPrice={true}
             showRating={true}
-            showAddButton={true} // El botón usará la función integrada para agregar al carrito (Comprar ahora)
+            showAddButton={true} // El botón se muestra (en verde)
             showVerMasButton={true}
             showExtraIcons={true} // Se muestran los 4 SVGs extra
             customClasses={{
@@ -113,12 +122,11 @@ const FavDelMes = () => {
               titleContainer: "mb-4",
               title: "text-4xl font-bold",
               price: "text-2xl text-gray-700 mb-4",
-              // Alineamos las estrellas a la izquierda:
               rating: "flex items-center justify-start",
               star: "productStar",
               ratingText: "ml-2 text-lg text-gray-600",
               addButton:
-                "w-full bg-purple-500 text-white px-4 py-3 rounded hover:bg-purple-600 transition",
+                "w-full bg-green-500 text-white px-4 py-3 rounded hover:bg-green-600 transition",
               verMasContainer: "mt-4",
               verMasButton:
                 "w-full bg-purple-500 text-white px-4 py-3 rounded hover:bg-purple-600 transition text-center",
