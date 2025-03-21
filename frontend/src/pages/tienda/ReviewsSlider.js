@@ -1,24 +1,19 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 
-const ReviewsSlider = ({ reviews }) => {
+const ReviewsSlider = ({ reviews = [] }) => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  // null significa que se muestran todas; de lo contrario se filtra por esa calificación
   const [filterRating, setFilterRating] = useState(null);
 
-  // Ancho efectivo de cada tarjeta: 400px + 20px de margen derecho = 420px
   const effectiveCardWidth = 420;
-  const visibleCards = 2; // Mostramos 2 tarjetas a la vez
+  const visibleCards = 2;
 
-  // Cálculo estático del promedio a partir de todas las reseñas
   const totalAllReviews = reviews.length;
   const sumAllRatings = reviews.reduce((acc, r) => acc + r.calificacion, 0);
   const averageRating =
     totalAllReviews > 0 ? sumAllRatings / totalAllReviews : 0;
-  // Redondeo: si promedio es 4.6 o más se muestran 5, si es menor a 4.5 pero >= 4 se muestran 4, etc.
   const displayRating = Math.floor(averageRating + 0.4);
 
-  // Para las barras de progreso, usamos los datos globales (todas las reseñas)
   const starCounts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
   reviews.forEach((review) => {
     const rating = Math.round(review.calificacion);
@@ -27,7 +22,6 @@ const ReviewsSlider = ({ reviews }) => {
     }
   });
 
-  // Filtrado de reseñas para el slider, según el filtro seleccionado.
   const filteredReviews =
     filterRating === null
       ? reviews
@@ -35,12 +29,10 @@ const ReviewsSlider = ({ reviews }) => {
           (review) => Math.round(review.calificacion) === filterRating
         );
 
-  // Reiniciamos el slider cada vez que cambia el filtro.
   useEffect(() => {
     setCurrentIndex(0);
   }, [filterRating]);
 
-  // Funciones para avanzar/retroceder en el slider (sobre las reseñas filtradas)
   const nextSlide = () => {
     if (currentIndex >= filteredReviews.length - visibleCards) {
       setCurrentIndex(0);
@@ -55,23 +47,14 @@ const ReviewsSlider = ({ reviews }) => {
     setCurrentIndex(newIndex < 0 ? 0 : newIndex);
   };
 
-  // Función para manejar click en la barra: si se hace click en la misma barra ya seleccionada se resetea el filtro.
   const handleBarClick = (star) => {
-    if (filterRating === star) {
-      setFilterRating(null);
-    } else {
-      setFilterRating(star);
-    }
+    setFilterRating(filterRating === star ? null : star);
   };
 
   return (
     <div className="py-8">
-      {/* Título centrado */}
       <h2 className="text-3xl font-bold text-center mb-4">Reseñas</h2>
-
-      {/* Contenedor para promedio y barras de progreso */}
       <div className="max-w-[1240px] mx-auto flex flex-col md:flex-row items-center justify-center mb-8 px-4 gap-8">
-        {/* Izquierda: Promedio y estrellas (estático, basado en todas las reseñas) */}
         <div className="flex flex-col items-center">
           <p className="text-4xl font-bold">{averageRating.toFixed(1)}</p>
           <div className="flex mt-2">
@@ -93,7 +76,6 @@ const ReviewsSlider = ({ reviews }) => {
             {totalAllReviews} reseñas
           </p>
         </div>
-        {/* Derecha: Barras de progreso clickeables */}
         <div className="w-full md:w-1/2">
           {[5, 4, 3, 2, 1].map((star) => {
             const count = starCounts[star];
@@ -128,8 +110,6 @@ const ReviewsSlider = ({ reviews }) => {
           })}
         </div>
       </div>
-
-      {/* Slider de reseñas */}
       {filteredReviews.length === 0 ? (
         <p className="text-center text-gray-500">
           No hay reseñas para esta selección.
@@ -140,9 +120,7 @@ const ReviewsSlider = ({ reviews }) => {
             <div
               className="flex transition-transform duration-500"
               style={{
-                transform: `translateX(-${
-                  currentIndex * effectiveCardWidth
-                }px)`,
+                transform: `translateX(-${currentIndex * effectiveCardWidth}px)`,
               }}
             >
               {filteredReviews.map((review, idx) => (
