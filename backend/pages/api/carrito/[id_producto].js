@@ -15,7 +15,6 @@ export default async function handler(req, res) {
   const tokenOk = await verifyToken(req, res);
   if (!tokenOk) return;
   
-  // Asignar req.query a req.params para que el controlador encuentre id_producto
   req.params = req.query;
   
   return eliminarDelCarrito(req, res);
