@@ -1,6 +1,6 @@
 // middleware/verifyRol.js
 import jwt from "jsonwebtoken";
-import pool from "@/db.js";
+import { getPool } from "@/db";
 
 export async function verifyRol(req, res, rolesPermitidos) {
   const authHeader = req.headers.authorization;
@@ -11,6 +11,7 @@ export async function verifyRol(req, res, rolesPermitidos) {
   const token = authHeader.replace("Bearer ", "");
   try {
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const pool = await getPool();
     const result = await pool.query(
       "SELECT * FROM usuarios WHERE id_usuario = $1",
       [decoded.id_usuario]
