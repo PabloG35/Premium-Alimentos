@@ -1,6 +1,6 @@
 // controllers/ordenes.js
-import pool from "../db.js";
-import mercadopago from "../config/mercadopago.js";
+import pool from "@/db.js";
+import mercadopago from "@/config/mercadopago";
 
 const crearOrden = async (req, res) => {
   try {

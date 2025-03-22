@@ -1,6 +1,6 @@
 // controllers/productos.js
-import pool from "../db.js";
-import cloudinary from "../config/cloudinary.js";
+import pool from "@/db.js";
+import cloudinary from "@/config/cloudinary.js";
 
 const obtenerProductos = async (req, res) => {
   try {
@@ -56,34 +56,38 @@ const obtenerProductosRecientes = async (req, res) => {
     return res.status(405).json({ error: "Método no permitido" });
   }
   try {
-    const productos = await pool.query(
-      `SELECT p.*, 
-              p.ingredientes::json AS ingredientes,
-              COALESCE(
-                json_agg(
-                  json_build_object('url_imagen', i.url_imagen)
-                ) FILTER (WHERE i.url_imagen IS NOT NULL), '[]'
-              ) AS imagenes
-       FROM productos p
-       LEFT JOIN imagenes_producto i ON p.id_producto = i.id_producto
-       GROUP BY p.id_producto
-       ORDER BY p.fecha_creacion DESC
-       LIMIT 8`
-    );
-    return res.json(productos.rows);
+    const query = `
+      SELECT 
+        p.*, 
+        p.ingredientes::json AS ingredientes,
+        COALESCE(
+          json_agg(
+            json_build_object('url_imagen', i.url_imagen)
+          ) FILTER (WHERE i.url_imagen IS NOT NULL), '[]'
+        ) AS imagenes
+      FROM productos p
+      LEFT JOIN imagenes_producto i ON p.id_producto = i.id_producto
+      GROUP BY p.id_producto
+      ORDER BY p.fecha_creacion DESC
+      LIMIT 8
+    `;
+    const result = await pool.query(query);
+    return res.status(200).json(result.rows);
   } catch (error) {
-    console.error("❌ Error al obtener productos recientes:", error);
-    // Para depurar, devuelve el error completo (solo en desarrollo)
-    return res
-      .status(500)
-      .json({ error: "Error interno del servidor", details: error.message });
+    console.error("Error al obtener productos recientes:", error);
+    return res.status(500).json({
+      error: "Error interno del servidor",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };
 
 const obtenerProductoMasVendido = async (req, res) => {
   try {
-    const result = await pool.query(
-      `SELECT p.*, 
+    const query = `
+      SELECT 
+        p.*, 
         p.ingredientes::json AS ingredientes,
         COALESCE(
           json_agg(json_build_object('url_imagen', i.url_imagen))
@@ -95,15 +99,20 @@ const obtenerProductoMasVendido = async (req, res) => {
       LEFT JOIN detalles_orden detalle ON p.id_producto = detalle.id_producto
       GROUP BY p.id_producto
       ORDER BY total_ventas DESC
-      LIMIT 1`
-    );
+      LIMIT 1
+    `;
+    const result = await pool.query(query);
     if (result.rows.length === 0) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
-    return res.json(result.rows[0]);
+    return res.status(200).json(result.rows[0]);
   } catch (error) {
     console.error("Error al obtener producto más vendido:", error);
-    return res.status(500).json({ error: "Error interno del servidor" });
+    return res.status(500).json({
+      error: "Error interno del servidor",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };
 

@@ -1,6 +1,5 @@
 // controllers/usuarios.js
-
-import pool from "../db.js";
+import pool from "@/db.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 

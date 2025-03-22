@@ -1,5 +1,5 @@
 // controllers/resenas.js
-import pool from "../db.js";
+import pool from "@/db.js";
 
 const agregarResena = async (req, res) => {
   try {
@@ -113,16 +113,28 @@ const obtenerPromedioResenas = async (req, res) => {
 
 const obtenerResenasRecientes = async (req, res) => {
   try {
-    const resenas = await pool.query(
-      `SELECT r.id_reseña, r.id_producto, r.calificacion, r.comentario, r.fecha_reseña, u.nombre_usuario 
-       FROM resenas r
-       INNER JOIN usuarios u ON r.id_usuario = u.id_usuario
-       ORDER BY r.fecha_reseña DESC
-       LIMIT 12`
-    );
-    return res.json({ resenas: resenas.rows });
+    const query = `
+      SELECT 
+        r.id_reseña, 
+        r.id_producto, 
+        r.calificacion, 
+        r.comentario, 
+        r.fecha_reseña, 
+        u.nombre_usuario 
+      FROM resenas r
+      INNER JOIN usuarios u ON r.id_usuario = u.id_usuario
+      ORDER BY r.fecha_reseña DESC
+      LIMIT 12
+    `;
+    const result = await pool.query(query);
+    return res.status(200).json({ resenas: result.rows });
   } catch (error) {
-    return res.status(500).json({ error: "Error interno del servidor" });
+    console.error("Error al obtener reseñas recientes:", error);
+    return res.status(500).json({
+      error: "Error interno del servidor",
+      details:
+        process.env.NODE_ENV === "development" ? error.message : undefined,
+    });
   }
 };
 

@@ -1,5 +1,4 @@
 // pages/api/usuario/resenas/recientes.js
-
 import { obtenerResenasRecientes } from "@/controllers/resenas";
 import cors from "@/middleware/cors";
 

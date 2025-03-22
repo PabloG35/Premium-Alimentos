@@ -210,9 +210,9 @@ export default function Footer() {
                 className="bg-pm-orange p-2 border border-white border-l-0 rounded-r"
               >
                 <img
-                  src="/SVGs/rightArrow.svg"
+                  src="/SVGs/derecha.svg"
                   alt="Enviar"
-                  className="w-5 h-5"
+                  className="w-5 h-5 reverse"
                 />
               </button>
             </div>

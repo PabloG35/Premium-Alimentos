@@ -1,6 +1,6 @@
 // controllers/mercadopago.js
-import mercadopago from "../config/mercadopago.js";
-import pool from "../db.js";
+import mercadopago from "@/config/mercadopago";
+import pool from "@/db.js";
 
 const procesarWebhook = async (req, res) => {
   try {
