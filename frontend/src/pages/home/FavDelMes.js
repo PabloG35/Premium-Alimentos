@@ -23,8 +23,8 @@ const FavDelMes = () => {
     return <p className="text-center">Cargando producto favorito del mes...</p>;
   }
 
-  // Filtrar duplicados en las imágenes
-  const images = product.imagenes
+  // Comprobar que product.imagenes es un array
+  const images = Array.isArray(product.imagenes)
     ? product.imagenes.reduce((acc, curr) => {
         if (!acc.find((item) => item.url_imagen === curr.url_imagen)) {
           acc.push(curr);
@@ -78,6 +78,7 @@ const FavDelMes = () => {
             {/* Botón para imagen anterior */}
             <button
               onClick={() =>
+                images.length > 0 &&
                 setSelectedImage((prev) =>
                   prev === 0 ? images.length - 1 : prev - 1
                 )
@@ -93,6 +94,7 @@ const FavDelMes = () => {
             {/* Botón para imagen siguiente */}
             <button
               onClick={() =>
+                images.length > 0 &&
                 setSelectedImage((prev) => (prev + 1) % images.length)
               }
               className="absolute top-1/2 right-4 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition"

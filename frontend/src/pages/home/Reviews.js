@@ -1,4 +1,3 @@
-// src/components/Home/Reviews.js
 import React, { useState, useEffect } from "react";
 
 const Reviews = () => {
@@ -13,9 +12,12 @@ const Reviews = () => {
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/usuario/resenas/recientes`)
       .then((res) => res.json())
-      .then((data) => setReviews(data.resenas))
+      .then((data) =>
+        // Verificamos que data.resenas sea un array, sino devolvemos []
+        setReviews(Array.isArray(data.resenas) ? data.resenas : [])
+      )
       .catch((err) => console.error("Error al cargar reseñas:", err));
-  }, []);
+  }, [BACKEND_URL]);
 
   // Cargar la información de cada producto para cada reseña
   useEffect(() => {
@@ -32,7 +34,7 @@ const Reviews = () => {
         }
       });
     }
-  }, [reviews]);
+  }, [reviews, BACKEND_URL, products]);
 
   // Auto-advance: cambiar slide cada 4 segundos si no se ha interactuado
   useEffect(() => {
