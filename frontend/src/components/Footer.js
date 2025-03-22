@@ -53,9 +53,9 @@ export default function Footer() {
               />
             </Link>
             <p className="text-md leading-6 w-72 pt-4">
-              En Premium Alimentos, somos una empresa mexicana dedicada a
-              brindar alimentos saludables y de alta calidad para perros,
-              siempre a precios accesibles.
+              En Premium Alimentos vendemos tranquilidad, salud y felicidad en
+              cada entrega. Solo marcas en las que confiarías con los ojos
+              cerrados.
             </p>
             <div className="flex space-x-2 mt-10">
               <Link href="#">
@@ -91,10 +91,10 @@ export default function Footer() {
 
           {/* Columna 2: Enlaces de la Compañía */}
           <div>
-            <h3 className="text-2xl font-semibold text-pm-orange mb-2 pt-6">
+            <h3 className="text-2xl text-pm-orange mb-2 pt-6">
               <Link
                 href="/tienda"
-                className="transition-colors duration-300 hover:text-pm-naranja cursor-pointer"
+                className="transition-colors heading duration-300 hover:text-pm-naranja cursor-pointer"
               >
                 Compañia
               </Link>
@@ -121,7 +121,7 @@ export default function Footer() {
                   href="#"
                   className="transition-colors duration-300 hover:text-pm-naranja cursor-pointer"
                 >
-                  Royal Canina
+                  Royal Canin
                 </Link>
               </li>
               <li>
@@ -145,10 +145,10 @@ export default function Footer() {
 
           {/* Columna 3: Avisos de Privacida */}
           <div>
-            <h3 className="text-2xl font-semibold text-pm-orange mb-2 pt-6">
+            <h3 className="text-2xl text-pm-orange mb-2 pt-6">
               <Link
                 href="/privacidad/privacidad"
-                className="transition-colors duration-300 hover:text-pm-naranja cursor-pointer"
+                className="transition-colors duration-300 heading hover:text-pm-naranja cursor-pointer"
               >
                 Avisos de Privacida
               </Link>
@@ -191,8 +191,8 @@ export default function Footer() {
 
           {/* Columna 4: Registro por correo */}
           <div>
-            <h3 className="text-2xl font-semibold text-pm-orange mb-2 pt-6 cursor-pointer">
-              REGÍSTRATE
+            <h3 className="text-2xl heading text-pm-orange mb-2 pt-6 cursor-pointer">
+              Regístrate
             </h3>
             <p className="text-lg mb-4">
               Regístrate y recibe 10% en tu primera compra

@@ -120,7 +120,7 @@ const FavDelMes = () => {
             customClasses={{
               container: "w-full",
               titleContainer: "mb-4",
-              title: "text-4xl font-bold",
+              title: "text-4xl heading",
               price: "text-2xl text-gray-700 mb-4",
               rating: "flex items-center justify-start",
               star: "productStar",

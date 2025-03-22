@@ -60,7 +60,7 @@ export default function Login() {
               onSubmit={handleLoginSubmit}
               className="bg-white p-8 rounded shadow-md"
             >
-              <h1 className="text-2xl font-bold mb-6 text-center">
+              <h1 className="text-2xl heading mb-6 text-center">
                 Iniciar Sesión
               </h1>
               {mensaje && (
@@ -110,7 +110,7 @@ export default function Login() {
               onSubmit={handleRegisterSubmit}
               className="bg-white p-8 rounded shadow-md"
             >
-              <h1 className="text-2xl font-bold mb-6 text-center">
+              <h1 className="text-2xl heading mb-6 text-center">
                 Crear Cuenta
               </h1>
               {mensaje && (

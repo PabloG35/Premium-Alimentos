@@ -79,7 +79,7 @@ const Reviews = () => {
               className="w-full flex-shrink-0 h-full flex flex-col items-center justify-center p-4"
             >
               {/* Título general */}
-              <h2 className="text-center text-3xl font-bold mb-4">
+              <h2 className="text-center heading text-3xl mb-4">
                 Lo que opinan nuestros clientes
               </h2>
               {/* Imagen del producto */}

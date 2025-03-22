@@ -32,8 +32,8 @@ function Slider() {
           draggable={false}
           priority
           src="/Hero/ExtraInfo_1.jpg"
-          style={{ objectFit: "cover" }}
-          sizes=""
+          style={{ objectFit: "cover", borderRadius: "50px" }}
+          sizes="100vw 100vh"
         />
 
         {/* Imagen "Después" con clipPath según la posición */}
@@ -47,8 +47,8 @@ function Slider() {
             draggable={false}
             priority
             src="/Hero/ExtraInfo_2.jpg"
-            style={{ objectFit: "cover" }}
-            sizes=""
+            style={{ objectFit: "cover", borderRadius: "50px" }}
+            sizes="100vw 100vh"
           />
         </div>
 
@@ -66,13 +66,13 @@ function Slider() {
 
 // Componente general: Slider a la izquierda y sección informativa a la derecha
 export default function SliderWithInfo() {
-  const shortMessage = "MENSAJE CORTO SOBRE LA PAGINA AQUI";
+  const shortMessage = "NO TE PREOCUPES\nLO ESTAS HACIENDO BIEN";
   const bulletPoints = [
-    "Primer bullet point",
-    "Segundo bullet point",
-    "Tercer bullet point",
-    "Cuarto bullet point",
-    "Quinto bullet point",
+    "Solo marcas premium, sin compromisos ni excepciones",
+    "Cada fórmula ha pasado nuestro filtro de confianza",
+    "Ingredientes limpios, reales y seleccionados por expertos",
+    "Cuidamos lo que más amas: su salud, energía y felicidad",
+    "Te damos la paz de saber que estás haciendo lo correcto",
   ];
 
   return (
@@ -84,7 +84,15 @@ export default function SliderWithInfo() {
       {/* Columna derecha: Información textual */}
       <div className="w-1/2 flex flex-col justify-center p-16">
         <p className="text-xl font-semibold mb-4">#PremiumAlimentos</p>
-        <h1 className="text-4xl uppercase font-bold mb-4">{shortMessage}</h1>
+        <h1 className="text-3xl heading uppercase mb-4">
+          {shortMessage.split("\n").map((line, index) => (
+            <span key={index}>
+              {line}
+              <br />
+            </span>
+          ))}
+        </h1>
+
         <ul className="list-disc pl-5 space-y-2">
           {bulletPoints.map((point, index) => (
             <li key={index} className="text-lg">

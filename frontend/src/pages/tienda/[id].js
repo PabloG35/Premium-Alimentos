@@ -210,11 +210,11 @@ export default function ProductDetail() {
           </div>
           {/* Right: Detalles del producto */}
           <div className="md:w-2/5 flex flex-col gap-4">
-            <h1 className="text-4xl font-bold">{producto.nombre}</h1>
+            <h1 className="text-4xl heading">{producto.nombre}</h1>
             <p className="text-2xl text-green-600">${producto.precio}</p>
             {/* Descripción debajo del precio */}
             <div>
-              <h2 className="text-2xl font-bold mb-2">Descripción</h2>
+              <h2 className="text-2xl heading mb-2">Descripción</h2>
               <p className="text-lg">{producto.descripcion}</p>
             </div>
             {/* Línea clickeable de reseñas: estrellas dinámicas y número sin paréntesis */}
@@ -329,7 +329,7 @@ export default function ProductDetail() {
           {/* Ingredientes */}
           {producto.ingredientes && (
             <div>
-              <h2 className="text-2xl font-bold mb-2">Ingredientes</h2>
+              <h2 className="text-2xl heading mb-2">Ingredientes</h2>
               <div className="space-y-2">
                 {Object.entries(producto.ingredientes).map(
                   ([categoria, items]) => (

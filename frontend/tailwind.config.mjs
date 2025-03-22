@@ -15,7 +15,7 @@ export default {
       },
     },
     fontFamily: {
-      harmonia: ["Harmonia Sans", "sans-serif"],
+      harmonia: ["HarmoniaSans", "sans-serif"],
       roboto: ["Roboto", "sans-serif"],
     },
   },

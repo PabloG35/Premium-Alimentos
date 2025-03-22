@@ -16,7 +16,7 @@ const TextoEnMovimiento = () => {
       >
         {/* Hardcodeamos el contenido para tener un control exacto de los espacios */}
         <span className="font-harmonia font-black text-[40px] mx-4">
-          ¡Oferta especial!
+          Calidad en la que tú confias
         </span>
         <img
           src="/PremiumAlimentos/icon.png"
@@ -25,7 +25,7 @@ const TextoEnMovimiento = () => {
           style={{ verticalAlign: "middle" }}
         />
         <span className="font-harmonia font-black text-[40px] mx-4">
-          Envío gratis en compras mayores a $50.
+          Envío gratis en compras mayores a $999
         </span>
         <img
           src="/PremiumAlimentos/icon.png"
@@ -34,7 +34,7 @@ const TextoEnMovimiento = () => {
           style={{ verticalAlign: "middle" }}
         />
         <span className="font-harmonia font-black text-[40px] mx-4">
-          Nueva colección disponible.
+        Tranquilidad servida en su plato
         </span>
         <img
           src="/PremiumAlimentos/icon.png"
@@ -43,7 +43,7 @@ const TextoEnMovimiento = () => {
           style={{ verticalAlign: "middle" }}
         />
         <span className="font-harmonia font-black text-[40px] mx-4">
-          ¡Descuentos de hasta el 30%!
+        #PremiumAlimentos — tú eliges bien
         </span>
         {/* Aquí se pone el logo con espacio extra para que se separe del inicio */}
         <img

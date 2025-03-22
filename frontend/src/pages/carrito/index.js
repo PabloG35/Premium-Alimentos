@@ -99,7 +99,7 @@ export default function Carrito() {
     <Layout>
       {/* Add margin-top of 112px to push the content below the navbar */}
       <div className="mt-[112px] p-6 max-w-4xl mx-auto">
-        <h1 className="text-3xl font-bold mb-4">Tu Carrito</h1>
+        <h1 className="text-3xl heading mb-4">Tu Carrito</h1>
         {mensaje && <p className="text-red-500 mb-4">{mensaje}</p>}
         {(cartItems || []).length === 0 ? (
           <p>El carrito está vacío.</p>
@@ -113,7 +113,7 @@ export default function Carrito() {
                   className="flex items-center justify-between border p-4 rounded shadow-sm"
                 >
                   <div>
-                    <h2 className="font-bold">{item.nombre}</h2>
+                    <h2 className="heading">{item.nombre}</h2>
                     <p>Cantidad: {item.cantidad}</p>
                     <p>Precio: ${item.precio}</p>
                     <p>Subtotal: ${item.subtotal}</p>

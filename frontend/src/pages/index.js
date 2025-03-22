@@ -14,20 +14,20 @@ export default function Home() {
       <HeroCarousel />
       <Layout>
         <Section>
-          <BrandsSection />
+          <FavDelMes />
         </Section>
+        <TextoEnMovimiento />
         <Section>
           <ProductosRecientes />
         </Section>
-        <TextoEnMovimiento />
         <Section>
           <Reviews />
         </Section>
         <Section>
-          <FavDelMes />
-        </Section>
-        <Section >
           <ExtraInfo />
+        </Section>
+        <Section>
+          <BrandsSection />
         </Section>
       </Layout>
     </>

@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
 import Link from "next/link";
 import ProductTemplate from "@/src/components/ProductTemplate";
+import LoadingAnimation from "@/src/components/LoadingAnimation";
 import styles from "../styles/tienda.module.css";
 
 export default function Tienda() {
@@ -115,7 +116,7 @@ export default function Tienda() {
   return (
     <Layout>
       <div className="p-6 mt-[112px] mb-40">
-        <h1 className="text-4xl font-bold mb-8">Tienda</h1>
+        <h1 className="text-4xl heading mb-8">Tienda</h1>
         <div className="flex w-full max-w-6xl mx-auto">
           {/* Sidebar de filtros */}
           <aside className="w-1/4 pr-4 space-y-4">
@@ -123,9 +124,9 @@ export default function Tienda() {
             <div>
               <div
                 onClick={() => setOpenMarcas(!openMarcas)}
-                className="flex items-center justify-between cursor-pointer"
+                className="flex items-center justify-between cursor-pointer "
               >
-                <h2 className="text-2xl font-semibold">Marcas</h2>
+                <h2 className="text-2xl heading">Marcas</h2>
                 <img
                   src={openMarcas ? "/SVGs/arriba.svg" : "/SVGs/abajo.svg"}
                   alt="Toggle Marcas"
@@ -142,7 +143,7 @@ export default function Tienda() {
                         id={`marca-${marca}`}
                         checked={selectedMarcas.includes(marca)}
                         onChange={() => toggleMarca(marca)}
-                        className="mr-2 cursor-pointer"
+                        className="mr-2 cursor-pointer "
                       />
                       <label
                         htmlFor={`marca-${marca}`}
@@ -161,7 +162,7 @@ export default function Tienda() {
                 onClick={() => setOpenEdad(!openEdad)}
                 className="flex items-center justify-between cursor-pointer"
               >
-                <h2 className="text-2xl font-semibold">Edad</h2>
+                <h2 className="text-2xl heading">Edad</h2>
                 <img
                   src={openEdad ? "/SVGs/arriba.svg" : "/SVGs/abajo.svg"}
                   alt="Toggle Edad"
@@ -197,7 +198,7 @@ export default function Tienda() {
                 onClick={() => setOpenRaza(!openRaza)}
                 className="flex items-center justify-between cursor-pointer"
               >
-                <h2 className="text-2xl font-semibold">Raza</h2>
+                <h2 className="text-2xl heading">Raza</h2>
                 <img
                   src={openRaza ? "/SVGs/arriba.svg" : "/SVGs/abajo.svg"}
                   alt="Toggle Raza"
@@ -233,7 +234,7 @@ export default function Tienda() {
                 onClick={() => setOpenExistencia(!openExistencia)}
                 className="flex items-center justify-between cursor-pointer"
               >
-                <h2 className="text-2xl font-semibold">Disponibilidad</h2>
+                <h2 className="text-2xl heading">Disponibilidad</h2>
                 <img
                   src={openExistencia ? "/SVGs/arriba.svg" : "/SVGs/abajo.svg"}
                   alt="Toggle Existencia"
@@ -289,45 +290,49 @@ export default function Tienda() {
             </div>
           </aside>
           {/* Área de productos */}
-          <main className="w-3/4 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+          <main className="w-3/4">
             {loading ? (
-              <p>Cargando productos...</p>
+              <div className="flex items-center justify-center min-h-[300px]">
+                <LoadingAnimation />
+              </div>
             ) : filteredProductos.length > 0 ? (
-              filteredProductos.map((producto) => (
-                <Link
-                  key={producto.id_producto}
-                  href={`/tienda/${producto.id_producto}`}
-                  className="hover:opacity-90 transition-opacity"
-                >
-                  <ProductTemplate
-                    product={producto}
-                    showImage={true}
-                    showTitle={true}
-                    showPrice={true}
-                    showRating={true}
-                    showAddButton={true}
-                    customClasses={{
-                      imageContainer: styles.productImageContainer,
-                      image: styles.productImage,
-                      titleContainer: styles.titleContainer,
-                      title: styles.productTitle,
-                      price: styles.productPrice,
-                      rating: styles.starsContainer,
-                      star: styles.productStar,
-                      ratingText: styles.productRatingText,
-                      addButton: styles.addButton,
-                    }}
-                    onAddToCart={() =>
-                      console.log(
-                        "Agregar al carrito producto:",
-                        producto.id_producto
-                      )
-                    }
-                  />
-                </Link>
-              ))
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+                {filteredProductos.map((producto) => (
+                  <Link
+                    key={producto.id_producto}
+                    href={`/tienda/${producto.id_producto}`}
+                    className="hover:opacity-90 transition-opacity"
+                  >
+                    <ProductTemplate
+                      product={producto}
+                      showImage={true}
+                      showTitle={true}
+                      showPrice={true}
+                      showRating={true}
+                      showAddButton={true}
+                      customClasses={{
+                        imageContainer: styles.productImageContainer,
+                        image: styles.productImage,
+                        titleContainer: styles.titleContainer,
+                        title: styles.productTitle,
+                        price: styles.productPrice,
+                        rating: styles.starsContainer,
+                        star: styles.productStar,
+                        ratingText: styles.productRatingText,
+                        addButton: styles.addButton,
+                      }}
+                      onAddToCart={() =>
+                        console.log(
+                          "Agregar al carrito producto:",
+                          producto.id_producto
+                        )
+                      }
+                    />
+                  </Link>
+                ))}
+              </div>
             ) : (
-              <p className="col-span-full text-center">
+              <p className="text-center">
                 No se encontraron productos con estos filtros.
               </p>
             )}

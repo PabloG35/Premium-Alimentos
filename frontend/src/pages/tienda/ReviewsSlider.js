@@ -53,7 +53,7 @@ const ReviewsSlider = ({ reviews = [] }) => {
 
   return (
     <div className="py-8">
-      <h2 className="text-3xl font-bold text-center mb-4">Reseñas</h2>
+      <h2 className="text-3xl font-harmonia heading mb-4">Reseñas</h2>
       <div className="max-w-[1240px] mx-auto flex flex-col md:flex-row items-center justify-center mb-8 px-4 gap-8">
         <div className="flex flex-col items-center">
           <p className="text-4xl font-bold">{averageRating.toFixed(1)}</p>
@@ -149,7 +149,7 @@ const ReviewsSlider = ({ reviews = [] }) => {
                       )}
                     </div>
                     <div>
-                      <h3 className="text-base font-medium mb-1">
+                      <h3 className="text-base heading mb-1">
                         {review.nombre_usuario || review.name}
                       </h3>
                       <div className="flex">

@@ -1,4 +1,3 @@
-// src/pages/home/HeroCarousel.js
 import { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import Image from "next/image";
@@ -6,10 +5,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 
 const images = [
-  "/Hero/HeroImage1.png",
-  "/Hero/HeroImage2.png",
-  "/Hero/HeroImage3.png",
-  "/Hero/HeroImage4.png",
+  "/Hero/HeroImage1.jpg",
+  "/Hero/HeroImage2.jpg",
+  "/Hero/HeroImage3.jpg",
+  "/Hero/HeroImage4.jpg",
 ];
 
 export default function HeroCarousel() {
@@ -53,7 +52,7 @@ export default function HeroCarousel() {
       <Slider ref={sliderRef} {...settings}>
         {images.map((src, index) => {
           const imageSrc = isMobile
-            ? src.replace(".png", `_${index + 1}.png`)
+            ? src.replace(".jpg", `_${index + 1}.jpg`)
             : src;
           return (
             <div key={index} className="relative w-full h-[calc(100vh-112px)]">

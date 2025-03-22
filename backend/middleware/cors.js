@@ -5,8 +5,10 @@ const allowedOrigins = [
   "https://premiumalimentos.com",
   "https://www.premiumalimentos.com",
   "https://premium-alimentos-admin.vercel.app",
-  "https://premium-alimentos-backend.vercel.app"
+  "https://premium-alimentos-backend.vercel.app",
+
 ];
+
 
 
 export default function cors(req, res) {

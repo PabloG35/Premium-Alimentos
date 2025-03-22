@@ -19,7 +19,7 @@ export default function Navbar() {
 
   return (
     <nav
-      className={`bg-zinc-50 text-slate-950 w-full h-28 fixed top-0 z-50 border-b border-zinc-200 transition-shadow duration-500 ${
+      className={`bg-zinc-50 font-harmonia font-semibold text-slate-950 w-full h-28 fixed top-0 z-50 border-b border-zinc-200 transition-shadow duration-500 ${
         isScrolled ? "shadow-xl" : ""
       }`}
     >
@@ -42,9 +42,9 @@ export default function Navbar() {
             </Link>
           </div>
           {/* Central Menu */}
-          <div className="flex-1 flex items-center justify-center gap-8 text-lg font-roboto font-bold">
+          <div className="flex-1 flex items-center justify-center gap-8 text-lg">
             <Link href="/" className="menu-link">
-              HOME
+              INICIO
             </Link>
             <Link
               href="/tienda"
