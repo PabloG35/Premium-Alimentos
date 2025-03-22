@@ -1,5 +1,5 @@
 // controllers/usuarios.js
-import pool from "@/db.js";
+import { getPool } from "@/db";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -8,6 +8,7 @@ const SECRET_KEY = process.env.JWT_SECRET || "clave_super_secreta";
 const registrarUsuario = async (req, res) => {
   try {
     const { nombre_usuario, correo, contraseña } = req.body;
+    const pool = await getPool();
     const usuarioExistente = await pool.query(
       "SELECT * FROM usuarios WHERE correo = $1",
       [correo]
@@ -34,6 +35,7 @@ const registrarUsuario = async (req, res) => {
 const iniciarSesion = async (req, res) => {
   try {
     const { correo, contraseña } = req.body;
+    const pool = await getPool();
     const usuario = await pool.query(
       "SELECT * FROM usuarios WHERE correo = $1",
       [correo]
@@ -76,6 +78,7 @@ const actualizarPerfil = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const { nombre_usuario, correo, contraseña } = req.body;
+    const pool = await getPool();
     const usuarioExistente = await pool.query(
       "SELECT * FROM usuarios WHERE id_usuario = $1",
       [id_usuario]
@@ -111,7 +114,9 @@ const actualizarPerfil = async (req, res) => {
         .status(400)
         .json({ error: "No se enviaron datos para actualizar" });
     }
-    const query = `UPDATE usuarios SET ${updateFields.join(", ")} WHERE id_usuario = $1 RETURNING nombre_usuario, correo`;
+    const query = `UPDATE usuarios SET ${updateFields.join(
+      ", "
+    )} WHERE id_usuario = $1 RETURNING nombre_usuario, correo`;
     const resultado = await pool.query(query, values);
     return res.json({
       message: "Perfil actualizado",
@@ -126,6 +131,7 @@ const actualizarPerfil = async (req, res) => {
 const crearAdmin = async (req, res) => {
   try {
     const { nombre, email, password, rol } = req.body;
+    const pool = await getPool();
     if (!email.endsWith("@premiumalimentos.com")) {
       return res
         .status(400)
@@ -161,6 +167,7 @@ const crearAdmin = async (req, res) => {
 
 const obtenerPerfil = async (req, res) => {
   try {
+    const pool = await getPool();
     const usuario = await pool.query(
       "SELECT id_usuario, nombre_usuario, correo, rol FROM usuarios WHERE id_usuario = $1",
       [req.usuario.id_usuario]
@@ -178,6 +185,7 @@ const obtenerPerfil = async (req, res) => {
 const eliminarUsuario = async (req, res) => {
   try {
     const { id } = req.query;
+    const pool = await getPool();
     const { rol } = req.usuario;
     const usuarioAEliminar = await pool.query(
       "SELECT id_usuario, rol FROM usuarios WHERE id_usuario = $1",
@@ -211,6 +219,7 @@ const cerrarSesion = async (req, res) => {
 
 const obtenerUsuarios = async (req, res) => {
   try {
+    const pool = await getPool();
     const usuarios = await pool.query(
       "SELECT id_usuario, nombre_usuario, correo, rol FROM usuarios"
     );
@@ -227,6 +236,7 @@ const registrarSuscripcion = async (req, res) => {
     if (!correo) {
       return res.status(400).json({ error: "El correo es requerido." });
     }
+    const pool = await getPool();
     const userCheck = await pool.query(
       "SELECT correo FROM usuarios WHERE correo = $1",
       [correo]
@@ -260,6 +270,7 @@ const registrarSuscripcion = async (req, res) => {
 
 const obtenerSuscripciones = async (req, res) => {
   try {
+    const pool = await getPool();
     const result = await pool.query(
       "SELECT id, correo, usuario_registrado FROM suscripciones ORDER BY id"
     );

@@ -1,22 +1,29 @@
-import pkg from "pg";
+// db.js
+import { Connector } from "@google-cloud/cloud-sql-connector";
+import { Pool } from "pg";
 import dotenv from "dotenv";
-
-const { Pool } = pkg;
 dotenv.config();
 
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL,
-  ssl: {
-    rejectUnauthorized: false, // Esto desactiva la verificación del certificado
-  },
-  max: 20,
-  idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
-});
+const connector = new Connector();
+let pool; 
 
-pool
-  .connect()
-  .then(() => console.log("🟢 Conectado a PostgreSQL"))
-  .catch((err) => console.error("🔴 Error al conectar a PostgreSQL:", err));
-
-export default pool;
+export async function getPool() {
+  if (!pool) {
+    const clientOpts = await connector.getOptions({
+      instanceConnectionName: process.env.CLOUD_SQL_CONNECTION_NAME,
+      ipType: "PUBLIC", 
+    });
+    pool = new Pool({
+      host: clientOpts.host,
+      port: clientOpts.port,
+      user: process.env.DB_USER,
+      password: process.env.DB_PASS,
+      database: process.env.DB_NAME,
+      ssl: clientOpts.ssl, 
+      max: 20,
+      idleTimeoutMillis: 30000,
+      connectionTimeoutMillis: 10000,
+    });
+  }
+  return pool;
+}

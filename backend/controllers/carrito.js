@@ -1,9 +1,10 @@
 // controllers/carrito.js
-import pool from "@/db.js";
+import { getPool } from "@/db";
 
 const obtenerCarrito = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
+    const pool = await getPool();
     const carrito = await pool.query(
       `SELECT c.id_producto, p.nombre, p.precio, c.cantidad, (p.precio * c.cantidad) AS subtotal
        FROM carrito c
@@ -25,6 +26,8 @@ const agregarAlCarrito = async (req, res) => {
     if (!id_producto || !cantidad || cantidad <= 0) {
       return res.status(400).json({ error: "Datos inválidos" });
     }
+    const pool = await getPool();
+
     const producto = await pool.query(
       "SELECT stock FROM productos WHERE id_producto = $1",
       [id_producto]
@@ -67,6 +70,7 @@ const eliminarDelCarrito = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const { id_producto } = req.params;
+    const pool = await getPool();
     const productoEnCarrito = await pool.query(
       "SELECT * FROM carrito WHERE id_usuario = $1 AND id_producto = $2",
       [id_usuario, id_producto]
@@ -90,6 +94,7 @@ const eliminarDelCarrito = async (req, res) => {
 const calcularTotal = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
+    const pool = await getPool();
     const carrito = await pool.query(
       `SELECT SUM(p.precio * c.cantidad) AS subtotal
        FROM carrito c

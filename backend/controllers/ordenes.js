@@ -1,11 +1,13 @@
 // controllers/ordenes.js
-import pool from "@/db.js";
+import { getPool } from "@/db";
 import mercadopago from "@/config/mercadopago";
 
 const crearOrden = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const { metodo_pago } = req.body;
+    const pool = await getPool();
+
     const carrito = await pool.query(
       `SELECT c.id_producto, p.nombre, p.precio, c.cantidad
        FROM carrito c
@@ -16,18 +18,21 @@ const crearOrden = async (req, res) => {
     if (carrito.rows.length === 0) {
       return res.status(400).json({ error: "El carrito está vacío" });
     }
+
     const subtotal = carrito.rows.reduce(
       (acc, item) => acc + item.precio * item.cantidad,
       0
     );
     const envio = subtotal >= 999 ? 0 : 199;
     const total = subtotal + envio;
+
     const nuevaOrden = await pool.query(
       `INSERT INTO ordenes (id_usuario, total, estado_pago, estado_orden, fecha_orden, metodo_pago)
        VALUES ($1, $2, 'Pendiente', 'Preparando', NOW(), $3) RETURNING id_orden`,
       [id_usuario, total, metodo_pago]
     );
     const id_orden = nuevaOrden.rows[0].id_orden;
+
     const preference = {
       items: carrito.rows.map((item) => ({
         title: item.nombre,
@@ -47,6 +52,7 @@ const crearOrden = async (req, res) => {
     };
     const response = await mercadopago.preferences.create(preference);
     const pago_url = response.body.init_point;
+
     for (let item of carrito.rows) {
       await pool.query(
         `INSERT INTO detalles_orden (id_orden, id_producto, cantidad, subtotal)
@@ -59,6 +65,7 @@ const crearOrden = async (req, res) => {
       );
     }
     await pool.query(`DELETE FROM carrito WHERE id_usuario = $1`, [id_usuario]);
+
     return res.json({
       message: "Orden creada exitosamente",
       id_orden,
@@ -66,6 +73,7 @@ const crearOrden = async (req, res) => {
       pago_url,
     });
   } catch (error) {
+    console.error("Error al crear orden:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -73,6 +81,7 @@ const crearOrden = async (req, res) => {
 const obtenerOrdenes = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
+    const pool = await getPool();
     const ordenes = await pool.query(
       `SELECT o.*, 
               json_agg(json_build_object(
@@ -89,12 +98,14 @@ const obtenerOrdenes = async (req, res) => {
     );
     return res.json({ ordenes: ordenes.rows });
   } catch (error) {
+    console.error("Error al obtener órdenes:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
 const obtenerTodasOrdenes = async (req, res) => {
   try {
+    const pool = await getPool();
     const ordenes = await pool.query(
       `SELECT 
          o.id_orden, 
@@ -118,6 +129,7 @@ const obtenerTodasOrdenes = async (req, res) => {
     );
     return res.json({ ordenes: ordenes.rows });
   } catch (error) {
+    console.error("Error al obtener todas las órdenes:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -138,12 +150,14 @@ const editarEstadoOrden = async (req, res) => {
     if (!estadosValidos.includes(nuevoEstado)) {
       return res.status(400).json({ msg: "Estado inválido" });
     }
+    const pool = await getPool();
     await pool.query(
       "UPDATE ordenes SET estado_orden = $1 WHERE id_orden = $2",
       [nuevoEstado, id]
     );
     return res.json({ msg: `Orden actualizada a estado: ${nuevoEstado}` });
   } catch (error) {
+    console.error("Error al editar estado de orden:", error);
     return res.status(500).json({ msg: "Error en el servidor" });
   }
 };
@@ -151,9 +165,11 @@ const editarEstadoOrden = async (req, res) => {
 const eliminarOrden = async (req, res) => {
   try {
     const { id } = req.query;
+    const pool = await getPool();
     await pool.query("DELETE FROM ordenes WHERE id_orden = $1", [id]);
     return res.json({ message: "Orden eliminada correctamente" });
   } catch (error) {
+    console.error("Error al eliminar orden:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };

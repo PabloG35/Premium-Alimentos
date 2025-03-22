@@ -1,9 +1,10 @@
 // controllers/productos.js
-import pool from "@/db.js";
+import { getPool } from "@/db";
 import cloudinary from "@/config/cloudinary.js";
 
 const obtenerProductos = async (req, res) => {
   try {
+    const pool = await getPool();
     const productos = await pool.query(
       `SELECT p.*, 
               p.ingredientes::json AS ingredientes,
@@ -27,6 +28,7 @@ const obtenerProductos = async (req, res) => {
 const obtenerProductoPorId = async (req, res) => {
   try {
     const { id_producto } = req.query;
+    const pool = await getPool();
     const result = await pool.query(
       `SELECT p.*, 
          p.ingredientes::json AS ingredientes,
@@ -56,6 +58,7 @@ const obtenerProductosRecientes = async (req, res) => {
     return res.status(405).json({ error: "Método no permitido" });
   }
   try {
+    const pool = await getPool();
     const query = `
       SELECT 
         p.*, 
@@ -85,6 +88,7 @@ const obtenerProductosRecientes = async (req, res) => {
 
 const obtenerProductoMasVendido = async (req, res) => {
   try {
+    const pool = await getPool();
     const query = `
       SELECT 
         p.*, 
@@ -148,6 +152,7 @@ const agregarProducto = async (req, res) => {
     } else {
       parsedIngredientes = ingredientes;
     }
+    const pool = await getPool();
     const nuevoProducto = await pool.query(
       `INSERT INTO productos (nombre, descripcion, precio, stock, marca, raza, ingredientes, edad)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id_producto`,
@@ -203,6 +208,7 @@ const editarProducto = async (req, res) => {
     } else {
       parsedIngredientes = ingredientes;
     }
+    const pool = await getPool();
     const productoEditado = await pool.query(
       `UPDATE productos 
        SET nombre = $1, precio = $2, marca = $3, descripcion = $4, stock = $5, raza = $6, ingredientes = $7, edad = $8
@@ -235,6 +241,7 @@ const editarProducto = async (req, res) => {
 const eliminarProducto = async (req, res) => {
   try {
     const { id_producto } = req.query;
+    const pool = await getPool();
     const imagenesResult = await pool.query(
       `SELECT url_imagen FROM imagenes_producto WHERE id_producto = $1`,
       [id_producto]
@@ -287,6 +294,7 @@ const actualizarStock = async (req, res) => {
   try {
     const { id_producto } = req.query;
     const { stock } = req.body;
+    const pool = await getPool();
     const stockActualizado = await pool.query(
       "UPDATE productos SET stock = $1 WHERE id_producto = $2 RETURNING *",
       [stock, id_producto]

@@ -1,5 +1,5 @@
 // controllers/resenas.js
-import pool from "@/db.js";
+import { getPool } from "@/db";
 
 const agregarResena = async (req, res) => {
   try {
@@ -8,6 +8,7 @@ const agregarResena = async (req, res) => {
     if (!id_producto || !calificacion) {
       return res.status(400).json({ error: "Faltan datos obligatorios" });
     }
+    const pool = await getPool();
     const nuevaResena = await pool.query(
       `INSERT INTO resenas (id_usuario, id_producto, calificacion, comentario) 
        VALUES ($1, $2, $3, $4) RETURNING *`,
@@ -17,6 +18,7 @@ const agregarResena = async (req, res) => {
       .status(201)
       .json({ message: "Reseña agregada", resena: nuevaResena.rows[0] });
   } catch (error) {
+    console.error("Error al agregar reseña:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -24,6 +26,7 @@ const agregarResena = async (req, res) => {
 const obtenerResenasPorProducto = async (req, res) => {
   try {
     const { id_producto } = req.query;
+    const pool = await getPool();
     const resenas = await pool.query(
       `SELECT r.id_reseña, r.calificacion, r.comentario, r.fecha_reseña, u.nombre_usuario 
        FROM resenas r
@@ -34,6 +37,7 @@ const obtenerResenasPorProducto = async (req, res) => {
     );
     return res.json({ id_producto, resenas: resenas.rows });
   } catch (error) {
+    console.error("Error al obtener reseñas por producto:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -43,6 +47,7 @@ const actualizarResena = async (req, res) => {
     const { id_resena } = req.query;
     const { calificacion, comentario } = req.body;
     const { id_usuario } = req.usuario;
+    const pool = await getPool();
     const resenaExistente = await pool.query(
       "SELECT * FROM resenas WHERE id_reseña = $1 AND id_usuario = $2",
       [id_resena, id_usuario]
@@ -65,13 +70,16 @@ const actualizarResena = async (req, res) => {
     if (updateFields.length === 0) {
       return res.status(400).json({ error: "No hay datos para actualizar" });
     }
-    const query = `UPDATE resenas SET ${updateFields.join(", ")} WHERE id_reseña = $1 RETURNING *`;
+    const query = `UPDATE resenas SET ${updateFields.join(
+      ", "
+    )} WHERE id_reseña = $1 RETURNING *`;
     const resultado = await pool.query(query, values);
     return res.json({
       message: "Reseña actualizada",
       resena: resultado.rows[0],
     });
   } catch (error) {
+    console.error("Error al actualizar reseña:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -80,6 +88,7 @@ const eliminarResena = async (req, res) => {
   try {
     const { id_resena } = req.query;
     const { id_usuario } = req.usuario;
+    const pool = await getPool();
     const resenaExistente = await pool.query(
       "SELECT * FROM resenas WHERE id_reseña = $1 AND id_usuario = $2",
       [id_resena, id_usuario]
@@ -92,6 +101,7 @@ const eliminarResena = async (req, res) => {
     await pool.query("DELETE FROM resenas WHERE id_reseña = $1", [id_resena]);
     return res.json({ message: "Reseña eliminada correctamente" });
   } catch (error) {
+    console.error("Error al eliminar reseña:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -99,6 +109,7 @@ const eliminarResena = async (req, res) => {
 const obtenerPromedioResenas = async (req, res) => {
   try {
     const { id_producto } = req.query;
+    const pool = await getPool();
     const resultado = await pool.query(
       `SELECT ROUND(AVG(calificacion), 1) AS promedio FROM resenas WHERE id_producto = $1`,
       [id_producto]
@@ -107,12 +118,14 @@ const obtenerPromedioResenas = async (req, res) => {
     const estrellas = "⭐".repeat(Math.round(promedio));
     return res.json({ id_producto, promedio, estrellas });
   } catch (error) {
+    console.error("Error al obtener promedio de reseñas:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
 const obtenerResenasRecientes = async (req, res) => {
   try {
+    const pool = await getPool();
     const query = `
       SELECT 
         r.id_reseña, 

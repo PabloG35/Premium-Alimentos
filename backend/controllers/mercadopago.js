@@ -1,6 +1,6 @@
 // controllers/mercadopago.js
 import mercadopago from "@/config/mercadopago";
-import pool from "@/db.js";
+import { getPool } from "@/db";
 
 const procesarWebhook = async (req, res) => {
   try {
@@ -11,24 +11,26 @@ const procesarWebhook = async (req, res) => {
     if (!pagoId) {
       return res.status(400).json({ error: "ID de pago no encontrado" });
     }
+    
     let pago;
     try {
       const response = await mercadopago.payment.findById(pagoId);
       pago = response.body;
       if (!pago || !pago.status) {
-        return res
-          .status(500)
-          .json({ error: "No se pudo obtener el estado del pago" });
+        return res.status(500).json({ error: "No se pudo obtener el estado del pago" });
       }
     } catch (error) {
       return res.status(500).json({ error: "Error consultando Mercado Pago" });
     }
+    
     const id_orden = pago.external_reference;
     if (!id_orden) {
-      return res
-        .status(400)
-        .json({ error: "Pago sin referencia externa a orden." });
+      return res.status(400).json({ error: "Pago sin referencia externa a orden." });
     }
+    
+    // Obtener el pool de conexiones de forma dinámica
+    const pool = await getPool();
+    
     const verificarOrden = await pool.query(
       `SELECT * FROM ordenes WHERE id_orden = $1`,
       [id_orden]
@@ -36,6 +38,7 @@ const procesarWebhook = async (req, res) => {
     if (verificarOrden.rows.length === 0) {
       return res.status(404).json({ error: "Orden no encontrada" });
     }
+    
     const estadoPagoMap = {
       pending: "Pendiente",
       approved: "Completado",
@@ -49,6 +52,7 @@ const procesarWebhook = async (req, res) => {
     };
     const nuevoEstado = estadoPagoMap[pago.status] || "Pendiente";
     const metodoPago = pago.payment_method_id || "Mercado Pago";
+    
     const resultado = await pool.query(
       `UPDATE ordenes SET estado_pago = $1, metodo_pago = $2 WHERE id_orden = $3 RETURNING *`,
       [nuevoEstado, metodoPago, id_orden]
@@ -58,6 +62,7 @@ const procesarWebhook = async (req, res) => {
     }
     return res.sendStatus(200);
   } catch (error) {
+    console.error("Error en procesarWebhook:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
