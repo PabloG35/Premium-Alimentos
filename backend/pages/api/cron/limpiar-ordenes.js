@@ -1,8 +1,9 @@
 // pages/api/cron/limpiar-ordenes.js
-import pool from "@/db.js";
+import { getPool } from "@/db";
 
 async function limpiarOrdenesExpiradas() {
   try {
+    const pool = await getPool();
     const { rowCount: expiradoCount } = await pool.query(`
       DELETE FROM ordenes 
       WHERE estado_pago = 'Expirado' 
