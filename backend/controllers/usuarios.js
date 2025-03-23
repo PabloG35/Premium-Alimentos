@@ -5,7 +5,7 @@ import jwt from "jsonwebtoken";
 
 const SECRET_KEY = process.env.JWT_SECRET || "clave_super_secreta";
 
-const registrarUsuario = async (req, res) => {
+export const registrarUsuario = async (req, res) => {
   try {
     const { nombre_usuario, correo, contraseña } = req.body;
     const pool = await getPool();
@@ -18,13 +18,13 @@ const registrarUsuario = async (req, res) => {
     }
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(contraseña, salt);
-    const nuevoUsuario = await pool.query(
+    const { rows } = await pool.query(
       "INSERT INTO usuarios (nombre_usuario, correo, contraseña) VALUES ($1, $2, $3) RETURNING id_usuario, nombre_usuario, correo",
       [nombre_usuario, correo, hashedPassword]
     );
     return res.status(201).json({
       message: "Usuario registrado correctamente",
-      usuario: nuevoUsuario.rows[0],
+      usuario: rows[0],
     });
   } catch (error) {
     console.error("Error al registrar usuario:", error);
@@ -32,28 +32,29 @@ const registrarUsuario = async (req, res) => {
   }
 };
 
-const iniciarSesion = async (req, res) => {
+export const iniciarSesion = async (req, res) => {
   try {
     const { correo, contraseña } = req.body;
     const pool = await getPool();
-    const usuario = await pool.query(
+    const { rows } = await pool.query(
       "SELECT * FROM usuarios WHERE correo = $1",
       [correo]
     );
-    if (usuario.rows.length === 0) {
+    if (rows.length === 0) {
       return res.status(400).json({ error: "Correo o contraseña incorrectos" });
     }
+    const usuario = rows[0];
     const contraseñaValida = await bcrypt.compare(
       contraseña,
-      usuario.rows[0].contraseña
+      usuario.contraseña
     );
     if (!contraseñaValida) {
       return res.status(400).json({ error: "Correo o contraseña incorrectos" });
     }
     const token = jwt.sign(
       {
-        id_usuario: usuario.rows[0].id_usuario,
-        correo: usuario.rows[0].correo,
+        id_usuario: usuario.id_usuario,
+        correo: usuario.correo,
       },
       SECRET_KEY,
       { expiresIn: "7d" }
@@ -62,10 +63,10 @@ const iniciarSesion = async (req, res) => {
       message: "Inicio de sesión exitoso",
       token,
       user: {
-        id_usuario: usuario.rows[0].id_usuario,
-        correo: usuario.rows[0].correo,
-        nombre_usuario: usuario.rows[0].nombre_usuario,
-        rol: usuario.rows[0].rol || null,
+        id_usuario: usuario.id_usuario,
+        correo: usuario.correo,
+        nombre_usuario: usuario.nombre_usuario,
+        rol: usuario.rol || null,
       },
     });
   } catch (error) {
@@ -74,7 +75,7 @@ const iniciarSesion = async (req, res) => {
   }
 };
 
-const actualizarPerfil = async (req, res) => {
+export const actualizarPerfil = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const { nombre_usuario, correo, contraseña } = req.body;
@@ -117,10 +118,10 @@ const actualizarPerfil = async (req, res) => {
     const query = `UPDATE usuarios SET ${updateFields.join(
       ", "
     )} WHERE id_usuario = $1 RETURNING nombre_usuario, correo`;
-    const resultado = await pool.query(query, values);
+    const { rows } = await pool.query(query, values);
     return res.json({
       message: "Perfil actualizado",
-      usuario: resultado.rows[0],
+      usuario: rows[0],
     });
   } catch (error) {
     console.error("Error al actualizar perfil:", error);
@@ -128,7 +129,7 @@ const actualizarPerfil = async (req, res) => {
   }
 };
 
-const crearAdmin = async (req, res) => {
+export const crearAdmin = async (req, res) => {
   try {
     const { nombre, email, password, rol } = req.body;
     const pool = await getPool();
@@ -151,13 +152,13 @@ const crearAdmin = async (req, res) => {
         .json({ msg: "Rol inválido. Usa CEO, Director o Supervisor" });
     }
     const hashedPassword = await bcrypt.hash(password, 10);
-    const nuevoAdmin = await pool.query(
+    const { rows } = await pool.query(
       "INSERT INTO usuarios (nombre_usuario, correo, contraseña, rol) VALUES ($1, $2, $3, $4) RETURNING id_usuario, nombre_usuario, correo, rol",
       [nombre, email, hashedPassword, rol]
     );
     return res.json({
       msg: `Usuario ${rol} creado con éxito`,
-      admin: nuevoAdmin.rows[0],
+      admin: rows[0],
     });
   } catch (error) {
     console.error("Error al crear usuario:", error);
@@ -165,24 +166,24 @@ const crearAdmin = async (req, res) => {
   }
 };
 
-const obtenerPerfil = async (req, res) => {
+export const obtenerPerfil = async (req, res) => {
   try {
     const pool = await getPool();
-    const usuario = await pool.query(
+    const { rows } = await pool.query(
       "SELECT id_usuario, nombre_usuario, correo, rol FROM usuarios WHERE id_usuario = $1",
       [req.usuario.id_usuario]
     );
-    if (usuario.rows.length === 0) {
+    if (rows.length === 0) {
       return res.status(404).json({ msg: "Usuario no encontrado" });
     }
-    return res.json({ usuario: usuario.rows[0] });
+    return res.json({ usuario: rows[0] });
   } catch (error) {
     console.error("Error al obtener perfil:", error);
     return res.status(500).json({ msg: "Error en el servidor" });
   }
 };
 
-const eliminarUsuario = async (req, res) => {
+export const eliminarUsuario = async (req, res) => {
   try {
     const { id } = req.query;
     const pool = await getPool();
@@ -208,7 +209,7 @@ const eliminarUsuario = async (req, res) => {
   }
 };
 
-const cerrarSesion = async (req, res) => {
+export const cerrarSesion = async (req, res) => {
   try {
     return res.json({ msg: "Sesión cerrada correctamente" });
   } catch (error) {
@@ -217,20 +218,20 @@ const cerrarSesion = async (req, res) => {
   }
 };
 
-const obtenerUsuarios = async (req, res) => {
+export const obtenerUsuarios = async (req, res) => {
   try {
     const pool = await getPool();
-    const usuarios = await pool.query(
+    const { rows } = await pool.query(
       "SELECT id_usuario, nombre_usuario, correo, rol FROM usuarios"
     );
-    return res.json({ usuarios: usuarios.rows });
+    return res.json({ usuarios: rows });
   } catch (error) {
     console.error("Error al obtener usuarios:", error);
     return res.status(500).json({ error: "Error en el servidor" });
   }
 };
 
-const registrarSuscripcion = async (req, res) => {
+export const registrarSuscripcion = async (req, res) => {
   try {
     const { correo } = req.body;
     if (!correo) {
@@ -268,28 +269,15 @@ const registrarSuscripcion = async (req, res) => {
   }
 };
 
-const obtenerSuscripciones = async (req, res) => {
+export const obtenerSuscripciones = async (req, res) => {
   try {
     const pool = await getPool();
-    const result = await pool.query(
+    const { rows } = await pool.query(
       "SELECT id, correo, usuario_registrado FROM suscripciones ORDER BY id"
     );
-    return res.json({ suscripciones: result.rows });
+    return res.json({ suscripciones: rows });
   } catch (error) {
     console.error("Error al obtener suscripciones:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
-};
-
-export {
-  registrarUsuario,
-  iniciarSesion,
-  actualizarPerfil,
-  crearAdmin,
-  obtenerPerfil,
-  eliminarUsuario,
-  cerrarSesion,
-  obtenerUsuarios,
-  registrarSuscripcion,
-  obtenerSuscripciones,
 };

@@ -1,3 +1,4 @@
+// src/context/AuthContext.js
 import { createContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import jwt_decode from "jwt-decode";
@@ -6,16 +7,17 @@ export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const router = useRouter();
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
 
-  // Función para cerrar sesión (ya definida)
+  // Configura la URL base de la API desde una variable de entorno
+  // Si no se define, se usan rutas relativas (por ejemplo, en desarrollo)
+  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
+
   const logout = async () => {
     const storedToken = localStorage.getItem("token");
     try {
-      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/logout`, {
+      const res = await fetch(`${API_BASE_URL}/api/usuario/usuarios/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -35,12 +37,11 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Función para obtener el perfil del usuario autenticado
   const getProfile = async () => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) return;
     try {
-      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/perfil`, {
+      const res = await fetch(`${API_BASE_URL}/api/usuario/usuarios/perfil`, {
         headers: { Authorization: `Bearer ${storedToken}` },
       });
       if (res.ok) {
@@ -54,10 +55,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Función para iniciar sesión
   const login = async (credentials) => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/login`, {
+      const res = await fetch(`${API_BASE_URL}/api/usuario/usuarios/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
@@ -76,10 +76,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Función para registrar un nuevo usuario
   const registerUser = async (userData) => {
     try {
-      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/registro`, {
+      const res = await fetch(`${API_BASE_URL}/api/usuario/usuarios/registro`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -94,11 +93,9 @@ export const AuthProvider = ({ children }) => {
     }
   };
 
-  // Al cargar la app, si hay token, lo decodificamos y verificamos su expiración
   useEffect(() => {
-
     if (typeof window !== "undefined") {
-      const storedToken = localStorage.getItem("token"); // Obtenemos el token
+      const storedToken = localStorage.getItem("token");
       if (storedToken) {
         try {
           const decoded = jwt_decode(storedToken);

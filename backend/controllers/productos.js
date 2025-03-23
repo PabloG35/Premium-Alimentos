@@ -2,58 +2,56 @@
 import { getPool } from "@/db";
 import cloudinary from "@/config/cloudinary.js";
 
-const obtenerProductos = async (req, res) => {
+export const obtenerProductos = async (req, res) => {
   try {
     const pool = await getPool();
-    const productos = await pool.query(
+    const { rows } = await pool.query(
       `SELECT p.*, 
               p.ingredientes::json AS ingredientes,
               COALESCE(
-                json_agg(
-                  json_build_object('url_imagen', i.url_imagen)
-                ) FILTER (WHERE i.url_imagen IS NOT NULL), '[]'
+                json_agg(json_build_object('url_imagen', i.url_imagen))
+                FILTER (WHERE i.url_imagen IS NOT NULL), '[]'
               ) AS imagenes
        FROM productos p
        LEFT JOIN imagenes_producto i ON p.id_producto = i.id_producto
        GROUP BY p.id_producto
        ORDER BY p.fecha_creacion DESC`
     );
-    return res.json(productos.rows);
+    return res.json(rows);
   } catch (error) {
     console.error("❌ Error al obtener productos:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-const obtenerProductoPorId = async (req, res) => {
+export const obtenerProductoPorId = async (req, res) => {
   try {
     const { id_producto } = req.query;
     const pool = await getPool();
-    const result = await pool.query(
+    const { rows } = await pool.query(
       `SELECT p.*, 
-         p.ingredientes::json AS ingredientes,
-         COALESCE(
-           json_agg(
-             json_build_object('url_imagen', i.url_imagen)
-           ) FILTER (WHERE i.url_imagen IS NOT NULL), '[]'
-         ) AS imagenes
+              p.ingredientes::json AS ingredientes,
+              COALESCE(
+                json_agg(json_build_object('url_imagen', i.url_imagen))
+                FILTER (WHERE i.url_imagen IS NOT NULL), '[]'
+              ) AS imagenes
        FROM productos p
        LEFT JOIN imagenes_producto i ON p.id_producto = i.id_producto
        WHERE p.id_producto = $1
        GROUP BY p.id_producto`,
       [id_producto]
     );
-    if (result.rows.length === 0) {
+    if (rows.length === 0) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
-    return res.json(result.rows[0]);
+    return res.json(rows[0]);
   } catch (error) {
     console.error("Error al obtener producto:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-const obtenerProductosRecientes = async (req, res) => {
+export const obtenerProductosRecientes = async (req, res) => {
   if (req.method !== "GET") {
     return res.status(405).json({ error: "Método no permitido" });
   }
@@ -64,9 +62,8 @@ const obtenerProductosRecientes = async (req, res) => {
         p.*, 
         p.ingredientes::json AS ingredientes,
         COALESCE(
-          json_agg(
-            json_build_object('url_imagen', i.url_imagen)
-          ) FILTER (WHERE i.url_imagen IS NOT NULL), '[]'
+          json_agg(json_build_object('url_imagen', i.url_imagen))
+          FILTER (WHERE i.url_imagen IS NOT NULL), '[]'
         ) AS imagenes
       FROM productos p
       LEFT JOIN imagenes_producto i ON p.id_producto = i.id_producto
@@ -74,8 +71,8 @@ const obtenerProductosRecientes = async (req, res) => {
       ORDER BY p.fecha_creacion DESC
       LIMIT 8
     `;
-    const result = await pool.query(query);
-    return res.status(200).json(result.rows);
+    const { rows } = await pool.query(query);
+    return res.status(200).json(rows);
   } catch (error) {
     console.error("Error al obtener productos recientes:", error);
     return res.status(500).json({
@@ -86,7 +83,7 @@ const obtenerProductosRecientes = async (req, res) => {
   }
 };
 
-const obtenerProductoMasVendido = async (req, res) => {
+export const obtenerProductoMasVendido = async (req, res) => {
   try {
     const pool = await getPool();
     const query = `
@@ -105,11 +102,11 @@ const obtenerProductoMasVendido = async (req, res) => {
       ORDER BY total_ventas DESC
       LIMIT 1
     `;
-    const result = await pool.query(query);
-    if (result.rows.length === 0) {
+    const { rows } = await pool.query(query);
+    if (rows.length === 0) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
-    return res.status(200).json(result.rows[0]);
+    return res.status(200).json(rows[0]);
   } catch (error) {
     console.error("Error al obtener producto más vendido:", error);
     return res.status(500).json({
@@ -120,7 +117,7 @@ const obtenerProductoMasVendido = async (req, res) => {
   }
 };
 
-const agregarProducto = async (req, res) => {
+export const agregarProducto = async (req, res) => {
   try {
     const {
       nombre,
@@ -153,7 +150,7 @@ const agregarProducto = async (req, res) => {
       parsedIngredientes = ingredientes;
     }
     const pool = await getPool();
-    const nuevoProducto = await pool.query(
+    const { rows } = await pool.query(
       `INSERT INTO productos (nombre, descripcion, precio, stock, marca, raza, ingredientes, edad)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING id_producto`,
       [
@@ -167,7 +164,7 @@ const agregarProducto = async (req, res) => {
         edad,
       ]
     );
-    const id_producto = nuevoProducto.rows[0].id_producto;
+    const id_producto = rows[0].id_producto;
     const imagenes = req.files.map((file) => file.path);
     for (const urlImagen of imagenes) {
       await pool.query(
@@ -185,7 +182,7 @@ const agregarProducto = async (req, res) => {
   }
 };
 
-const editarProducto = async (req, res) => {
+export const editarProducto = async (req, res) => {
   try {
     const { id_producto } = req.query;
     const {
@@ -209,7 +206,7 @@ const editarProducto = async (req, res) => {
       parsedIngredientes = ingredientes;
     }
     const pool = await getPool();
-    const productoEditado = await pool.query(
+    const { rows } = await pool.query(
       `UPDATE productos 
        SET nombre = $1, precio = $2, marca = $3, descripcion = $4, stock = $5, raza = $6, ingredientes = $7, edad = $8
        WHERE id_producto = $9 RETURNING *`,
@@ -225,12 +222,12 @@ const editarProducto = async (req, res) => {
         id_producto,
       ]
     );
-    if (productoEditado.rows.length === 0) {
+    if (rows.length === 0) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
     return res.json({
       message: "Producto actualizado correctamente",
-      producto: productoEditado.rows[0],
+      producto: rows[0],
     });
   } catch (error) {
     console.error("Error al editar producto:", error);
@@ -238,17 +235,16 @@ const editarProducto = async (req, res) => {
   }
 };
 
-const eliminarProducto = async (req, res) => {
+export const eliminarProducto = async (req, res) => {
   try {
     const { id_producto } = req.query;
     const pool = await getPool();
-    const imagenesResult = await pool.query(
+    const { rows: imagenesRows } = await pool.query(
       `SELECT url_imagen FROM imagenes_producto WHERE id_producto = $1`,
       [id_producto]
     );
-    const imagenes = imagenesResult.rows;
-    if (imagenes.length > 0) {
-      const eliminarImagenesPromises = imagenes.map(async (img) => {
+    if (imagenesRows.length > 0) {
+      const eliminarImagenesPromises = imagenesRows.map(async (img) => {
         if (!img.url_imagen) return;
         try {
           const urlParts = img.url_imagen.split("/");
@@ -290,21 +286,21 @@ const eliminarProducto = async (req, res) => {
   }
 };
 
-const actualizarStock = async (req, res) => {
+export const actualizarStock = async (req, res) => {
   try {
     const { id_producto } = req.query;
     const { stock } = req.body;
     const pool = await getPool();
-    const stockActualizado = await pool.query(
+    const { rows } = await pool.query(
       "UPDATE productos SET stock = $1 WHERE id_producto = $2 RETURNING *",
       [stock, id_producto]
     );
-    if (stockActualizado.rows.length === 0) {
+    if (rows.length === 0) {
       return res.status(404).json({ error: "Producto no encontrado" });
     }
     return res.json({
       message: "Stock actualizado correctamente",
-      producto: stockActualizado.rows[0],
+      producto: rows[0],
     });
   } catch (error) {
     console.error("Error al actualizar stock:", error);
@@ -312,7 +308,7 @@ const actualizarStock = async (req, res) => {
   }
 };
 
-const subirImagenProducto = async (req, res) => {
+export const subirImagenProducto = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ error: "No se ha subido ninguna imagen" });
@@ -334,14 +330,3 @@ const subirImagenProducto = async (req, res) => {
   }
 };
 
-export {
-  obtenerProductos,
-  obtenerProductoPorId,
-  agregarProducto,
-  editarProducto,
-  eliminarProducto,
-  actualizarStock,
-  subirImagenProducto,
-  obtenerProductosRecientes,
-  obtenerProductoMasVendido,
-};

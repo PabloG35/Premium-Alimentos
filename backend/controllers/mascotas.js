@@ -1,25 +1,25 @@
 // controllers/mascotas.js
 import { getPool } from "@/db";
 
-const obtenerMascotas = async (req, res) => {
+export const obtenerMascotas = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const pool = await getPool();
-    const mascotas = await pool.query(
+    const { rows } = await pool.query(
       `SELECT m.*, p.nombre AS nombre_producto
        FROM mascotas m
        LEFT JOIN productos p ON m.producto_favorito = p.id_producto
        WHERE m.id_usuario = $1`,
       [id_usuario]
     );
-    return res.json({ mascotas: mascotas.rows });
+    return res.json({ mascotas: rows });
   } catch (error) {
     console.error("Error al obtener mascotas:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-const editarMascota = async (req, res) => {
+export const editarMascota = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const { id_mascota } = req.query;
@@ -33,17 +33,20 @@ const editarMascota = async (req, res) => {
       foto_url,
     } = req.body;
     const pool = await getPool();
+
     const mascotaExistente = await pool.query(
       `SELECT * FROM mascotas WHERE id_mascota = $1 AND id_usuario = $2`,
       [id_mascota, id_usuario]
     );
-    if (mascotaExistente.rows.length === 0) {
+    if (mascotaExistente.rowCount === 0) {
       return res
         .status(404)
         .json({ error: "Mascota no encontrada o no pertenece al usuario" });
     }
+
     let updateFields = [];
     let values = [id_mascota, id_usuario];
+
     if (nombre) {
       updateFields.push(`nombre = $${values.length + 1}`);
       values.push(nombre);
@@ -72,18 +75,18 @@ const editarMascota = async (req, res) => {
       updateFields.push(`foto_url = $${values.length + 1}`);
       values.push(foto_url);
     }
+
     if (updateFields.length === 0) {
       return res
         .status(400)
         .json({ error: "No se enviaron datos para actualizar" });
     }
-    const query = `UPDATE mascotas SET ${updateFields.join(
-      ", "
-    )} WHERE id_mascota = $1 AND id_usuario = $2 RETURNING *`;
-    const resultado = await pool.query(query, values);
+
+    const query = `UPDATE mascotas SET ${updateFields.join(", ")} WHERE id_mascota = $1 AND id_usuario = $2 RETURNING *`;
+    const { rows } = await pool.query(query, values);
     return res.json({
       message: "Mascota actualizada",
-      mascota: resultado.rows[0],
+      mascota: rows[0],
     });
   } catch (error) {
     console.error("Error al editar mascota:", error);
@@ -91,16 +94,16 @@ const editarMascota = async (req, res) => {
   }
 };
 
-const eliminarMascota = async (req, res) => {
+export const eliminarMascota = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const { id_mascota } = req.query;
     const pool = await getPool();
-    const mascota = await pool.query(
+    const { rowCount } = await pool.query(
       "DELETE FROM mascotas WHERE id_mascota = $1 AND id_usuario = $2 RETURNING *",
       [id_mascota, id_usuario]
     );
-    if (mascota.rows.length === 0) {
+    if (rowCount === 0) {
       return res
         .status(404)
         .json({ error: "Mascota no encontrada o no pertenece al usuario" });
@@ -112,7 +115,7 @@ const eliminarMascota = async (req, res) => {
   }
 };
 
-const añadirMascota = async (req, res) => {
+export const añadirMascota = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const {
@@ -138,7 +141,7 @@ const añadirMascota = async (req, res) => {
         .json({ error: "Todos los campos son obligatorios" });
     }
     const pool = await getPool();
-    const nuevaMascota = await pool.query(
+    const { rows } = await pool.query(
       `INSERT INTO mascotas (id_usuario, nombre, edad, apodo, producto_favorito, habilidad_secreta, empleo, foto_url)
        VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
       [
@@ -154,7 +157,7 @@ const añadirMascota = async (req, res) => {
     );
     return res.status(201).json({
       message: "Mascota añadida correctamente",
-      mascota: nuevaMascota.rows[0],
+      mascota: rows[0],
     });
   } catch (error) {
     console.error("Error al añadir mascota:", error);
@@ -162,7 +165,7 @@ const añadirMascota = async (req, res) => {
   }
 };
 
-const subirFotoMascota = async (req, res) => {
+export const subirFotoMascota = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const { id_mascota } = req.body;
@@ -171,27 +174,19 @@ const subirFotoMascota = async (req, res) => {
     }
     const foto_url = req.file.path;
     const pool = await getPool();
-    const resultado = await pool.query(
+    const { rowCount, rows } = await pool.query(
       `UPDATE mascotas SET foto_url = $1 WHERE id_mascota = $2 AND id_usuario = $3 RETURNING *`,
       [foto_url, id_mascota, id_usuario]
     );
-    if (resultado.rowCount === 0) {
+    if (rowCount === 0) {
       return res.status(404).json({ error: "Mascota no encontrada" });
     }
     return res.json({
       message: "Foto de la mascota actualizada correctamente",
-      mascota: resultado.rows[0],
+      mascota: rows[0],
     });
   } catch (error) {
     console.error("Error al subir foto de mascota:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
-};
-
-export {
-  obtenerMascotas,
-  editarMascota,
-  eliminarMascota,
-  añadirMascota,
-  subirFotoMascota,
 };

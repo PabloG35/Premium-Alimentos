@@ -1,10 +1,13 @@
+// src/context/CartContext.js
 import { createContext, useState, useEffect } from "react";
 
 export const CartContext = createContext();
 
+// Configura la URL base de la API a partir de una variable de entorno
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
+
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   const getToken = () =>
     typeof window !== "undefined" && localStorage.getItem("token");
@@ -13,7 +16,7 @@ export const CartProvider = ({ children }) => {
     const token = getToken();
     if (!token) return;
     try {
-      const res = await fetch(`${BACKEND_URL}/api/carrito`, {
+      const res = await fetch(`${API_BASE_URL}/api/carrito`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -23,6 +26,7 @@ export const CartProvider = ({ children }) => {
         setCartItems([]);
       }
     } catch (error) {
+      console.error("Error fetching cart:", error);
       setCartItems([]);
     }
   };
@@ -31,7 +35,7 @@ export const CartProvider = ({ children }) => {
     const token = getToken();
     if (!token) return;
     try {
-      const res = await fetch(`${BACKEND_URL}/api/carrito`, {
+      const res = await fetch(`${API_BASE_URL}/api/carrito`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -42,33 +46,41 @@ export const CartProvider = ({ children }) => {
       if (res.ok) {
         fetchCart();
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error adding item:", error);
+    }
   };
 
   const removeFromCart = async (id_producto) => {
     const token = getToken();
+    if (!token) return;
     try {
-      const res = await fetch(`${BACKEND_URL}/api/carrito/${id_producto}`, {
+      const res = await fetch(`${API_BASE_URL}/api/carrito/${id_producto}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         fetchCart();
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error removing item:", error);
+    }
   };
 
   const getTotal = async () => {
     const token = getToken();
+    if (!token) return 0;
     try {
-      const res = await fetch(`${BACKEND_URL}/api/carrito/total`, {
+      const res = await fetch(`${API_BASE_URL}/api/carrito/total`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
         const data = await res.json();
         return data.total;
       }
-    } catch (error) {}
+    } catch (error) {
+      console.error("Error getting total:", error);
+    }
   };
 
   const obtenerCantidadCarrito = () => {

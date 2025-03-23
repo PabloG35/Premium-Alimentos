@@ -1,4 +1,4 @@
-// src/componentes/pages/home/ProductosRecientes
+// src/pages/home/ProductosRecientes
 import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import styles from "../../styles/productosRecientes.module.css";

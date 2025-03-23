@@ -1,3 +1,4 @@
+// src/home/FavDelMes.js
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import ProductTemplate from "@/src/components/ProductTemplate";

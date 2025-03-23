@@ -2,39 +2,39 @@
 import { getPool } from "@/db";
 import mercadopago from "@/config/mercadopago";
 
-const crearOrden = async (req, res) => {
+export const crearOrden = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const { metodo_pago } = req.body;
     const pool = await getPool();
 
-    const carrito = await pool.query(
+    const { rows: carritoRows } = await pool.query(
       `SELECT c.id_producto, p.nombre, p.precio, c.cantidad
        FROM carrito c
        INNER JOIN productos p ON c.id_producto = p.id_producto
        WHERE c.id_usuario = $1`,
       [id_usuario]
     );
-    if (carrito.rows.length === 0) {
+    if (carritoRows.length === 0) {
       return res.status(400).json({ error: "El carrito está vacío" });
     }
 
-    const subtotal = carrito.rows.reduce(
+    const subtotal = carritoRows.reduce(
       (acc, item) => acc + item.precio * item.cantidad,
       0
     );
     const envio = subtotal >= 999 ? 0 : 199;
     const total = subtotal + envio;
 
-    const nuevaOrden = await pool.query(
+    const { rows: nuevaOrdenRows } = await pool.query(
       `INSERT INTO ordenes (id_usuario, total, estado_pago, estado_orden, fecha_orden, metodo_pago)
        VALUES ($1, $2, 'Pendiente', 'Preparando', NOW(), $3) RETURNING id_orden`,
       [id_usuario, total, metodo_pago]
     );
-    const id_orden = nuevaOrden.rows[0].id_orden;
+    const id_orden = nuevaOrdenRows[0].id_orden;
 
     const preference = {
-      items: carrito.rows.map((item) => ({
+      items: carritoRows.map((item) => ({
         title: item.nombre,
         unit_price: parseFloat(item.precio),
         quantity: item.cantidad,
@@ -50,10 +50,11 @@ const crearOrden = async (req, res) => {
       notification_url: process.env.WEBHOOK_MP_URL,
       external_reference: id_orden,
     };
+
     const response = await mercadopago.preferences.create(preference);
     const pago_url = response.body.init_point;
 
-    for (let item of carrito.rows) {
+    for (let item of carritoRows) {
       await pool.query(
         `INSERT INTO detalles_orden (id_orden, id_producto, cantidad, subtotal)
          VALUES ($1, $2, $3, $4)`,
@@ -78,11 +79,11 @@ const crearOrden = async (req, res) => {
   }
 };
 
-const obtenerOrdenes = async (req, res) => {
+export const obtenerOrdenes = async (req, res) => {
   try {
     const { id_usuario } = req.usuario;
     const pool = await getPool();
-    const ordenes = await pool.query(
+    const { rows: ordenes } = await pool.query(
       `SELECT o.*, 
               json_agg(json_build_object(
                   'id_producto', d.id_producto,
@@ -96,17 +97,17 @@ const obtenerOrdenes = async (req, res) => {
        ORDER BY o.fecha_orden DESC`,
       [id_usuario]
     );
-    return res.json({ ordenes: ordenes.rows });
+    return res.json({ ordenes });
   } catch (error) {
     console.error("Error al obtener órdenes:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-const obtenerTodasOrdenes = async (req, res) => {
+export const obtenerTodasOrdenes = async (req, res) => {
   try {
     const pool = await getPool();
-    const ordenes = await pool.query(
+    const { rows: ordenes } = await pool.query(
       `SELECT 
          o.id_orden, 
          o.total, 
@@ -127,14 +128,14 @@ const obtenerTodasOrdenes = async (req, res) => {
        GROUP BY o.id_orden, u.nombre_usuario, u.correo
        ORDER BY o.fecha_orden DESC`
     );
-    return res.json({ ordenes: ordenes.rows });
+    return res.json({ ordenes });
   } catch (error) {
     console.error("Error al obtener todas las órdenes:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
 
-const editarEstadoOrden = async (req, res) => {
+export const editarEstadoOrden = async (req, res) => {
   try {
     const { id } = req.query;
     const { nuevoEstado } = req.body;
@@ -162,7 +163,7 @@ const editarEstadoOrden = async (req, res) => {
   }
 };
 
-const eliminarOrden = async (req, res) => {
+export const eliminarOrden = async (req, res) => {
   try {
     const { id } = req.query;
     const pool = await getPool();
@@ -172,12 +173,4 @@ const eliminarOrden = async (req, res) => {
     console.error("Error al eliminar orden:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
-};
-
-export {
-  crearOrden,
-  obtenerOrdenes,
-  obtenerTodasOrdenes,
-  editarEstadoOrden,
-  eliminarOrden,
 };
