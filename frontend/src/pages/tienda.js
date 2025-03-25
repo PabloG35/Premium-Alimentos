@@ -1,3 +1,4 @@
+// src/pages/tienda.js
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";

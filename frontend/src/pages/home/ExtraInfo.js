@@ -1,3 +1,4 @@
+import ScrollHighlight from "@/src/components/Highlight";
 import Image from "next/image";
 import { useState } from "react";
 
@@ -84,13 +85,29 @@ export default function SliderWithInfo() {
       {/* Columna derecha: Información textual */}
       <div className="w-1/2 flex flex-col justify-center p-16">
         <p className="text-xl font-semibold mb-4">#PremiumAlimentos</p>
+
         <h1 className="text-3xl heading uppercase mb-4">
-          {shortMessage.split("\n").map((line, index) => (
-            <span key={index}>
-              {line}
-              <br />
-            </span>
-          ))}
+          {shortMessage.split("\n").map((line, index) => {
+            if (index === 1) {
+              return (
+                <ScrollHighlight
+                  key={index}
+                  highlightColor="#74d4ff"
+                  highlightHeight="27px"
+                  highlightBottom="8px"
+                >
+                  {line}
+                  <br />
+                </ScrollHighlight>
+              );
+            }
+            return (
+              <span key={index}>
+                {line}
+                <br />
+              </span>
+            );
+          })}
         </h1>
 
         <ul className="list-disc pl-5 space-y-2">

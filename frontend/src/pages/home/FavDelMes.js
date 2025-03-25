@@ -3,6 +3,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import ProductTemplate from "@/src/components/ProductTemplate";
 import { useRouter } from "next/router";
+import LoadingAnimation from "@/src/components/LoadingAnimation"; // Asegúrate de ajustar la ruta
 
 const FavDelMes = () => {
   const [product, setProduct] = useState(null);
@@ -21,7 +22,11 @@ const FavDelMes = () => {
   }, [BACKEND_URL]);
 
   if (!product) {
-    return <p className="text-center">Cargando producto favorito del mes...</p>;
+    return (
+      <div className="flex items-center justify-center h-[70vh]">
+        <LoadingAnimation />
+      </div>
+    );
   }
 
   // Comprobar que product.imagenes es un array
@@ -35,7 +40,7 @@ const FavDelMes = () => {
     : [];
 
   return (
-    <div className="w-full h-[70vh]">
+    <div className="w-full h-[70vh] mt-10">
       <div className="flex h-full">
         {/* Columna Izquierda: Slider de imágenes */}
         <div className="md:w-3/5 flex gap-4 h-full">

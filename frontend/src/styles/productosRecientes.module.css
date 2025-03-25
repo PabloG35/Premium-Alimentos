@@ -1,3 +1,7 @@
+.container{
+  width: 70%;
+}
+
 .productImageContainer {
   height: 20rem;
   display: flex;

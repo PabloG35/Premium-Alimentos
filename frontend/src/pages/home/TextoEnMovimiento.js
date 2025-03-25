@@ -4,7 +4,7 @@ import Marquee from "react-fast-marquee";
 const TextoEnMovimiento = () => {
   return (
     <div
-      className="py-20"
+      className="pt-8 my-14"
       style={{ width: "100vw", marginLeft: "calc(50% - 50vw)" }}
     >
       <Marquee

@@ -1,3 +1,4 @@
+// pages/_app.js
 import { AdminAuthProvider } from "@/context/AdminAuthContext";
 import "@/styles/globals.css";
 

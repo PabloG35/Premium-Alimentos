@@ -2,48 +2,53 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap");
 
+/* Tipografías personalizadas */
 @font-face {
-  font-family: 'HarmoniaSans';
-  src: url('/fonts/HarmoniaSans/HarmoniaSans-Black.woff2') format('woff2'),
-       url('/fonts/HarmoniaSans/HarmoniaSans-Black.woff') format('woff');
+  font-family: "HarmoniaSans";
+  src:
+    url("/fonts/HarmoniaSans/HarmoniaSans-Black.woff2") format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSans-Black.woff") format("woff");
   font-weight: 900;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'HarmoniaSans';
-  src: url('/fonts/HarmoniaSans/HarmoniaSans-Bold.woff2') format('woff2'),
-       url('/fonts/HarmoniaSans/HarmoniaSans-Bold.woff') format('woff');
+  font-family: "HarmoniaSans";
+  src:
+    url("/fonts/HarmoniaSans/HarmoniaSans-Bold.woff2") format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSans-Bold.woff") format("woff");
   font-weight: 700;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'HarmoniaSans';
-  src: url('/fonts/HarmoniaSans/HarmoniaSans-SemiBd.woff2') format('woff2'),
-       url('/fonts/HarmoniaSans/HarmoniaSans-SemiBd.woff') format('woff');
+  font-family: "HarmoniaSans";
+  src:
+    url("/fonts/HarmoniaSans/HarmoniaSans-SemiBd.woff2") format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSans-SemiBd.woff") format("woff");
   font-weight: 600;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'HarmoniaSans';
-  src: url('/fonts/HarmoniaSans/HarmoniaSans-Regular.woff2') format('woff2'),
-       url('/fonts/HarmoniaSans/HarmoniaSans-Regular.woff') format('woff');
+  font-family: "HarmoniaSans";
+  src:
+    url("/fonts/HarmoniaSans/HarmoniaSans-Regular.woff2") format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSans-Regular.woff") format("woff");
   font-weight: 400;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'HarmoniaSans';
-  src: url('/fonts/HarmoniaSans/HarmoniaSans-Light.woff2') format('woff2'),
-       url('/fonts/HarmoniaSans/HarmoniaSans-Light.woff') format('woff');
+  font-family: "HarmoniaSans";
+  src:
+    url("/fonts/HarmoniaSans/HarmoniaSans-Light.woff2") format("woff2"),
+    url("/fonts/HarmoniaSans/HarmoniaSans-Light.woff") format("woff");
   font-weight: 300;
   font-style: normal;
 }
-
 
 /* Variables globales */
 :root {
@@ -52,7 +57,12 @@
   --pm-text-1: #fff;
 }
 
-/* Reset y estilos base */
+.slick-prev:before,
+.slick-next:before {
+  display: none;
+}
+
+/* Reset básico */
 *,
 *::before,
 *::after {
@@ -80,31 +90,8 @@ ul {
 }
 
 .heading {
-  font-family: 'HarmoniaSans';
+  font-family: "HarmoniaSans";
   font-weight: 900;
-}
-
-/* Enlaces de menú */
-.menu-link {
-  position: relative;
-  display: inline-block;
-  transition: color 200ms ease;
-}
-.menu-link::after {
-  content: "";
-  position: absolute;
-  width: 0;
-  height: 2px;
-  bottom: -4px;
-  left: 0;
-  background-color: var(--pm-naranja);
-  transition: width 200ms ease;
-}
-.menu-link:hover {
-  color: var(--pm-naranja);
-}
-.menu-link:hover::after {
-  width: 100%;
 }
 
 /* Responsive: imagen del hero */
@@ -114,7 +101,6 @@ ul {
     height: clamp(600px, calc(100vh - 122px), 100vw);
   }
 }
-
 
 /* Separator */
 .separator-line {
@@ -134,8 +120,7 @@ ul {
   margin: 0 0.125rem;
 }
 
-
-/* Estilos de la animación de carga */
+/* Animación de carga */
 .pl {
   display: block;
   width: 6.25em;

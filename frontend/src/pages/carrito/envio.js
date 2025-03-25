@@ -1,7 +1,9 @@
 // src/pages/carrito/envio.js
+"use client";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
+import LoadingAnimation from "@/src/components/LoadingAnimation";
 
 export default function Envio() {
   const router = useRouter();
@@ -9,12 +11,13 @@ export default function Envio() {
     firstname: "",
     lastname: "",
     address: "",
-    country: "",
+    country: "México",
     zipcode: "",
     city: "",
     state: "",
   });
   const [totals, setTotals] = useState({ subtotal: 0, envio: 0, total: 0 });
+  const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
   const [mensaje, setMensaje] = useState("");
@@ -46,9 +49,48 @@ export default function Envio() {
     }
   };
 
+  // Función para obtener los items del carrito
+  const fetchCart = async () => {
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BACKEND_URL}/api/carrito`, {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      const data = await res.json();
+      return data.carrito;
+    } catch (error) {
+      console.error("Error fetching cart:", error);
+      return [];
+    }
+  };
+
+  // Función para obtener detalles adicionales del producto
+  const fetchProductDetails = async (id_producto) => {
+    try {
+      const res = await fetch(`${BACKEND_URL}/api/productos/${id_producto}`);
+      const data = await res.json();
+      return data;
+    } catch (error) {
+      console.error("Error fetching product details:", error);
+      return {};
+    }
+  };
+
+  // Carga totales y carrito al iniciar el componente
   useEffect(() => {
     const loadData = async () => {
       await fetchTotals();
+      const items = await fetchCart();
+      const itemsWithDetails = await Promise.all(
+        items.map(async (item) => {
+          const productDetails = await fetchProductDetails(item.id_producto);
+          return { ...item, ...productDetails };
+        })
+      );
+      setCartItems(itemsWithDetails);
       setLoading(false);
     };
     loadData();
@@ -67,7 +109,6 @@ export default function Envio() {
     setMensaje("");
     try {
       const token = localStorage.getItem("token");
-      // Llamada a la API para crear la orden; se envía el método de pago (por ejemplo, "Mercado Pago")
       const res = await fetch(`${BACKEND_URL}/api/ordenes`, {
         method: "POST",
         headers: {
@@ -78,7 +119,6 @@ export default function Envio() {
       });
       if (res.ok) {
         const data = await res.json();
-        // data debe incluir pago_url para redirigir al usuario
         router.push(data.pago_url);
       } else {
         const errData = await res.json();
@@ -91,112 +131,131 @@ export default function Envio() {
     setProcessing(false);
   };
 
-  if (loading) {
-    return (
-      <Layout>
-        <p className="mt-[112px] p-6">Cargando...</p>
-      </Layout>
-    );
-  }
-
   return (
     <Layout>
-      {/* Contenedor principal con margen superior para no quedar tapado por la Navbar */}
-      <div className="mt-[112px] p-6 max-w-6xl mx-auto">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Columna izquierda: Formulario de envío */}
-          <div className="bg-white p-6 rounded shadow-md">
-            <h1 className="text-2xl heading mb-4">Datos de Envío</h1>
+      <div className="mt-[112px] h-[calc(100vh-112px)] p-4 max-w-6xl mx-auto">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
+          {/* Columna Izquierda: Formulario de envío */}
+          <div className="p-4">
+            <h1 className="text-3xl mb-2 heading">Datos de Envío</h1>
             <form onSubmit={handlePay}>
-              <div className="grid grid-cols-2 gap-4 mb-4">
-                <div className="flex flex-col">
-                  <label htmlFor="firstname" className="text-xs uppercase mb-1">
+              <div className="grid grid-cols-2 gap-2 mb-2">
+                <div>
+                  <label
+                    htmlFor="firstname"
+                    className="block text-xs uppercase mb-1"
+                  >
                     Nombre
                   </label>
                   <input
                     id="firstname"
+                    name="firstname"
                     type="text"
                     value={shipping.firstname}
                     onChange={handleChange}
-                    className="border p-2 rounded"
+                    className="w-full p-1 border"
                     required
                   />
                 </div>
-                <div className="flex flex-col">
-                  <label htmlFor="lastname" className="text-xs uppercase mb-1">
+                <div>
+                  <label
+                    htmlFor="lastname"
+                    className="block text-xs uppercase mb-1"
+                  >
                     Apellido
                   </label>
                   <input
                     id="lastname"
+                    name="lastname"
                     type="text"
                     value={shipping.lastname}
                     onChange={handleChange}
-                    className="border p-2 rounded"
+                    className="w-full p-1 border"
                     required
                   />
                 </div>
               </div>
-              <div className="mb-4">
-                <label htmlFor="address" className="text-xs uppercase mb-1">
+              <div className="mb-2">
+                <label
+                  htmlFor="address"
+                  className="block text-xs uppercase mb-1"
+                >
                   Dirección
                 </label>
                 <input
                   id="address"
+                  name="address"
                   type="text"
                   value={shipping.address}
                   onChange={handleChange}
-                  className="border p-2 rounded w-full"
+                  className="w-full p-1 border"
                   required
                 />
               </div>
-              <div className="mb-4">
-                <label htmlFor="country" className="text-xs uppercase mb-1">
+              <div className="mb-2">
+                <label
+                  htmlFor="country"
+                  className="block text-xs uppercase mb-1"
+                >
                   País
                 </label>
                 <input
                   id="country"
+                  name="country"
                   type="text"
-                  value="México"
+                  value={shipping.country}
                   readOnly
-                  className="border p-2 rounded w-full bg-gray-100 cursor-not-allowed"
+                  className="w-full p-1 border bg-gray-100 cursor-not-allowed"
                 />
               </div>
-              <div className="grid grid-cols-3 gap-4 mb-4">
-                <div className="flex flex-col">
-                  <label htmlFor="zipcode" className="text-xs uppercase mb-1">
+              <div className="grid grid-cols-3 gap-2 mb-2">
+                <div>
+                  <label
+                    htmlFor="zipcode"
+                    className="block text-xs uppercase mb-1"
+                  >
                     Código postal
                   </label>
                   <input
                     id="zipcode"
+                    name="zipcode"
                     type="text"
                     value={shipping.zipcode}
                     onChange={handleChange}
-                    className="border p-2 rounded"
+                    className="w-full p-1 border"
                     required
                   />
                 </div>
-                <div className="flex flex-col">
-                  <label htmlFor="city" className="text-xs uppercase mb-1">
+                <div>
+                  <label
+                    htmlFor="city"
+                    className="block text-xs uppercase mb-1"
+                  >
                     Ciudad
                   </label>
                   <input
                     id="city"
+                    name="city"
                     type="text"
                     value={shipping.city}
                     onChange={handleChange}
-                    className="border p-2 rounded"
+                    className="w-full p-1 border"
                     required
                   />
                 </div>
-                <div className="flex flex-col">
-                  <label htmlFor="state" className="text-xs uppercase mb-1">
+                <div>
+                  <label
+                    htmlFor="state"
+                    className="block text-xs uppercase mb-1"
+                  >
                     Estado
                   </label>
                   <select
                     id="state"
+                    name="state"
                     value={shipping.state}
                     onChange={handleChange}
-                    className="border p-2 rounded"
+                    className="w-full p-1 border"
                     required
                   >
                     <option value="">Seleccione un estado</option>
@@ -236,28 +295,64 @@ export default function Envio() {
                   </select>
                 </div>
               </div>
-              {mensaje && <p className="text-red-500 mb-4">{mensaje}</p>}
+              {mensaje && (
+                <p className="text-red-500 text-xs mb-2">{mensaje}</p>
+              )}
               <button
                 type="submit"
                 disabled={processing}
-                className="w-full bg-black text-white py-3 rounded uppercase text-sm font-semibold hover:bg-gray-800 transition"
+                className="w-full bg-black text-white py-2 uppercase text-sm"
               >
                 {processing ? "Procesando..." : "Pagar"}
               </button>
             </form>
           </div>
-          {/* Columna derecha: Resumen del pedido */}
-          <div className="bg-white p-6 rounded shadow-md">
-            <h2 className="text-xl heading mb-4">Resumen de tu Pedido</h2>
-            <p className="mb-2">
-              <span className="font-bold">Subtotal:</span> ${totals.subtotal}
-            </p>
-            <p className="mb-2">
-              <span className="font-bold">Envío:</span> ${totals.envio}
-            </p>
-            <p className="text-2xl font-bold">
-              <span className="font-bold">Total:</span> ${totals.total}
-            </p>
+
+          {/* Columna Derecha: Resumen del carrito */}
+          <div className="p-4 bg-slate-200">
+            <h2 className="text-3xl mb-2 heading">Resumen de tu Pedido</h2>
+            {loading ? (
+              <div className="flex justify-center items-center h-full">
+                <LoadingAnimation />
+              </div>
+            ) : (
+              <>
+                {cartItems.length > 0 ? (
+                  <div className="space-y-2 mb-4">
+                    {cartItems.map((item) => (
+                      <div key={item.id_producto} className="flex items-center">
+                        <div className="w-12 h-12 bg-gray-300 mr-2">
+                          {item.imagenes && item.imagenes.length > 0 ? (
+                            <img
+                              src={item.imagenes[0].url_imagen}
+                              alt={item.nombre}
+                              className="w-full h-full object-cover"
+                            />
+                          ) : (
+                            <div className="flex justify-center items-center text-xs text-gray-500 h-full">
+                              Sin imagen
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-sm">{item.nombre}</p>
+                          <p className="text-xs">Cant: {item.cantidad}</p>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-sm">No hay productos en el carrito.</p>
+                )}
+                <div className="absolute mb-6 bottom-0">
+                  <p className="text-sm mb-1">Subtotal: ${totals.subtotal}</p>
+                  <p className="text-sm mb-1">Envío: ${totals.envio}</p>
+                  <p className="text-base font-semibold border-t border-zinc-100 w-full">
+                    Total: ${totals.total}
+                  </p>
+                </div>
+              </>
+            )}
           </div>
         </div>
       </div>

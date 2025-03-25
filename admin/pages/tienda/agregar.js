@@ -1,8 +1,54 @@
+// pages/tienda/agregar.js
 import { useState, useContext } from "react";
-import AdminAuthContext from "@/context/AdminAuthContext";
-import { agregarProducto } from "@/services/tiendaService";
 import { useRouter } from "next/router";
+import AdminAuthContext from "@/context/AdminAuthContext";
 import Layout from "@/components/Layout";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const obtenerToken = () => localStorage.getItem("adminToken");
+
+async function agregarProducto(producto) {
+  const token = obtenerToken();
+  if (!token) throw new Error("No autorizado");
+
+  const formData = new FormData();
+  formData.append("nombre", producto.nombre);
+  formData.append("descripcion", producto.descripcion);
+  formData.append("precio", producto.precio);
+  formData.append("stock", producto.stock);
+  formData.append("marca", producto.marca);
+  formData.append("raza", producto.raza);
+  formData.append("ingredientes", JSON.stringify(producto.ingredientes));
+
+  if (producto.imagenes && producto.imagenes.length > 0) {
+    producto.imagenes.forEach((imagen) => {
+      formData.append("imagenes", imagen);
+    });
+  } else {
+    console.error("⚠️ No se encontraron imágenes en el FormData.");
+    throw new Error("Debes subir al menos una imagen.");
+  }
+
+  console.log("📤 Enviando FormData:");
+  for (let pair of formData.entries()) {
+    console.log(`${pair[0]}:`, pair[1]);
+  }
+
+  const respuesta = await fetch(`${BASE_URL}/api/productos`, {
+    method: "POST",
+    body: formData,
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!respuesta.ok) {
+    const errorData = await respuesta.json();
+    throw new Error(errorData.error || "Error al agregar producto");
+  }
+
+  return await respuesta.json();
+}
 
 export default function AgregarProducto() {
   const { admin, loading } = useContext(AdminAuthContext);
@@ -14,19 +60,17 @@ export default function AgregarProducto() {
     stock: "",
     marca: "",
     raza: "",
-    edad: "", // New field for "Edad"
-    imagenes: [], // Will hold the File objects (up to 4)
-    previews: [], // Holds the preview URLs (at indices 0-3)
+    edad: "",
+    imagenes: [],
+    previews: [],
     ingredientes: { Proteínas: [], Carbohidratos: [], Grasas: [], Otros: [] },
   });
   const [mensaje, setMensaje] = useState("");
 
-  // Handle text inputs
   const handleChange = (e) => {
-    setProducto({ ...producto, [e.target.name]: e.target.value });
+    setProducto((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // Handle ingredients input (comma-separated)
   const handleIngredienteChange = (categoria, valor) => {
     setProducto((prev) => ({
       ...prev,
@@ -40,7 +84,6 @@ export default function AgregarProducto() {
     }));
   };
 
-  // Handle a single image selection for a specific index
   const handleSingleImagenChange = (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -49,31 +92,31 @@ export default function AgregarProducto() {
       setMensaje("⚠️ Formato de imagen no válido. Solo JPG, JPEG y PNG.");
       return;
     }
-    // Limit total images to 4
-    const currentCount = producto.imagenes.filter(
-      (_, i) => producto.imagenes[i]
-    ).length;
-    if (currentCount >= 4) {
-      setMensaje("⚠️ Solo puedes subir un máximo de 4 imágenes.");
-      return;
-    }
     const previewUrl = URL.createObjectURL(file);
     const newImagenes = [...producto.imagenes];
     const newPreviews = [...producto.previews];
     newImagenes[index] = file;
     newPreviews[index] = previewUrl;
-    setProducto({
-      ...producto,
+    setProducto((prev) => ({
+      ...prev,
       imagenes: newImagenes,
       previews: newPreviews,
-    });
+    }));
   };
 
-  // Handle form submission
+  const eliminarImagen = (index) => {
+    setProducto((prev) => ({
+      ...prev,
+      imagenes: prev.imagenes.map((img, i) => (i === index ? null : img)),
+      previews: prev.previews.map((prevImg, i) =>
+        i === index ? null : prevImg
+      ),
+    }));
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMensaje("");
-
     if (
       !producto.nombre ||
       !producto.precio ||
@@ -89,11 +132,10 @@ export default function AgregarProducto() {
       );
       return;
     }
-
     try {
       const prodToSend = {
         ...producto,
-        ingredientes: JSON.stringify(producto.ingredientes),
+        ingredientes: producto.ingredientes, // Ya es un objeto; el agregarProducto lo convierte a JSON
       };
       await agregarProducto(prodToSend);
       router.push("/tienda");
@@ -103,21 +145,10 @@ export default function AgregarProducto() {
     }
   };
 
-  const eliminarImagen = (index) => {
-    setProducto((prev) => ({
-      ...prev,
-      imagenes: prev.imagenes.map((img, i) => (i === index ? null : img)),
-      previews: prev.previews.map((prevImg, i) =>
-        i === index ? null : prevImg
-      ),
-    }));
-  };
-
   if (loading || !admin) return <p>Cargando...</p>;
 
   return (
     <Layout>
-      {/* Outer container forces full viewport height */}
       <div className="h-screen flex justify-center items-center p-6 overflow-hidden">
         <form
           onSubmit={handleSubmit}
@@ -126,7 +157,6 @@ export default function AgregarProducto() {
           {/* Left Column: Main Fields & Images */}
           <div className="space-y-4">
             <h2 className="text-lg font-bold">Información</h2>
-            {/* Nombre */}
             <div>
               <label className="font-bold block mb-1">Nombre</label>
               <input
@@ -138,7 +168,6 @@ export default function AgregarProducto() {
                 onChange={handleChange}
               />
             </div>
-            {/* Descripción */}
             <div>
               <label className="font-bold block mb-1">Descripción</label>
               <textarea
@@ -149,7 +178,6 @@ export default function AgregarProducto() {
                 onChange={handleChange}
               ></textarea>
             </div>
-            {/* Precio and Stock (side by side on md screens) */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="font-bold block mb-1">Precio</label>
@@ -175,7 +203,6 @@ export default function AgregarProducto() {
                 />
               </div>
             </div>
-            {/* Marca, Raza, and Edad in one row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="font-bold block mb-1">Marca</label>
@@ -226,7 +253,7 @@ export default function AgregarProducto() {
                 </select>
               </div>
             </div>
-            {/* Images Section: Row of 4 Placeholders */}
+            {/* Sección de imágenes */}
             <div>
               <h2 className="text-lg font-bold">Imágenes del Producto</h2>
               <div className="flex gap-4 mt-2">
@@ -278,8 +305,9 @@ export default function AgregarProducto() {
             >
               Guardar Producto
             </button>
+            {mensaje && <p className="text-red-500 mt-2">{mensaje}</p>}
           </div>
-          {/* Right Column: Ingredients */}
+          {/* Columna de ingredientes */}
           <div className="space-y-4">
             <h2 className="text-lg font-bold">Ingredientes</h2>
             {["Proteínas", "Carbohidratos", "Grasas", "Otros"].map(

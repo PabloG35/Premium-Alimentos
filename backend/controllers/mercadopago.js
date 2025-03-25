@@ -67,7 +67,7 @@ export const procesarWebhook = async (req, res) => {
     if (rowCount === 0) {
       return res.status(404).json({ error: "Orden no encontrada" });
     }
-    return res.sendStatus(200);
+    return res.status(200).end();
   } catch (error) {
     console.error("Error en procesarWebhook:", error);
     return res.status(500).json({ error: "Error interno del servidor" });

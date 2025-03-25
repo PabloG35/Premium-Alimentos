@@ -1,5 +1,7 @@
+// context/AdminAuthContext.js
 import { createContext, useState, useEffect } from "react";
 import { useRouter } from "next/router";
+import jwt_decode from "jwt-decode"; // Asegúrate de tenerlo instalado
 
 const AdminAuthContext = createContext();
 
@@ -9,9 +11,21 @@ export function AdminAuthProvider({ children }) {
   const router = useRouter();
 
   useEffect(() => {
+    const token = localStorage.getItem("adminToken");
     const storedAdmin = localStorage.getItem("admin");
+
     if (storedAdmin) {
       setAdmin(JSON.parse(storedAdmin));
+    } else if (token) {
+      try {
+        const decoded = jwt_decode(token);
+        // Asumiendo que el token contiene "nombre" y "rol"
+        const adminData = { nombre: decoded.nombre, rol: decoded.rol };
+        localStorage.setItem("admin", JSON.stringify(adminData));
+        setAdmin(adminData);
+      } catch (error) {
+        console.error("Error decodificando token:", error);
+      }
     }
     setLoading(false);
   }, []);
@@ -19,31 +33,22 @@ export function AdminAuthProvider({ children }) {
   const login = async (email, password) => {
     try {
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/usuarios/login`,
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/usuario/usuarios/login`,
         {
           method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
+          headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ correo: email, contraseña: password }),
         }
       );
-
       const data = await res.json();
-
       if (!res.ok) {
         throw new Error(data.error || "Error en el inicio de sesión");
       }
-
-      // Guardar token y usuario en localStorage
       localStorage.setItem("adminToken", data.token);
-      localStorage.setItem(
-        "admin",
-        JSON.stringify({ nombre: data.nombre_usuario, rol: data.rol })
-      );
-
-      setAdmin({ nombre: data.nombre_usuario, rol: data.rol });
-
+      // Guardar también el objeto admin
+      const adminData = { nombre: data.nombre_usuario, rol: data.rol };
+      localStorage.setItem("admin", JSON.stringify(adminData));
+      setAdmin(adminData);
       router.push("/");
     } catch (error) {
       throw error;

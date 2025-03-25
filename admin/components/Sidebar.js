@@ -1,7 +1,28 @@
+// components/Sidebar.js
 import Link from "next/link";
-import { cerrarSesion } from "@/services/authService";
+import { useRouter } from "next/router";
 
 export default function Sidebar() {
+  const router = useRouter();
+
+  const logout = async () => {
+    try {
+      await fetch(
+        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/usuarios/logout`,
+        {
+          method: "POST",
+        }
+      );
+    } catch (error) {
+      console.error("Error cerrando sesión:", error);
+    } finally {
+      // Limpiar tokens y redirigir al login
+      localStorage.removeItem("adminToken");
+      localStorage.removeItem("userToken"); // Si aplica para el frontend de la tienda
+      router.push("/login");
+    }
+  };
+
   return (
     <nav className="sticky top-0 w-64 bg-gray-800 text-white h-screen p-5 flex flex-col justify-between">
       <div>
@@ -38,7 +59,7 @@ export default function Sidebar() {
         </ul>
       </div>
       <button
-        onClick={cerrarSesion}
+        onClick={logout}
         className="bg-red-500 text-white px-4 py-2 rounded w-full hover:bg-red-600 cursor-pointer"
       >
         Cerrar Sesión

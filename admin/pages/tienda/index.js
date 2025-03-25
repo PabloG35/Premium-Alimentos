@@ -1,11 +1,38 @@
+// pages/tienda/index.js
 import { useState, useEffect, useContext } from "react";
-import AdminAuthContext from "@/context/AdminAuthContext";
-import { obtenerProductos, eliminarProducto } from "@/services/tiendaService";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import AdminAuthContext from "@/context/AdminAuthContext";
 import Layout from "@/components/Layout";
 
-export default function AdminDashboard() {
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const obtenerToken = () => localStorage.getItem("adminToken");
+
+async function obtenerProductos() {
+  // Nota: Este endpoint es público, por lo que no requiere token
+  const respuesta = await fetch(`${BASE_URL}/api/productos`);
+  if (!respuesta.ok) {
+    throw new Error("Error al obtener productos");
+  }
+  return await respuesta.json();
+}
+
+async function eliminarProducto(id) {
+  const token = obtenerToken();
+  if (!token) throw new Error("No autorizado");
+
+  const respuesta = await fetch(`${BASE_URL}/api/productos/${id}`, {
+    method: "DELETE",
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!respuesta.ok) throw new Error("Error al eliminar producto");
+  return await respuesta.json();
+}
+
+export default function AdminDashboardTienda() {
   const { admin, loading } = useContext(AdminAuthContext);
   const router = useRouter();
   const [activeTab, setActiveTab] = useState("productos");
@@ -21,7 +48,7 @@ export default function AdminDashboard() {
     } else if (activeTab === "reviews") {
       cargarReviews();
     }
-  }, [admin, loading, activeTab]);
+  }, [admin, loading, activeTab, router]);
 
   const cargarProductos = async () => {
     try {
@@ -35,11 +62,9 @@ export default function AdminDashboard() {
 
   const cargarReviews = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/resenas/recientes`
-      );
+      const res = await fetch(`${BASE_URL}/api/resenas/recientes`);
       const data = await res.json();
-      setReviews(data.resenas);
+      setReviews(data.resenas || []);
     } catch (error) {
       console.error("❌ Error obteniendo reviews:", error);
     }
@@ -85,7 +110,6 @@ export default function AdminDashboard() {
           </button>
         </div>
 
-        {/* Sección de Productos */}
         {activeTab === "productos" && (
           <div>
             <Link href="/tienda/agregar">
@@ -146,7 +170,6 @@ export default function AdminDashboard() {
           </div>
         )}
 
-        {/* Sección de Reviews */}
         {activeTab === "reviews" && (
           <div>
             <h2 className="text-2xl font-bold mb-4">Reviews</h2>

@@ -1,14 +1,41 @@
+// pages/tienda/[id].js
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import AdminAuthContext from "@/context/AdminAuthContext";
-import { obtenerProductoPorId, editarProducto } from "@/services/tiendaService";
 import Layout from "@/components/Layout";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const obtenerToken = () => localStorage.getItem("adminToken");
+
+async function obtenerProductoPorId(id) {
+  const respuesta = await fetch(`${BASE_URL}/api/productos/${id}`);
+  if (!respuesta.ok) {
+    throw new Error("Error al obtener producto");
+  }
+  return await respuesta.json();
+}
+
+async function editarProducto(id, producto) {
+  const token = obtenerToken();
+  if (!token) throw new Error("No hay token disponible");
+
+  const respuesta = await fetch(`${BASE_URL}/api/productos/${id}`, {
+    method: "PUT",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(producto),
+  });
+
+  if (!respuesta.ok) throw new Error("Error al editar producto");
+  return await respuesta.json();
+}
 
 export default function EditarProducto() {
   const { admin, loading } = useContext(AdminAuthContext);
   const router = useRouter();
   const { id } = router.query;
-
   const [producto, setProducto] = useState({
     nombre: "",
     descripcion: "",
@@ -17,8 +44,8 @@ export default function EditarProducto() {
     marca: "",
     raza: "",
     edad: "",
-    imagenes: [], // Array of objects (from DB or new file objects)
-    previews: [], // Preview URLs for images
+    imagenes: [],
+    previews: [],
     ingredientes: { Proteínas: [], Carbohidratos: [], Grasas: [], Otros: [] },
   });
   const [mensaje, setMensaje] = useState("");
@@ -30,12 +57,11 @@ export default function EditarProducto() {
     if (id) {
       cargarProducto();
     }
-  }, [id, admin, loading]);
+  }, [id, admin, loading, router]);
 
   const cargarProducto = async () => {
     try {
       const data = await obtenerProductoPorId(id);
-      // Parse ingredientes if needed
       let ingredientesData = data.ingredientes;
       if (typeof ingredientesData === "string") {
         try {
@@ -50,24 +76,21 @@ export default function EditarProducto() {
         }
       }
       data.ingredientes = ingredientesData;
-      // Ensure imagenes is an array (from DB, as objects with { url_imagen })
       data.imagenes = data.imagenes || [];
-      // Initialize previews from existing image URLs
       const initialPreviews = data.imagenes.map(
         (imgObj) => imgObj.url_imagen || null
       );
       setProducto({ ...data, previews: initialPreviews });
     } catch (error) {
       console.error("Error obteniendo producto:", error);
+      setMensaje("Error al cargar producto.");
     }
   };
 
-  // Handle text inputs
   const handleChange = (e) => {
-    setProducto({ ...producto, [e.target.name]: e.target.value });
+    setProducto((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
 
-  // Handle ingredients input (comma-separated)
   const handleIngredienteChange = (categoria, valor) => {
     setProducto((prev) => ({
       ...prev,
@@ -81,7 +104,6 @@ export default function EditarProducto() {
     }));
   };
 
-  // Handle a single image selection for a specific slot (index)
   const handleSingleImagenChange = (e, index) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -93,12 +115,15 @@ export default function EditarProducto() {
     const previewUrl = URL.createObjectURL(file);
     const newImagenes = [...(producto.imagenes || [])];
     const newPreviews = [...(producto.previews || [])];
-    newImagenes[index] = file; // Save file (or override existing DB object)
+    newImagenes[index] = file;
     newPreviews[index] = previewUrl;
-    setProducto({ ...producto, imagenes: newImagenes, previews: newPreviews });
+    setProducto((prev) => ({
+      ...prev,
+      imagenes: newImagenes,
+      previews: newPreviews,
+    }));
   };
 
-  // Remove image at a specific slot
   const eliminarImagen = (index) => {
     setProducto((prev) => {
       const newImagenes = [...(prev.imagenes || [])];
@@ -112,7 +137,6 @@ export default function EditarProducto() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setMensaje("");
-
     if (
       !producto.nombre ||
       !producto.precio ||
@@ -129,7 +153,6 @@ export default function EditarProducto() {
       );
       return;
     }
-
     try {
       const prodToSend = {
         ...producto,
@@ -147,16 +170,14 @@ export default function EditarProducto() {
 
   return (
     <Layout>
-      {/* Outer container to force 100vh and no scrolling */}
       <div className="h-screen flex justify-center items-center p-6 overflow-hidden">
         <form
           onSubmit={handleSubmit}
           className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {/* Left Column: Main Info & Images */}
+          {/* Left Column: Main Fields & Images */}
           <div className="space-y-4">
-            <h2 className="text-lg font-bold mb-4">Editar Productos</h2>
-            {/* Nombre */}
+            <h2 className="text-lg font-bold mb-4">Editar Producto</h2>
             <div>
               <label className="font-bold block mb-1">Nombre</label>
               <input
@@ -168,7 +189,6 @@ export default function EditarProducto() {
                 onChange={handleChange}
               />
             </div>
-            {/* Descripción */}
             <div>
               <label className="font-bold block mb-1">Descripción</label>
               <textarea
@@ -179,7 +199,6 @@ export default function EditarProducto() {
                 onChange={handleChange}
               ></textarea>
             </div>
-            {/* Precio and Stock */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <label className="font-bold block mb-1">Precio</label>
@@ -205,7 +224,6 @@ export default function EditarProducto() {
                 />
               </div>
             </div>
-            {/* Marca, Raza, and Edad */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div>
                 <label className="font-bold block mb-1">Marca</label>
@@ -256,7 +274,7 @@ export default function EditarProducto() {
                 </select>
               </div>
             </div>
-            {/* Images Section: Row of 4 Placeholders */}
+            {/* Sección de imágenes */}
             <div>
               <h2 className="text-lg font-bold">Imágenes del Producto</h2>
               <div className="flex gap-4 mt-2">
@@ -281,24 +299,15 @@ export default function EditarProducto() {
                           alt={`Preview ${index + 1}`}
                           className="w-full h-full object-cover"
                         />
-                      ) : producto.imagenes[index] &&
-                        producto.imagenes[index].url_imagen ? (
-                        <img
-                          src={producto.imagenes[index].url_imagen}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
                       ) : (
                         <img
-                          src="/SVGs/añadirImagen.svg"
+                          src="/SVGs/añadirImagen.svg"
                           alt="Añadir Imagen"
                           className="w-12 h-12"
                         />
                       )}
                     </div>
-                    {(producto.previews[index] ||
-                      (producto.imagenes[index] &&
-                        producto.imagenes[index].url_imagen)) && (
+                    {producto.previews[index] && (
                       <button
                         type="button"
                         className="absolute top-1 right-1 bg-red-500 text-white text-xs p-1 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
@@ -317,8 +326,9 @@ export default function EditarProducto() {
             >
               Guardar Producto
             </button>
+            {mensaje && <p className="text-red-500 mt-2">{mensaje}</p>}
           </div>
-          {/* Right Column: Ingredients */}
+          {/* Columna de ingredientes */}
           <div className="space-y-4">
             <h2 className="text-lg font-bold">Ingredientes</h2>
             {["Proteínas", "Carbohidratos", "Grasas", "Otros"].map(

@@ -1,12 +1,72 @@
+// pages/usuarios/index.js
 import { useState, useEffect, useContext } from "react";
-import AdminAuthContext from "@/context/AdminAuthContext";
-import {
-  obtenerUsuarios,
-  eliminarUsuario,
-  crearAdmin,
-} from "@/services/usuariosService";
 import { useRouter } from "next/router";
+import AdminAuthContext from "@/context/AdminAuthContext";
 import Layout from "@/components/Layout";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+const obtenerToken = () => localStorage.getItem("adminToken");
+
+async function obtenerUsuarios() {
+  const token = obtenerToken();
+  if (!token) throw new Error("No hay token disponible");
+
+  const response = await fetch(`${BASE_URL}/api/usuarios`, {
+    method: "GET",
+    credentials: "include",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Error ${response.status} al obtener usuarios`);
+  }
+
+  const data = await response.json();
+  return data.usuarios;
+}
+
+async function eliminarUsuario(id) {
+  const token = obtenerToken();
+  if (!token) throw new Error("No hay token disponible");
+
+  const response = await fetch(`${BASE_URL}/api/usuarios/eliminar/${id}`, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al eliminar usuario");
+  }
+
+  return await response.json();
+}
+
+async function crearAdmin(data) {
+  const token = obtenerToken();
+  if (!token) throw new Error("No hay token disponible");
+
+  const response = await fetch(`${BASE_URL}/api/usuarios/crear-admin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify(data),
+  });
+
+  if (!response.ok) {
+    throw new Error("Error al crear usuario");
+  }
+
+  return await response.json();
+}
 
 export default function Usuarios() {
   const { admin, loading } = useContext(AdminAuthContext);
@@ -29,10 +89,11 @@ export default function Usuarios() {
   useEffect(() => {
     if (!loading && !admin) {
       router.push("/login");
+    } else {
+      cargarUsuarios();
+      cargarSuscripciones();
     }
-    cargarUsuarios();
-    cargarSuscripciones();
-  }, [admin, loading]);
+  }, [admin, loading, router]);
 
   const cargarUsuarios = async () => {
     try {
@@ -46,11 +107,9 @@ export default function Usuarios() {
 
   const cargarSuscripciones = async () => {
     try {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/usuarios/obtenerSuscripciones`
-      );
+      const res = await fetch(`${BASE_URL}/api/usuarios/obtenerSuscripciones`);
       const data = await res.json();
-      setSuscripciones(data.suscripciones);
+      setSuscripciones(data.suscripciones || []);
     } catch (error) {
       console.error("❌ Error obteniendo suscripciones:", error);
     }
@@ -64,7 +123,6 @@ export default function Usuarios() {
 
   const eliminar = async (id) => {
     if (!confirm("¿Estás seguro de eliminar este usuario?")) return;
-
     try {
       await eliminarUsuario(id);
       setUsuarios((prev) => prev.filter((user) => user.id_usuario !== id));
@@ -91,12 +149,17 @@ export default function Usuarios() {
 
   if (loading || !admin) return <p>Cargando...</p>;
 
+  // Filtrar usuarios por rol
+  const usuariosFiltrados = usuarios.filter((user) =>
+    filtroRoles.includes(user.rol)
+  );
+
   return (
     <Layout>
       <div className="p-6">
         <h1 className="text-2xl font-bold mb-4">Gestión de Usuarios</h1>
 
-        {/* Filtros de usuarios */}
+        {/* Filtros de roles */}
         <div className="mb-4 flex gap-4">
           {["CEO", "Director", "Supervisor", "usuario"].map((rol) => (
             <label key={rol} className="flex items-center gap-2 cursor-pointer">
@@ -110,7 +173,7 @@ export default function Usuarios() {
           ))}
         </div>
 
-        {/* Tabla de usuarios */}
+        {/* Tabla de Usuarios */}
         <table className="w-full border-collapse border border-gray-300">
           <thead>
             <tr className="bg-gray-100">
@@ -119,50 +182,47 @@ export default function Usuarios() {
               <th className="border p-2">Correo</th>
               <th className="border p-2">Rol</th>
               <th className="border p-2">Suscrito</th>
+              <th className="border p-2">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {usuarios.length > 0 ? (
-              usuarios
-                .filter((user) => filtroRoles.includes(user.rol))
-                .map((user) => {
-                  let suscrito = "";
-                  let color = "";
-                  if (user.rol === "usuario") {
-                    // Buscar si existe una suscripción para el correo del usuario
-                    const sub = suscripciones.find(
-                      (s) =>
-                        s.correo.toLowerCase() === user.correo.toLowerCase()
-                    );
-                    if (sub) {
-                      suscrito = "Suscrito";
-                      color = "text-green-500";
-                    } else {
-                      suscrito = "No suscrito";
-                      color = "text-red-500";
-                    }
-                  }
-                  return (
-                    <tr key={user.id_usuario} className="border">
-                      <td className="p-2">{user.id_usuario}</td>
-                      <td className="p-2">{user.nombre_usuario}</td>
-                      <td className="p-2">{user.correo}</td>
-                      <td className="p-2">{user.rol}</td>
-                      <td className="p-2">
-                        {user.rol === "usuario" ? (
-                          <span className={`${color} font-bold`}>
-                            {suscrito}
-                          </span>
-                        ) : (
-                          ""
-                        )}
-                      </td>
-                    </tr>
+            {usuariosFiltrados.length > 0 ? (
+              usuariosFiltrados.map((user) => {
+                // Determinar si el usuario está suscrito
+                let suscrito = "";
+                let color = "";
+                if (user.rol === "usuario") {
+                  const sub = suscripciones.find(
+                    (s) => s.correo.toLowerCase() === user.correo.toLowerCase()
                   );
-                })
+                  suscrito = sub ? "Suscrito" : "No suscrito";
+                  color = sub ? "text-green-500" : "text-red-500";
+                }
+                return (
+                  <tr key={user.id_usuario} className="border">
+                    <td className="p-2">{user.id_usuario}</td>
+                    <td className="p-2">{user.nombre_usuario}</td>
+                    <td className="p-2">{user.correo}</td>
+                    <td className="p-2">{user.rol}</td>
+                    <td className="p-2">
+                      {user.rol === "usuario" && (
+                        <span className={`${color} font-bold`}>{suscrito}</span>
+                      )}
+                    </td>
+                    <td className="p-2">
+                      <button
+                        onClick={() => eliminar(user.id_usuario)}
+                        className="bg-red-500 text-white p-2 rounded"
+                      >
+                        Eliminar
+                      </button>
+                    </td>
+                  </tr>
+                );
+              })
             ) : (
               <tr>
-                <td colSpan="5" className="p-2 text-center">
+                <td colSpan="6" className="p-2 text-center">
                   No hay usuarios disponibles
                 </td>
               </tr>
@@ -170,7 +230,7 @@ export default function Usuarios() {
           </tbody>
         </table>
 
-        {/* Formulario para agregar nuevo usuario (Solo CEO) */}
+        {/* Formulario para crear nuevo usuario (Solo para CEO) */}
         {admin.rol === "CEO" && (
           <form
             onSubmit={crearNuevoUsuario}

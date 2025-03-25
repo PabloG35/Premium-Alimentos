@@ -6,10 +6,23 @@ export const obtenerCarrito = async (req, res) => {
     const { id_usuario } = req.usuario;
     const pool = await getPool();
     const { rows } = await pool.query(
-      `SELECT c.id_producto, p.nombre, p.precio, c.cantidad, (p.precio * c.cantidad) AS subtotal
-       FROM carrito c
-       INNER JOIN productos p ON c.id_producto = p.id_producto
-       WHERE c.id_usuario = $1`,
+      `SELECT 
+  c.id_producto,
+  p.nombre,
+  p.precio,
+  c.cantidad,
+  (p.precio * c.cantidad) AS subtotal,
+  p.raza,
+  p.edad,
+  (
+    SELECT json_agg(ip)
+    FROM imagenes_producto ip
+    WHERE ip.id_producto = p.id_producto
+  ) AS imagenes
+FROM carrito c
+INNER JOIN productos p ON c.id_producto = p.id_producto
+WHERE c.id_usuario = $1
+`,
       [id_usuario]
     );
     return res.json({ carrito: rows });

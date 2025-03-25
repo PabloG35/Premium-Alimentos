@@ -1,4 +1,4 @@
-// src/pages/auth/index.js
+// pages/auth/index.js
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
@@ -68,6 +68,8 @@ export default function Login() {
               )}
               <input
                 type="email"
+                id="correo-login"
+                name="correo"
                 placeholder="Correo electrónico"
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
@@ -76,6 +78,8 @@ export default function Login() {
               />
               <input
                 type="password"
+                id="contraseña-login"
+                name="contraseña"
                 placeholder="Contraseña"
                 value={contraseña}
                 onChange={(e) => setContraseña(e.target.value)}
@@ -119,6 +123,8 @@ export default function Login() {
               <div className="flex gap-4 mb-4">
                 <input
                   type="text"
+                  id="nombre-register"
+                  name="nombre"
                   placeholder="Nombre"
                   value={nombre}
                   onChange={(e) => setNombre(e.target.value)}
@@ -127,6 +133,8 @@ export default function Login() {
                 />
                 <input
                   type="text"
+                  id="apellido-register"
+                  name="apellido"
                   placeholder="Apellido"
                   value={apellido}
                   onChange={(e) => setApellido(e.target.value)}
@@ -136,6 +144,8 @@ export default function Login() {
               </div>
               <input
                 type="email"
+                id="correo-register"
+                name="correo"
                 placeholder="Correo electrónico"
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
@@ -144,6 +154,8 @@ export default function Login() {
               />
               <input
                 type="password"
+                id="contraseña-register"
+                name="contraseña"
                 placeholder="Contraseña"
                 value={contraseña}
                 onChange={(e) => setContraseña(e.target.value)}

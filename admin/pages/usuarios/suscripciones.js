@@ -13,14 +13,13 @@ export default function Suscripciones() {
           `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/usuarios/obtenerSuscripciones`
         );
         const data = await res.json();
-        setSuscripciones(data.suscripciones);
+        setSuscripciones(data.suscripciones || []);
       } catch (error) {
         console.error("Error al cargar suscripciones:", error);
       } finally {
         setLoading(false);
       }
     };
-
     cargarSuscripciones();
   }, []);
 

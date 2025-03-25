@@ -1,3 +1,4 @@
+// pages/login.js
 import { useState, useContext } from "react";
 import AdminAuthContext from "@/context/AdminAuthContext";
 
@@ -18,26 +19,28 @@ export default function Login() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen">
+    <div className="flex items-center justify-center min-h-screen bg-gray-100">
       <form
         onSubmit={handleSubmit}
-        className="bg-white p-6 shadow-lg rounded-lg"
+        className="bg-white p-6 shadow-lg rounded-lg w-full max-w-sm"
       >
-        <h2 className="text-xl font-bold mb-4">Admin Login</h2>
-        {error && <p className="text-red-500">{error}</p>}
+        <h2 className="text-xl font-bold mb-4 text-center">Admin Login</h2>
+        {error && <p className="text-red-500 mb-2">{error}</p>}
         <input
           type="email"
           placeholder="Correo"
           className="w-full p-2 border rounded mb-2"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <input
           type="password"
           placeholder="Contraseña"
-          className="w-full p-2 border rounded mb-2"
+          className="w-full p-2 border rounded mb-4"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
+          required
         />
         <button className="w-full bg-blue-500 text-white p-2 rounded">
           Iniciar Sesión

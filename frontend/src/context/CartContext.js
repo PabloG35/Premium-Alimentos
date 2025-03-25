@@ -8,10 +8,12 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
+  const [totals, setTotals] = useState({ subtotal: 0, envio: 0, total: 0 });
 
   const getToken = () =>
     typeof window !== "undefined" && localStorage.getItem("token");
 
+  // Obtiene el carrito desde la API
   const fetchCart = async () => {
     const token = getToken();
     if (!token) return;
@@ -67,21 +69,23 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  const getTotal = async () => {
-    const token = getToken();
-    if (!token) return 0;
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/carrito/total`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      if (res.ok) {
-        const data = await res.json();
-        return data.total;
-      }
-    } catch (error) {
-      console.error("Error getting total:", error);
-    }
+  // Calcula los totales a partir de cartItems
+  const computeTotals = () => {
+    const subtotal = cartItems.reduce(
+      (acc, item) => acc + item.precio * (item.cantidad || 1),
+      0
+    );
+    const envio = subtotal < 999 ? 199 : 0;
+    const total = subtotal + envio;
+    return { subtotal, envio, total };
   };
+
+  // Actualiza los totales cada vez que cambian los items del carrito
+  useEffect(() => {
+    setTotals(computeTotals());
+  }, [cartItems]);
+
+  const getTotal = () => totals.total;
 
   const obtenerCantidadCarrito = () => {
     if (!Array.isArray(cartItems)) return 0;
@@ -103,6 +107,7 @@ export const CartProvider = ({ children }) => {
         getTotal,
         fetchCart,
         obtenerCantidadCarrito,
+        totals, // Se incluye para usarlo en el modal y carrito
       }}
     >
       {children}

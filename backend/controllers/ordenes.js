@@ -174,3 +174,39 @@ export const eliminarOrden = async (req, res) => {
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
+
+export const obtenerOrdenesRecientes = async (req, res) => {
+  try {
+    const pool = await getPool();
+    const { rows: ordenes } = await pool.query(
+      `SELECT 
+         o.id_orden, 
+         o.total, 
+         o.estado_pago, 
+         o.estado_orden, 
+         o.fecha_orden, 
+         o.metodo_pago,
+         u.nombre_usuario AS usuario, 
+         u.correo,
+         COALESCE(
+           json_agg(
+             json_build_object(
+               'id_producto', d.id_producto,
+               'cantidad', d.cantidad,
+               'subtotal', d.subtotal
+             )
+           ) FILTER (WHERE d.id_producto IS NOT NULL), '[]'
+         ) AS productos
+       FROM ordenes o
+       INNER JOIN usuarios u ON o.id_usuario = u.id_usuario
+       LEFT JOIN detalles_orden d ON o.id_orden = d.id_orden
+       GROUP BY o.id_orden, u.nombre_usuario, u.correo
+       ORDER BY o.fecha_orden DESC
+       LIMIT 8`
+    );
+    return res.json({ ordenes });
+  } catch (error) {
+    console.error("Error al obtener órdenes recientes:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+};

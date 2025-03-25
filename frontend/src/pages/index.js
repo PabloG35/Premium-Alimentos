@@ -14,8 +14,10 @@ export default function Home() {
       <HeroCarousel />
       <Layout>
         <Section>
-          <FavDelMes />
+          <BrandsSection />
         </Section>
+        <FavDelMes />
+
         <TextoEnMovimiento />
         <Section>
           <ProductosRecientes />
@@ -25,9 +27,6 @@ export default function Home() {
         </Section>
         <Section>
           <ExtraInfo />
-        </Section>
-        <Section>
-          <BrandsSection />
         </Section>
       </Layout>
     </>

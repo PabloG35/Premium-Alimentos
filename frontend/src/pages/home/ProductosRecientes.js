@@ -92,7 +92,7 @@ export default function RecentProductsCarousel() {
   };
 
   return (
-    <div className="recent-products-carousel p-4">
+    <div className="">
       <Slider ref={sliderRef} {...sliderSettings}>
         {recentProducts.map((product) => (
           <div key={product.id_producto} className="p-2">
