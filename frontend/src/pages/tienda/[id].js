@@ -3,7 +3,7 @@ import { useRouter } from "next/router";
 import Navbar from "@/src/components/Navbar";
 import Footer from "@/src/components/Footer";
 import Image from "next/image";
-import ReviewsSlider from "./ReviewsSlider"; // Ajusta la ruta si es necesario
+import ReviewsSlider from "./ReviewsSlider"; // Adjust the path if needed
 
 function IngredientDropdown({ category, items }) {
   const [open, setOpen] = useState(false);
@@ -26,9 +26,7 @@ function IngredientDropdown({ category, items }) {
       >
         {category}
         <span
-          className={`transform transition duration-300 ${
-            open ? "rotate-180" : "rotate-0"
-          }`}
+          className={`transform transition duration-300 ${open ? "rotate-180" : "rotate-0"}`}
         >
           <svg
             className="w-4 h-4"
@@ -81,7 +79,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (id) {
-      // Fetch del producto
+      // Fetch the product
       fetch(`${BACKEND_URL}/api/productos/${id}`)
         .then((res) => res.json())
         .then((data) => {
@@ -92,17 +90,15 @@ export default function ProductDetail() {
           console.error("Error al obtener el producto:", error);
           setLoading(false);
         });
-      // Fetch de las reseñas
+      // Fetch the reviews
       fetch(`${BACKEND_URL}/api/usuario/resenas/producto/${id}`)
         .then((res) => res.json())
-        .then((data) => {
-          setReviews(data.resenas || []);
-        })
+        .then((data) => setReviews(data.resenas || []))
         .catch((error) =>
           console.error("Error al obtener las reseñas:", error)
         );
     }
-  }, [id]);
+  }, [id, BACKEND_URL]);
 
   if (loading || !producto) {
     return (
@@ -121,14 +117,12 @@ export default function ProductDetail() {
     if (qty > 1) setQty((prev) => prev - 1);
   };
 
-  // Cálculo del promedio y redondeo dinámico de estrellas
   const averageRating =
     reviews.length > 0
       ? reviews.reduce((acc, r) => acc + r.calificacion, 0) / reviews.length
       : 0;
   const displayRating = Math.floor(averageRating + 0.4);
 
-  // Scroll suave hasta el componente de reseñas
   const scrollToReviews = () => {
     if (reviewsRef.current) {
       reviewsRef.current.scrollIntoView({ behavior: "smooth" });
@@ -139,9 +133,8 @@ export default function ProductDetail() {
     <>
       <Navbar />
       <div className="px-3 mt-[112px] max-w-[1400px] mx-auto bg-zinc-50 pb-8">
-        {/* Top Section */}
         <div className="flex pt-5 flex-col md:flex-row gap-6">
-          {/* Left: Área de imágenes con thumbnails verticales */}
+          {/* Left: Image area with vertical thumbnails */}
           <div className="md:w-3/5 flex gap-4 h-[600px]">
             <div className="w-20 h-full flex flex-col gap-2">
               {producto.imagenes &&
@@ -186,9 +179,11 @@ export default function ProductDetail() {
                 }
                 className="absolute top-1/2 left-4 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition"
               >
-                <img
+                <Image
                   src="/SVGs/izquierda.svg"
                   alt="Anterior"
+                  width={24}
+                  height={24}
                   className="w-6 h-6"
                 />
               </button>
@@ -200,24 +195,24 @@ export default function ProductDetail() {
                 }
                 className="absolute top-1/2 right-4 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition"
               >
-                <img
+                <Image
                   src="/SVGs/derecha.svg"
                   alt="Siguiente"
+                  width={24}
+                  height={24}
                   className="w-6 h-6"
                 />
               </button>
             </div>
           </div>
-          {/* Right: Detalles del producto */}
+          {/* Right: Product details */}
           <div className="md:w-2/5 flex flex-col gap-4">
             <h1 className="text-4xl heading">{producto.nombre}</h1>
             <p className="text-2xl text-green-600">${producto.precio}</p>
-            {/* Descripción debajo del precio */}
             <div>
               <h2 className="text-2xl heading mb-2">Descripción</h2>
               <p className="text-lg">{producto.descripcion}</p>
             </div>
-            {/* Línea clickeable de reseñas: estrellas dinámicas y número sin paréntesis */}
             <div
               onClick={scrollToReviews}
               className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition"
@@ -243,7 +238,6 @@ export default function ProductDetail() {
               </div>
               <span className="text-lg">{reviews.length} reseñas</span>
             </div>
-            {/* Fila para Agregar al carrito y contador: botón 80%, contador 20% */}
             <div className="flex gap-4 w-full">
               <button className="w-[80%] bg-blue-500 text-white px-4 py-3 rounded hover:bg-blue-600 transition">
                 Agregar al carrito
@@ -263,11 +257,9 @@ export default function ProductDetail() {
                 </button>
               </div>
             </div>
-            {/* Botón "Comprar ahora" a ancho completo */}
             <button className="w-full bg-green-500 text-white px-4 py-3 rounded hover:bg-green-600 transition">
               Comprar ahora
             </button>
-            {/* Container de Pago Seguro, Envío Rápido y Calidad garantizada */}
             <div className="flex mt-4">
               <div className="flex flex-col items-center justify-center flex-1">
                 <Image
@@ -324,9 +316,7 @@ export default function ProductDetail() {
             </div>
           </div>
         </div>
-        {/* Bottom Section: Ingredientes y Reviews */}
         <div className="mt-8 space-y-8">
-          {/* Ingredientes */}
           {producto.ingredientes && (
             <div>
               <h2 className="text-2xl heading mb-2">Ingredientes</h2>
@@ -343,7 +333,6 @@ export default function ProductDetail() {
               </div>
             </div>
           )}
-          {/* Sección de reseñas: se asigna un ref para el scroll */}
           <div ref={reviewsRef}>
             <ReviewsSlider reviews={reviews} />
           </div>

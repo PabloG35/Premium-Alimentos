@@ -1,9 +1,7 @@
-// src/context/CartContext.js
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 
 export const CartContext = createContext();
 
-// Configura la URL base de la API a partir de una variable de entorno
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
 export const CartProvider = ({ children }) => {
@@ -13,8 +11,7 @@ export const CartProvider = ({ children }) => {
   const getToken = () =>
     typeof window !== "undefined" && localStorage.getItem("token");
 
-  // Obtiene el carrito desde la API
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     const token = getToken();
     if (!token) return;
     try {
@@ -31,7 +28,7 @@ export const CartProvider = ({ children }) => {
       console.error("Error fetching cart:", error);
       setCartItems([]);
     }
-  };
+  }, [API_BASE_URL]);
 
   const addToCart = async (item) => {
     const token = getToken();
@@ -69,8 +66,7 @@ export const CartProvider = ({ children }) => {
     }
   };
 
-  // Calcula los totales a partir de cartItems
-  const computeTotals = () => {
+  const computeTotals = useCallback(() => {
     const subtotal = cartItems.reduce(
       (acc, item) => acc + item.precio * (item.cantidad || 1),
       0
@@ -78,12 +74,11 @@ export const CartProvider = ({ children }) => {
     const envio = subtotal < 999 ? 199 : 0;
     const total = subtotal + envio;
     return { subtotal, envio, total };
-  };
+  }, [cartItems]);
 
-  // Actualiza los totales cada vez que cambian los items del carrito
   useEffect(() => {
     setTotals(computeTotals());
-  }, [cartItems]);
+  }, [computeTotals]);
 
   const getTotal = () => totals.total;
 
@@ -96,7 +91,7 @@ export const CartProvider = ({ children }) => {
     if (getToken()) {
       fetchCart();
     }
-  }, []);
+  }, [fetchCart]);
 
   return (
     <CartContext.Provider
@@ -107,7 +102,7 @@ export const CartProvider = ({ children }) => {
         getTotal,
         fetchCart,
         obtenerCantidadCarrito,
-        totals, // Se incluye para usarlo en el modal y carrito
+        totals,
       }}
     >
       {children}

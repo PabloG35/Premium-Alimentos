@@ -1,9 +1,8 @@
-// src/home/FavDelMes.js
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import ProductTemplate from "@/src/components/ProductTemplate";
 import { useRouter } from "next/router";
-import LoadingAnimation from "@/src/components/LoadingAnimation"; // Asegúrate de ajustar la ruta
+import LoadingAnimation from "@/src/components/LoadingAnimation"; // Adjust the path if needed
 
 const FavDelMes = () => {
   const [product, setProduct] = useState(null);
@@ -11,7 +10,7 @@ const FavDelMes = () => {
   const router = useRouter();
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // Cargar el producto más vendido (favorito del mes)
+  // Load the best-selling product (favorite of the month)
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/productos/masvendido`)
       .then((res) => res.json())
@@ -29,7 +28,7 @@ const FavDelMes = () => {
     );
   }
 
-  // Comprobar que product.imagenes es un array
+  // Ensure product.imagenes is an array and remove duplicates
   const images = Array.isArray(product.imagenes)
     ? product.imagenes.reduce((acc, curr) => {
         if (!acc.find((item) => item.url_imagen === curr.url_imagen)) {
@@ -42,9 +41,9 @@ const FavDelMes = () => {
   return (
     <div className="w-full h-[70vh] mt-10">
       <div className="flex h-full">
-        {/* Columna Izquierda: Slider de imágenes */}
+        {/* Left Column: Image slider */}
         <div className="md:w-3/5 flex gap-4 h-full">
-          {/* Miniaturas verticales */}
+          {/* Vertical thumbnails */}
           <div className="w-20 h-full flex flex-col gap-2 overflow-auto">
             {images.map((img, idx) => (
               <div
@@ -66,7 +65,7 @@ const FavDelMes = () => {
               </div>
             ))}
           </div>
-          {/* Imagen principal */}
+          {/* Main Image */}
           <div className="flex-1 relative group h-full">
             {images.length > 0 ? (
               <Image
@@ -81,7 +80,7 @@ const FavDelMes = () => {
                 Sin imagen
               </div>
             )}
-            {/* Botón para imagen anterior */}
+            {/* Previous image button */}
             <button
               onClick={() =>
                 images.length > 0 &&
@@ -91,13 +90,15 @@ const FavDelMes = () => {
               }
               className="absolute top-1/2 left-4 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition"
             >
-              <img
+              <Image
                 src="/SVGs/izquierda.svg"
                 alt="Anterior"
+                width={24}
+                height={24}
                 className="w-6 h-6"
               />
             </button>
-            {/* Botón para imagen siguiente */}
+            {/* Next image button */}
             <button
               onClick={() =>
                 images.length > 0 &&
@@ -105,26 +106,28 @@ const FavDelMes = () => {
               }
               className="absolute top-1/2 right-4 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition"
             >
-              <img
+              <Image
                 src="/SVGs/derecha.svg"
                 alt="Siguiente"
+                width={24}
+                height={24}
                 className="w-6 h-6"
               />
             </button>
           </div>
         </div>
 
-        {/* Columna Derecha: Detalles del producto usando ProductTemplate */}
+        {/* Right Column: Product details using ProductTemplate */}
         <div className="md:w-2/5 p-4 flex flex-col justify-center">
           <ProductTemplate
             product={product}
-            showImage={false} // La imagen se muestra en el slider
+            showImage={false} // Image is shown in the slider
             showTitle={true}
             showPrice={true}
             showRating={true}
-            showAddButton={true} // El botón se muestra (en verde)
+            showAddButton={true} // Button is shown (in green)
             showVerMasButton={true}
-            showExtraIcons={true} // Se muestran los 4 SVGs extra
+            showExtraIcons={true} // Show the 4 extra SVG icons
             customClasses={{
               container: "w-full",
               titleContainer: "mb-4",

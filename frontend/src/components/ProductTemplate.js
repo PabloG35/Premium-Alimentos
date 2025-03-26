@@ -81,10 +81,12 @@ export default function ProductTemplate({
       {showImage && (
         <div className={customClasses.imageContainer || ""}>
           {product.imagenes && product.imagenes.length > 0 ? (
-            <img
+            <Image
               src={product.imagenes[0].url_imagen}
               alt={product.nombre}
               className={customClasses.image || ""}
+              width={300}
+              height={300}
             />
           ) : (
             <div className={customClasses.noImage || ""}>Sin imagen</div>
@@ -110,7 +112,7 @@ export default function ProductTemplate({
           }
         >
           {Array.from({ length: 5 }).map((_, i) => (
-            <img
+            <Image
               key={i}
               src={
                 rating >= i + 1
@@ -119,6 +121,8 @@ export default function ProductTemplate({
               }
               alt="star"
               className={customClasses.star || "productStar"}
+              width={16}
+              height={16}
             />
           ))}
           <span

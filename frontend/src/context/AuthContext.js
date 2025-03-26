@@ -1,5 +1,4 @@
-// src/context/AuthContext.js
-import { createContext, useState, useEffect } from "react";
+import { createContext, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import jwt_decode from "jwt-decode";
 
@@ -9,12 +8,9 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
-
-  // Configura la URL base de la API desde una variable de entorno
-  // Si no se define, se usan rutas relativas (por ejemplo, en desarrollo)
   const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
 
-  const logout = async () => {
+  const logout = useCallback(async () => {
     const storedToken = localStorage.getItem("token");
     try {
       const res = await fetch(`${API_BASE_URL}/api/usuario/usuarios/logout`, {
@@ -35,9 +31,9 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error de conexión en logout:", error);
     }
-  };
+  }, [API_BASE_URL, router]);
 
-  const getProfile = async () => {
+  const getProfile = useCallback(async () => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) return;
     try {
@@ -53,7 +49,7 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error de conexión en getProfile:", error);
     }
-  };
+  }, [API_BASE_URL]);
 
   const login = async (credentials) => {
     try {
@@ -111,7 +107,7 @@ export const AuthProvider = ({ children }) => {
         }
       }
     }
-  }, []);
+  }, [logout, getProfile]);
 
   return (
     <AuthContext.Provider

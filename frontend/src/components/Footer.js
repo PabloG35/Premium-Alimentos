@@ -1,5 +1,6 @@
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   const [correo, setCorreo] = useState("");
@@ -46,11 +47,15 @@ export default function Footer() {
           {/* Columna 1: Logo, Descripción y Redes Sociales */}
           <div>
             <Link href="/">
-              <img
-                src="/PremiumAlimentos/logo.png"
-                alt="Logo Premium Alimentos"
-                className="w-48 cursor-pointer transition-colors duration-300 hover:opacity-75"
-              />
+              <a>
+                <Image
+                  src="/PremiumAlimentos/logo.png"
+                  alt="Logo Premium Alimentos"
+                  width={192}
+                  height={64}
+                  className="cursor-pointer transition-colors duration-300 hover:opacity-75"
+                />
+              </a>
             </Link>
             <p className="text-md leading-6 w-72 pt-4">
               En Premium Alimentos vendemos tranquilidad, salud y felicidad en
@@ -59,32 +64,48 @@ export default function Footer() {
             </p>
             <div className="flex space-x-2 mt-10">
               <Link href="#">
-                <img
-                  src="/SVGs/whatsapp.svg"
-                  alt="WhatsApp"
-                  className="w-12 h-12 transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
-                />
+                <a>
+                  <Image
+                    src="/SVGs/whatsapp.svg"
+                    alt="WhatsApp"
+                    width={48}
+                    height={48}
+                    className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
+                  />
+                </a>
               </Link>
               <Link href="#">
-                <img
-                  src="/SVGs/facebook.svg"
-                  alt="Facebook"
-                  className="w-12 h-12 transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
-                />
+                <a>
+                  <Image
+                    src="/SVGs/facebook.svg"
+                    alt="Facebook"
+                    width={48}
+                    height={48}
+                    className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
+                  />
+                </a>
               </Link>
               <Link href="#">
-                <img
-                  src="/SVGs/instagram.svg"
-                  alt="Instagram"
-                  className="w-12 h-12 transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
-                />
+                <a>
+                  <Image
+                    src="/SVGs/instagram.svg"
+                    alt="Instagram"
+                    width={48}
+                    height={48}
+                    className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
+                  />
+                </a>
               </Link>
               <Link href="#">
-                <img
-                  src="/SVGs/tiktok.svg"
-                  alt="Tiktok"
-                  className="w-12 h-12 transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
-                />
+                <a>
+                  <Image
+                    src="/SVGs/tiktok.svg"
+                    alt="Tiktok"
+                    width={48}
+                    height={48}
+                    className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
+                  />
+                </a>
               </Link>
             </div>
           </div>
@@ -209,10 +230,12 @@ export default function Footer() {
                 onClick={handleRegistro}
                 className="bg-pm-orange p-2 border border-white border-l-0 rounded-r"
               >
-                <img
+                <Image
                   src="/SVGs/derecha.svg"
                   alt="Enviar"
-                  className="w-5 h-5 reverse"
+                  width={20}
+                  height={20}
+                  className="reverse"
                 />
               </button>
             </div>
@@ -224,35 +247,47 @@ export default function Footer() {
         <div className="mt-8 border-t border-gray-200 pt-6 pb-6 text-center text-sm">
           {/* Íconos de pago y métodos */}
           <div className="flex justify-center items-center space-x-4 mb-4">
-            <img
+            <Image
               src="/SVGs/spei.svg"
               alt="spei"
-              className="w-16 h-16 rounded-2xl"
+              width={64}
+              height={64}
+              className="rounded-2xl"
             />
-            <img
+            <Image
               src="/SVGs/mastercard.svg"
               alt="Mastercard"
-              className="w-16 h-16"
+              width={64}
+              height={64}
+              className=""
             />
-            <img
+            <Image
               src="/SVGs/visa.svg"
               alt="Visa"
-              className="w-16 h-16 rounded-2xl"
+              width={64}
+              height={64}
+              className="rounded-2xl"
             />
-            <img
+            <Image
               src="/SVGs/americanexpress.svg"
               alt="American Express"
-              className="w-16 h-16 rounded-2xl"
+              width={64}
+              height={64}
+              className="rounded-2xl"
             />
-            <img
+            <Image
               src="/SVGs/mercadopago.svg"
               alt="Mercadopago"
-              className="w-16 h-16 rounded-2xl"
+              width={64}
+              height={64}
+              className="rounded-2xl"
             />
-            <img
+            <Image
               src="/SVGs/cash.svg"
               alt="Efectivo"
-              className="w-16 h-16 rounded-2xl"
+              width={64}
+              height={64}
+              className="rounded-2xl"
             />
           </div>
           <p>

@@ -1,8 +1,9 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
 import { Disclosure } from "@headlessui/react";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
+import Image from "next/image";
 
 export default function Carrito() {
   const router = useRouter();
@@ -12,8 +13,7 @@ export default function Carrito() {
   const [mensaje, setMensaje] = useState("");
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // Obtiene los items del carrito
-  const fetchCart = async () => {
+  const fetchCart = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${BACKEND_URL}/api/carrito`, {
@@ -28,10 +28,9 @@ export default function Carrito() {
       console.error("Error fetching cart:", error);
       return [];
     }
-  };
+  }, [BACKEND_URL]);
 
-  // Obtiene los totales del carrito
-  const fetchTotals = async () => {
+  const fetchTotals = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${BACKEND_URL}/api/carrito/total`, {
@@ -49,21 +48,22 @@ export default function Carrito() {
     } catch (error) {
       console.error("Error fetching totals:", error);
     }
-  };
+  }, [BACKEND_URL]);
 
-  // Consulta los detalles del producto (por ejemplo, imágenes, raza, peso)
-  const fetchProductDetails = async (id_producto) => {
-    try {
-      const res = await fetch(`${BACKEND_URL}/api/productos/${id_producto}`);
-      const data = await res.json();
-      return data;
-    } catch (error) {
-      console.error("Error fetching product details:", error);
-      return {};
-    }
-  };
+  const fetchProductDetails = useCallback(
+    async (id_producto) => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/productos/${id_producto}`);
+        const data = await res.json();
+        return data;
+      } catch (error) {
+        console.error("Error fetching product details:", error);
+        return {};
+      }
+    },
+    [BACKEND_URL]
+  );
 
-  // Carga el carrito y luego para cada item obtiene los detalles del producto
   useEffect(() => {
     const loadCart = async () => {
       setLoading(true);
@@ -71,7 +71,6 @@ export default function Carrito() {
       const itemsWithDetails = await Promise.all(
         items.map(async (item) => {
           const productDetails = await fetchProductDetails(item.id_producto);
-          // Fusionamos los datos del carrito y del producto; por ejemplo, el API de carrito puede no traer imágenes
           return { ...item, ...productDetails };
         })
       );
@@ -80,9 +79,8 @@ export default function Carrito() {
       setLoading(false);
     };
     loadCart();
-  }, []);
+  }, [fetchCart, fetchTotals, fetchProductDetails]);
 
-  // Remueve un producto del carrito
   const removeItem = async (id_producto) => {
     try {
       const token = localStorage.getItem("token");
@@ -95,7 +93,7 @@ export default function Carrito() {
       });
       const data = await res.json();
       setMensaje(data.message);
-      // Re-cargar carrito y totales
+      // Reload cart and totals
       const items = await fetchCart();
       const itemsWithDetails = await Promise.all(
         items.map(async (item) => {
@@ -111,7 +109,7 @@ export default function Carrito() {
     }
   };
 
-  // Placeholders para envío y tax (ajusta según tu lógica)
+  // Example shipping and tax placeholders
   const shippingEstimate = 8.32;
   const taxEstimate = 5.82;
   const orderTotal = totals.total || 0;
@@ -128,7 +126,6 @@ export default function Carrito() {
 
   return (
     <Layout>
-      {/* Contenedor principal: 100vh menos 112px del navbar */}
       <div className="mt-[112px] h-[calc(100vh-112px)] max-w-7xl mx-auto p-6 flex flex-col">
         <h1 className="text-3xl font-bold mb-6">Tu Carrito</h1>
         {mensaje && <p className="text-red-500 mb-4">{mensaje}</p>}
@@ -136,19 +133,20 @@ export default function Carrito() {
           <p className="text-lg">El carrito está vacío.</p>
         ) : (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 flex-1 overflow-hidden">
-            {/* IZQUIERDA: Lista de productos (scrollable) */}
+            {/* Left: Product List */}
             <div className="lg:col-span-2 overflow-auto pr-2">
               {cartItems.map((item) => (
                 <div
                   key={item.id_producto}
                   className="flex items-center border-b border-gray-200 py-6"
                 >
-                  {/* Imagen del producto */}
                   <div className="w-24 h-24 bg-gray-100 rounded-md overflow-hidden mr-4">
                     {item.imagenes && item.imagenes.length > 0 ? (
-                      <img
+                      <Image
                         src={item.imagenes[0].url_imagen}
                         alt={item.nombre}
+                        width={96}
+                        height={96}
                         className="object-cover w-full h-full"
                       />
                     ) : (
@@ -157,12 +155,10 @@ export default function Carrito() {
                       </div>
                     )}
                   </div>
-                  {/* Detalles del producto */}
                   <div className="flex-1">
                     <h2 className="text-base font-semibold text-gray-900">
                       {item.nombre}
                     </h2>
-                    {/* En lugar de "color", usamos "raza" y en lugar de "size", "peso" */}
                     <p className="text-sm text-gray-500">
                       Raza: {item.raza || "Desconocida"}
                     </p>
@@ -170,7 +166,6 @@ export default function Carrito() {
                       Peso: {item.peso || "N/A"}
                     </p>
                   </div>
-                  {/* Cantidad y botón de eliminar */}
                   <div className="ml-6 flex flex-col items-end">
                     <p className="text-sm text-gray-700 mb-1">
                       Qty: {item.cantidad}
@@ -185,8 +180,7 @@ export default function Carrito() {
                 </div>
               ))}
             </div>
-
-            {/* DERECHA: Resumen de la orden */}
+            {/* Right: Order Summary */}
             <div className="bg-gray-50 p-6 rounded-md shadow-md h-fit">
               <h2 className="text-lg font-medium text-gray-900 mb-4">
                 Order summary
@@ -195,7 +189,6 @@ export default function Carrito() {
                 <p>Subtotal</p>
                 <p>${totals.subtotal}</p>
               </div>
-              {/* Se usa Disclosure de Headless UI para detalles opcionales */}
               <Disclosure>
                 {({ open }) => (
                   <>

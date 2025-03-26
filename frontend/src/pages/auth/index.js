@@ -1,13 +1,13 @@
-// pages/auth/index.js
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
 import { AuthContext } from "@/src/context/AuthContext";
+import Image from "next/image";
 
 export default function Login() {
   const router = useRouter();
   const { token, login, registerUser } = useContext(AuthContext);
-  const [modo, setModo] = useState("login"); // "login" o "register"
+  const [modo, setModo] = useState("login"); // "login" or "register"
   const [correo, setCorreo] = useState("");
   const [contraseña, setContraseña] = useState("");
   const [nombre, setNombre] = useState("");
@@ -15,7 +15,7 @@ export default function Login() {
   const [mensaje, setMensaje] = useState("");
 
   useEffect(() => {
-    // Si ya hay token (sesión iniciada), redirige a /perfil
+    // If token exists, redirect to profile
     if (token) {
       router.push("/perfil");
     }
@@ -25,7 +25,6 @@ export default function Login() {
     e.preventDefault();
     setMensaje("");
     try {
-      // login se encarga de enviar { correo, contraseña } al backend y actualizar el estado
       await login({ correo, contraseña });
       router.push("/perfil");
     } catch (error) {
@@ -43,7 +42,6 @@ export default function Login() {
         correo,
         contraseña,
       });
-      // Luego de registrar, redirige a la misma página de login ("/auth")
       router.push("/auth");
     } catch (error) {
       console.error("Error al crear cuenta:", error);
@@ -100,9 +98,11 @@ export default function Login() {
                     onClick={() => setModo("register")}
                   >
                     Crear cuenta
-                    <img
+                    <Image
                       src="/SVGs/derecha.svg"
                       alt="Ir"
+                      width={16}
+                      height={16}
                       className="w-4 h-4 ml-1"
                     />
                   </span>
@@ -176,9 +176,11 @@ export default function Login() {
                     onClick={() => setModo("login")}
                   >
                     Iniciar Sesión
-                    <img
+                    <Image
                       src="/SVGs/derecha.svg"
                       alt="Ir"
+                      width={16}
+                      height={16}
                       className="w-4 h-4 ml-1"
                     />
                   </span>

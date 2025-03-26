@@ -68,13 +68,19 @@ export default function HeroCarousel() {
           );
         })}
       </Slider>
-      {/* Controles en la esquina inferior derecha */}
+      {/* Controls in the bottom-right corner */}
       <div className="absolute bottom-5 right-5 flex items-center gap-4 bg-white rounded-full py-1">
         <button
           onClick={handlePrev}
           className="bg-white rounded-full shadow p-2"
         >
-          <img src="/SVGs/izquierda.svg" alt="Anterior" className="w-4 h-4" />
+          <Image
+            src="/SVGs/izquierda.svg"
+            alt="Anterior"
+            width={16}
+            height={16}
+            className="w-4 h-4"
+          />
         </button>
         <span className="text-black text-lg">
           {currentSlide + 1}/{images.length}
@@ -83,7 +89,13 @@ export default function HeroCarousel() {
           onClick={handleNext}
           className="bg-white rounded-full shadow p-2"
         >
-          <img src="/SVGs/derecha.svg" alt="Siguiente" className="w-4 h-4" />
+          <Image
+            src="/SVGs/derecha.svg"
+            alt="Siguiente"
+            width={16}
+            height={16}
+            className="w-4 h-4"
+          />
         </button>
       </div>
     </div>

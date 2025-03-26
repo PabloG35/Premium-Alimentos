@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
@@ -51,6 +52,7 @@ export default function CartModal({ open, setOpen }) {
     }
   };
 
+  // Función que carga el carrito y los totales
   const loadCart = async () => {
     setLoading(true);
     await fetchCart();
@@ -60,9 +62,11 @@ export default function CartModal({ open, setOpen }) {
 
   useEffect(() => {
     if (open) {
-      loadCart();
-      setMensaje("");
-      setStockError("");
+      (async () => {
+        setMensaje("");
+        setStockError("");
+        await loadCart();
+      })();
     }
   }, [open]);
 
@@ -163,9 +167,11 @@ export default function CartModal({ open, setOpen }) {
                         className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
                       >
                         <span className="sr-only">Close panel</span>
-                        <img
+                        <Image
                           src="/SVGs/equis.svg"
                           alt="Cerrar modal"
+                          width={24}
+                          height={24}
                           className="w-6 h-6"
                         />
                       </button>
@@ -199,9 +205,11 @@ export default function CartModal({ open, setOpen }) {
                                 className="flex py-6"
                               >
                                 <div className="w-24 shrink-0 overflow-hidden rounded-md border border-gray-200">
-                                  <img
+                                  <Image
                                     alt={product.nombre}
                                     src={imageUrl}
+                                    width={96}
+                                    height={96}
                                     className="w-full object-cover"
                                   />
                                 </div>

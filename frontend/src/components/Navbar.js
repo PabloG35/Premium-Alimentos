@@ -4,7 +4,7 @@ import styles from "@/src/styles/navbar.module.css";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/src/context/AuthContext";
 import { CartContext } from "@/src/context/CartContext";
-import CartModal from "@/src/components/CardModal"; // Ajusta la ruta según tu estructura
+import CartModal from "@/src/components/CartModal"; // Ajusta la ruta según tu estructura
 
 export default function Navbar() {
   const { token } = useContext(AuthContext);
@@ -110,21 +110,31 @@ export default function Navbar() {
                 aria-label="Buscar"
                 className="flex items-center justify-center"
               >
-                <img src="/SVGs/lupa.svg" alt="Buscar" className="w-6 h-6" />
+                <Image
+                  src="/SVGs/lupa.svg"
+                  alt="Buscar"
+                  width={24}
+                  height={24}
+                  className="w-6 h-6"
+                />
               </button>
               {token ? (
                 <Link href="/perfil">
-                  <img
+                  <Image
                     src="/SVGs/usuarioMas.svg"
                     alt="Perfil"
+                    width={24}
+                    height={24}
                     className="w-6 h-6 cursor-pointer"
                   />
                 </Link>
               ) : (
                 <Link href="/auth">
-                  <img
+                  <Image
                     src="/SVGs/usuarioLogin.svg"
                     alt="Usuario"
+                    width={24}
+                    height={24}
                     className="w-6 h-6"
                   />
                 </Link>
@@ -134,9 +144,11 @@ export default function Navbar() {
                 onClick={() => setCartModalOpen(true)}
                 className="relative flex items-center justify-center"
               >
-                <img
+                <Image
                   src="/SVGs/carrito.svg"
                   alt="Carrito"
+                  width={24}
+                  height={24}
                   className="w-6 h-6"
                 />
                 {cantidadEnCarrito > 0 && (

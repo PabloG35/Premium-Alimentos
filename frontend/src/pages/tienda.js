@@ -1,4 +1,3 @@
-// src/pages/tienda.js
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
@@ -6,26 +5,27 @@ import Link from "next/link";
 import ProductTemplate from "@/src/components/ProductTemplate";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
 import styles from "../styles/tienda.module.css";
+import Image from "next/image";
 
 export default function Tienda() {
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
   const router = useRouter();
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filtros
+  // Filters
   const [selectedMarcas, setSelectedMarcas] = useState([]);
   const [selectedEdad, setSelectedEdad] = useState([]);
   const [selectedRazas, setSelectedRazas] = useState([]);
   const [enExistencia, setEnExistencia] = useState(false);
 
-  // Estados para secciones colapsables
+  // States for collapsible sections
   const [openMarcas, setOpenMarcas] = useState(true);
   const [openEdad, setOpenEdad] = useState(true);
   const [openRaza, setOpenRaza] = useState(true);
   const [openExistencia, setOpenExistencia] = useState(true);
 
-  // Opciones para los filtros
+  // Options for filters
   const marcasOptions = [
     "Royal Canin",
     "Diamond Naturals",
@@ -119,18 +119,20 @@ export default function Tienda() {
       <div className="p-6 mt-[112px] mb-40">
         <h1 className="text-4xl heading mb-8">Tienda</h1>
         <div className="flex w-full max-w-6xl mx-auto">
-          {/* Sidebar de filtros */}
+          {/* Sidebar Filters */}
           <aside className="w-1/4 pr-4 space-y-4">
-            {/* Filtro Marcas */}
+            {/* Marcas Filter */}
             <div>
               <div
                 onClick={() => setOpenMarcas(!openMarcas)}
-                className="flex items-center justify-between cursor-pointer "
+                className="flex items-center justify-between cursor-pointer"
               >
                 <h2 className="text-2xl heading">Marcas</h2>
-                <img
+                <Image
                   src={openMarcas ? "/SVGs/arriba.svg" : "/SVGs/abajo.svg"}
                   alt="Toggle Marcas"
+                  width={24}
+                  height={24}
                   className="w-6 h-6 transition-transform duration-100"
                 />
               </div>
@@ -144,7 +146,7 @@ export default function Tienda() {
                         id={`marca-${marca}`}
                         checked={selectedMarcas.includes(marca)}
                         onChange={() => toggleMarca(marca)}
-                        className="mr-2 cursor-pointer "
+                        className="mr-2 cursor-pointer"
                       />
                       <label
                         htmlFor={`marca-${marca}`}
@@ -157,16 +159,18 @@ export default function Tienda() {
                 </div>
               )}
             </div>
-            {/* Filtro Edad */}
+            {/* Edad Filter */}
             <div>
               <div
                 onClick={() => setOpenEdad(!openEdad)}
                 className="flex items-center justify-between cursor-pointer"
               >
                 <h2 className="text-2xl heading">Edad</h2>
-                <img
+                <Image
                   src={openEdad ? "/SVGs/arriba.svg" : "/SVGs/abajo.svg"}
                   alt="Toggle Edad"
+                  width={24}
+                  height={24}
                   className="w-6 h-6 transition-transform duration-100"
                 />
               </div>
@@ -193,16 +197,18 @@ export default function Tienda() {
                 </div>
               )}
             </div>
-            {/* Filtro Raza */}
+            {/* Raza Filter */}
             <div>
               <div
                 onClick={() => setOpenRaza(!openRaza)}
                 className="flex items-center justify-between cursor-pointer"
               >
                 <h2 className="text-2xl heading">Raza</h2>
-                <img
+                <Image
                   src={openRaza ? "/SVGs/arriba.svg" : "/SVGs/abajo.svg"}
                   alt="Toggle Raza"
+                  width={24}
+                  height={24}
                   className="w-6 h-6 transition-transform duration-100"
                 />
               </div>
@@ -229,16 +235,18 @@ export default function Tienda() {
                 </div>
               )}
             </div>
-            {/* Filtro En existencia */}
+            {/* Disponibilidad Filter */}
             <div>
               <div
                 onClick={() => setOpenExistencia(!openExistencia)}
                 className="flex items-center justify-between cursor-pointer"
               >
                 <h2 className="text-2xl heading">Disponibilidad</h2>
-                <img
+                <Image
                   src={openExistencia ? "/SVGs/arriba.svg" : "/SVGs/abajo.svg"}
                   alt="Toggle Existencia"
+                  width={24}
+                  height={24}
                   className="w-6 h-6 transition-transform duration-100"
                 />
               </div>
@@ -290,7 +298,7 @@ export default function Tienda() {
               )}
             </div>
           </aside>
-          {/* Área de productos */}
+          {/* Products Area */}
           <main className="w-3/4">
             {loading ? (
               <div className="flex items-center justify-center min-h-[300px]">
