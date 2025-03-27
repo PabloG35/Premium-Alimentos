@@ -4,6 +4,8 @@ import Image from "next/image";
 import { AuthContext } from "@/src/context/AuthContext";
 import { CartContext } from "@/src/context/CartContext";
 
+
+
 export default function ProductTemplate({
   product,
   showImage = true,

@@ -2,7 +2,7 @@ import { createContext, useState, useEffect, useCallback } from "react";
 
 export const CartContext = createContext();
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
@@ -15,7 +15,7 @@ export const CartProvider = ({ children }) => {
     const token = getToken();
     if (!token) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/carrito`, {
+      const res = await fetch(`${BACKEND_URL}/api/carrito`, {
         headers: { Authorization: `Bearer ${token}` },
       });
       if (res.ok) {
@@ -28,13 +28,13 @@ export const CartProvider = ({ children }) => {
       console.error("Error fetching cart:", error);
       setCartItems([]);
     }
-  }, [API_BASE_URL]);
+  }, [BACKEND_URL]);
 
   const addToCart = async (item) => {
     const token = getToken();
     if (!token) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/carrito`, {
+      const res = await fetch(`${BACKEND_URL}/api/carrito`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -54,7 +54,7 @@ export const CartProvider = ({ children }) => {
     const token = getToken();
     if (!token) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/carrito/${id_producto}`, {
+      const res = await fetch(`${BACKEND_URL}/api/carrito/${id_producto}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
