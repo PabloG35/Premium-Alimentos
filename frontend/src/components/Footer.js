@@ -1,3 +1,4 @@
+// src/components/Footer.js
 import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -42,20 +43,19 @@ export default function Footer() {
   return (
     <footer className="bg-pm-azulFuerte text-white py-12">
       <div className="container mx-auto px-8">
-        {/* Parte superior: 4 columnas con menor gap */}
+        {/* Parte superior: 4 columnas */}
         <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          {/* Columna 1: Logo, Descripción y Redes Sociales */}
+          {/* Columna 1: Logo, descripción y redes sociales */}
           <div>
             <Link href="/">
-              <a>
-                <Image
-                  src="/PremiumAlimentos/logo.png"
-                  alt="Logo Premium Alimentos"
-                  width={192}
-                  height={64}
-                  className="cursor-pointer transition-colors duration-300 hover:opacity-75"
-                />
-              </a>
+              <Image
+                src="/PremiumAlimentos/logo.png"
+                alt="Logo Premium Alimentos"
+                width={192}
+                height={64}
+                style={{ objectFit: "contain" }}
+                className="cursor-pointer transition-colors duration-300 hover:opacity-75"
+              />
             </Link>
             <p className="text-md leading-6 w-72 pt-4">
               En Premium Alimentos vendemos tranquilidad, salud y felicidad en
@@ -64,48 +64,40 @@ export default function Footer() {
             </p>
             <div className="flex space-x-2 mt-10">
               <Link href="#">
-                <a>
-                  <Image
-                    src="/SVGs/whatsapp.svg"
-                    alt="WhatsApp"
-                    width={48}
-                    height={48}
-                    className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
-                  />
-                </a>
+                <Image
+                  src="/SVGs/whatsapp.svg"
+                  alt="WhatsApp"
+                  width={48}
+                  height={48}
+                  className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
+                />
               </Link>
               <Link href="#">
-                <a>
-                  <Image
-                    src="/SVGs/facebook.svg"
-                    alt="Facebook"
-                    width={48}
-                    height={48}
-                    className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
-                  />
-                </a>
+                <Image
+                  src="/SVGs/facebook.svg"
+                  alt="Facebook"
+                  width={48}
+                  height={48}
+                  className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
+                />
               </Link>
               <Link href="#">
-                <a>
-                  <Image
-                    src="/SVGs/instagram.svg"
-                    alt="Instagram"
-                    width={48}
-                    height={48}
-                    className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
-                  />
-                </a>
+                <Image
+                  src="/SVGs/instagram.svg"
+                  alt="Instagram"
+                  width={48}
+                  height={48}
+                  className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
+                />
               </Link>
               <Link href="#">
-                <a>
-                  <Image
-                    src="/SVGs/tiktok.svg"
-                    alt="Tiktok"
-                    width={48}
-                    height={48}
-                    className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
-                  />
-                </a>
+                <Image
+                  src="/SVGs/tiktok.svg"
+                  alt="Tiktok"
+                  width={48}
+                  height={48}
+                  className="transition-colors duration-300 hover:filter hover:brightness-125 cursor-pointer"
+                />
               </Link>
             </div>
           </div>
@@ -164,14 +156,14 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Columna 3: Avisos de Privacida */}
+          {/* Columna 3: Avisos de Privacidad */}
           <div>
             <h3 className="text-2xl text-pm-orange mb-2 pt-6">
               <Link
                 href="/privacidad/privacidad"
                 className="transition-colors duration-300 heading hover:text-pm-naranja cursor-pointer"
               >
-                Avisos de Privacida
+                Avisos de Privacidad
               </Link>
             </h3>
             <ul className="space-y-1 text-lg">
@@ -221,6 +213,8 @@ export default function Footer() {
             <div className="flex">
               <input
                 type="email"
+                id="correoFooter"
+                name="correo"
                 placeholder="Tu correo"
                 value={correo}
                 onChange={(e) => setCorreo(e.target.value)}
@@ -245,7 +239,6 @@ export default function Footer() {
 
         {/* Parte inferior */}
         <div className="mt-8 border-t border-gray-200 pt-6 pb-6 text-center text-sm">
-          {/* Íconos de pago y métodos */}
           <div className="flex justify-center items-center space-x-4 mb-4">
             <Image
               src="/SVGs/spei.svg"
@@ -259,7 +252,6 @@ export default function Footer() {
               alt="Mastercard"
               width={64}
               height={64}
-              className=""
             />
             <Image
               src="/SVGs/visa.svg"

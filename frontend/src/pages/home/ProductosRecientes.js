@@ -1,10 +1,10 @@
+// src/pages/home/ProductosRecientes
 import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import styles from "../../styles/productosRecientes.module.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductTemplate from "@/src/components/ProductTemplate";
-import Image from "next/image";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -19,7 +19,7 @@ const CustomNextArrow = ({ className, style, onClick, pauseAutoplay }) => {
       style={{ ...style, display: "block" }}
       onClick={handleClick}
     >
-      <Image src="/SVGs/derecha.svg" alt="Siguiente" width={16} height={16} />
+      <img src="/SVGs/derecha.svg" alt="Siguiente" />
     </div>
   );
 };
@@ -35,7 +35,7 @@ const CustomPrevArrow = ({ className, style, onClick, pauseAutoplay }) => {
       style={{ ...style, display: "block" }}
       onClick={handleClick}
     >
-      <Image src="/SVGs/izquierda.svg" alt="Anterior" width={16} height={16} />
+      <img src="/SVGs/izquierda.svg" alt="Anterior" />
     </div>
   );
 };

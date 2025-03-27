@@ -1,0 +1,1 @@
+// src/pages/reviews/[id].js

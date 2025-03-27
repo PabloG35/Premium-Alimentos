@@ -8,7 +8,7 @@ import styles from "../styles/tienda.module.css";
 import Image from "next/image";
 
 export default function Tienda() {
-  const BACKEND_URL = process.env.NEXT_PUBLIC_API_URL;
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
   const router = useRouter();
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);

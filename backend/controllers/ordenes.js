@@ -8,6 +8,7 @@ export const crearOrden = async (req, res) => {
     const { metodo_pago } = req.body;
     const pool = await getPool();
 
+    // Obtener los productos del carrito
     const { rows: carritoRows } = await pool.query(
       `SELECT c.id_producto, p.nombre, p.precio, c.cantidad
        FROM carrito c
@@ -19,6 +20,7 @@ export const crearOrden = async (req, res) => {
       return res.status(400).json({ error: "El carrito está vacío" });
     }
 
+    // Calcular subtotal, envío y total
     const subtotal = carritoRows.reduce(
       (acc, item) => acc + item.precio * item.cantidad,
       0
@@ -26,13 +28,19 @@ export const crearOrden = async (req, res) => {
     const envio = subtotal >= 999 ? 0 : 199;
     const total = subtotal + envio;
 
+    // Insertar la orden, asignando el número secuencial con la secuencia ordenes_num_seq
     const { rows: nuevaOrdenRows } = await pool.query(
-      `INSERT INTO ordenes (id_usuario, total, estado_pago, estado_orden, fecha_orden, metodo_pago)
-       VALUES ($1, $2, 'Pendiente', 'Preparando', NOW(), $3) RETURNING id_orden`,
+      `INSERT INTO ordenes (
+          id_usuario, total, estado_pago, estado_orden, fecha_orden, metodo_pago, numero_orden
+       )
+       VALUES ($1, $2, 'Pendiente', 'Preparando', NOW(), $3, nextval('ordenes_num_seq'))
+       RETURNING id_orden, numero_orden`,
       [id_usuario, total, metodo_pago]
     );
     const id_orden = nuevaOrdenRows[0].id_orden;
+    const numero_orden = nuevaOrdenRows[0].numero_orden;
 
+    // Configurar la preferencia de pago (Mercado Pago)
     const preference = {
       items: carritoRows.map((item) => ({
         title: item.nombre,
@@ -54,6 +62,7 @@ export const crearOrden = async (req, res) => {
     const response = await mercadopago.preferences.create(preference);
     const pago_url = response.body.init_point;
 
+    // Insertar cada detalle de la orden y actualizar el stock
     for (let item of carritoRows) {
       await pool.query(
         `INSERT INTO detalles_orden (id_orden, id_producto, cantidad, subtotal)
@@ -65,11 +74,14 @@ export const crearOrden = async (req, res) => {
         [item.cantidad, item.id_producto]
       );
     }
+
+    // Vaciar el carrito
     await pool.query(`DELETE FROM carrito WHERE id_usuario = $1`, [id_usuario]);
 
     return res.json({
       message: "Orden creada exitosamente",
       id_orden,
+      numero_orden, // Este número se puede mostrar en la UI con el formato deseado, por ejemplo, "#0001"
       total,
       pago_url,
     });
@@ -84,16 +96,32 @@ export const obtenerOrdenes = async (req, res) => {
     const { id_usuario } = req.usuario;
     const pool = await getPool();
     const { rows: ordenes } = await pool.query(
-      `SELECT o.*, 
-              json_agg(json_build_object(
-                  'id_producto', d.id_producto,
-                  'cantidad', d.cantidad,
-                  'subtotal', d.subtotal
-              )) AS productos
+      `SELECT 
+         o.numero_orden,
+         o.id_orden, 
+         o.total, 
+         o.estado_pago, 
+         o.estado_orden, 
+         o.fecha_orden, 
+         o.metodo_pago,
+         json_agg(
+           json_build_object(
+             'id_producto', d.id_producto,
+             'cantidad', d.cantidad,
+             'subtotal', d.subtotal,
+             'nombre', p.nombre,
+             'imagenes', (
+               SELECT json_agg(ip)
+               FROM imagenes_producto ip
+               WHERE ip.id_producto = p.id_producto
+             )
+           )
+         ) AS productos
        FROM ordenes o
        INNER JOIN detalles_orden d ON o.id_orden = d.id_orden
+       INNER JOIN productos p ON d.id_producto = p.id_producto
        WHERE o.id_usuario = $1
-       GROUP BY o.id_orden
+       GROUP BY o.id_orden, o.numero_orden
        ORDER BY o.fecha_orden DESC`,
       [id_usuario]
     );
@@ -109,6 +137,7 @@ export const obtenerTodasOrdenes = async (req, res) => {
     const pool = await getPool();
     const { rows: ordenes } = await pool.query(
       `SELECT 
+         o.numero_orden,
          o.id_orden, 
          o.total, 
          o.estado_pago, 
@@ -117,20 +146,77 @@ export const obtenerTodasOrdenes = async (req, res) => {
          o.metodo_pago,
          u.nombre_usuario AS usuario, 
          u.correo,
-         COALESCE(json_agg(json_build_object(
-           'id_producto', d.id_producto,
-           'cantidad', d.cantidad,
-           'subtotal', d.subtotal
-         )) FILTER (WHERE d.id_producto IS NOT NULL), '[]') AS productos
+         COALESCE(
+           json_agg(
+             json_build_object(
+               'id_producto', d.id_producto,
+               'cantidad', d.cantidad,
+               'subtotal', d.subtotal,
+               'nombre', p.nombre,
+               'imagenes', (
+                 SELECT json_agg(ip)
+                 FROM imagenes_producto ip
+                 WHERE ip.id_producto = p.id_producto
+               )
+             )
+           ) FILTER (WHERE d.id_producto IS NOT NULL), '[]'
+         ) AS productos
        FROM ordenes o
        INNER JOIN usuarios u ON o.id_usuario = u.id_usuario
        LEFT JOIN detalles_orden d ON o.id_orden = d.id_orden
-       GROUP BY o.id_orden, u.nombre_usuario, u.correo
-       ORDER BY o.fecha_orden DESC`
+       LEFT JOIN productos p ON d.id_producto = p.id_producto
+       GROUP BY o.id_orden, o.numero_orden, u.nombre_usuario, u.correo
+       ORDER BY o.fecha_orden DESC`,
+      []
     );
     return res.json({ ordenes });
   } catch (error) {
     console.error("Error al obtener todas las órdenes:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+};
+
+export const obtenerOrdenesRecientes = async (req, res) => {
+  try {
+    const pool = await getPool();
+    const { rows: ordenes } = await pool.query(
+      `SELECT 
+         o.numero_orden,
+         o.id_orden, 
+         o.total, 
+         o.estado_pago, 
+         o.estado_orden, 
+         o.fecha_orden, 
+         o.metodo_pago,
+         u.nombre_usuario AS usuario, 
+         u.correo,
+         COALESCE(
+           json_agg(
+             json_build_object(
+               'id_producto', d.id_producto,
+               'cantidad', d.cantidad,
+               'subtotal', d.subtotal,
+               'nombre', p.nombre,
+               'imagenes', (
+                 SELECT json_agg(ip)
+                 FROM imagenes_producto ip
+                 WHERE ip.id_producto = p.id_producto
+               )
+             )
+           ) FILTER (WHERE d.id_producto IS NOT NULL), '[]'
+         ) AS productos
+       FROM ordenes o
+       INNER JOIN usuarios u ON o.id_usuario = u.id_usuario
+       LEFT JOIN detalles_orden d ON o.id_orden = d.id_orden
+       LEFT JOIN productos p ON d.id_producto = p.id_producto
+       GROUP BY o.id_orden, o.numero_orden, u.nombre_usuario, u.correo
+       ORDER BY o.fecha_orden DESC
+       LIMIT 8`,
+      []
+    );
+    return res.json({ ordenes });
+  } catch (error) {
+    console.error("Error al obtener órdenes recientes:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
@@ -175,8 +261,9 @@ export const eliminarOrden = async (req, res) => {
   }
 };
 
-export const obtenerOrdenesRecientes = async (req, res) => {
+export const obtenerOrdenesUsuario = async (req, res) => {
   try {
+    const { id_usuario } = req.usuario; // Token decodificado
     const pool = await getPool();
     const { rows: ordenes } = await pool.query(
       `SELECT 
@@ -186,8 +273,6 @@ export const obtenerOrdenesRecientes = async (req, res) => {
          o.estado_orden, 
          o.fecha_orden, 
          o.metodo_pago,
-         u.nombre_usuario AS usuario, 
-         u.correo,
          COALESCE(
            json_agg(
              json_build_object(
@@ -195,18 +280,19 @@ export const obtenerOrdenesRecientes = async (req, res) => {
                'cantidad', d.cantidad,
                'subtotal', d.subtotal
              )
-           ) FILTER (WHERE d.id_producto IS NOT NULL), '[]'
+           ) FILTER (WHERE d.id_producto IS NOT NULL),
+           '[]'
          ) AS productos
        FROM ordenes o
-       INNER JOIN usuarios u ON o.id_usuario = u.id_usuario
        LEFT JOIN detalles_orden d ON o.id_orden = d.id_orden
-       GROUP BY o.id_orden, u.nombre_usuario, u.correo
-       ORDER BY o.fecha_orden DESC
-       LIMIT 8`
+       WHERE o.id_usuario = $1
+       GROUP BY o.id_orden
+       ORDER BY o.fecha_orden DESC`,
+      [id_usuario]
     );
     return res.json({ ordenes });
   } catch (error) {
-    console.error("Error al obtener órdenes recientes:", error);
+    console.error("Error al obtener órdenes del usuario:", error);
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };

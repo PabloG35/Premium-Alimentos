@@ -17,6 +17,8 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-fast-marquee": "^1.6.5",
+    "react-grid-gallery": "^1.0.1",
+    "react-image-lightbox": "^5.1.4",
     "react-slick": "^0.30.3",
     "react-toastify": "^11.0.3",
     "slick-carousel": "^1.8.1"

@@ -329,4 +329,3 @@ export const subirImagenProducto = async (req, res) => {
     return res.status(500).json({ error: "Error al subir imagen" });
   }
 };
-
