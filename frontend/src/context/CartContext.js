@@ -2,7 +2,7 @@ import { createContext, useState, useEffect, useCallback } from "react";
 
 export const CartContext = createContext();
 
-const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export const CartProvider = ({ children }) => {
   const [cartItems, setCartItems] = useState([]);
@@ -28,7 +28,7 @@ export const CartProvider = ({ children }) => {
       console.error("Error fetching cart:", error);
       setCartItems([]);
     }
-  }, [BACKEND_URL]);
+  }, []);
 
   const addToCart = async (item) => {
     const token = getToken();

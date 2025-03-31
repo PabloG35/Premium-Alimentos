@@ -2,22 +2,28 @@
 import { useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "@/src/context/AuthContext";
+import LoadingAnimation from "@/src/components/LoadingAnimation";
 
 const ProtectedRoute = ({ children }) => {
-  const { user, token } = useContext(AuthContext);
+  const { user, token, loading } = useContext(AuthContext);
   const router = useRouter();
 
   useEffect(() => {
-    // Si no hay token o user, redirige a login
-    if (!token || !user) {
+    if (!loading && (!token || !user)) {
       router.replace("/auth");
     }
-  }, [token, user, router]);
+  }, [token, user, loading, router]);
 
-  if (!token || !user) {
-    return <p>Cargando...</p>;
-  }
-  return children;
+  return (
+    <>
+      {children}
+      {(loading || (!token || !user)) && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-white/70 backdrop-blur-sm">
+          <LoadingAnimation />
+        </div>
+      )}
+    </>
+  );
 };
 
 export default ProtectedRoute;

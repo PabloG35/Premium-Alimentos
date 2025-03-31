@@ -1,9 +1,12 @@
-import { useState, useEffect, useRef } from "react";
+// src/pages/tienda/[id].js
+import { useState, useEffect, useRef, useContext } from "react";
 import { useRouter } from "next/router";
 import Navbar from "@/src/components/Navbar";
 import Footer from "@/src/components/Footer";
 import Image from "next/image";
-import ReviewsSlider from "./ReviewsSlider"; // Adjust the path if needed
+import ReviewsSlider from "./ReviewsSlider"; // Ajusta la ruta si es necesario
+import { CartContext } from "@/src/context/CartContext"; // Importa el contexto del carrito
+import LoadingAnimation from "@/src/components/LoadingAnimation"; // Importa la animación de carga
 
 function IngredientDropdown({ category, items }) {
   const [open, setOpen] = useState(false);
@@ -26,7 +29,9 @@ function IngredientDropdown({ category, items }) {
       >
         {category}
         <span
-          className={`transform transition duration-300 ${open ? "rotate-180" : "rotate-0"}`}
+          className={`transform transition duration-300 ${
+            open ? "rotate-180" : "rotate-0"
+          }`}
         >
           <svg
             className="w-4 h-4"
@@ -68,6 +73,7 @@ export default function ProductDetail() {
   const router = useRouter();
   const { id } = router.query;
   const reviewsRef = useRef(null);
+  const { addToCart } = useContext(CartContext); // Extrae addToCart del contexto
 
   const [producto, setProducto] = useState(null);
   const [reviews, setReviews] = useState([]);
@@ -79,7 +85,7 @@ export default function ProductDetail() {
 
   useEffect(() => {
     if (id) {
-      // Fetch the product
+      // Fetch del producto
       fetch(`${BACKEND_URL}/api/productos/${id}`)
         .then((res) => res.json())
         .then((data) => {
@@ -90,7 +96,7 @@ export default function ProductDetail() {
           console.error("Error al obtener el producto:", error);
           setLoading(false);
         });
-      // Fetch the reviews
+      // Fetch de las reseñas
       fetch(`${BACKEND_URL}/api/usuario/resenas/producto/${id}`)
         .then((res) => res.json())
         .then((data) => setReviews(data.resenas || []))
@@ -104,8 +110,11 @@ export default function ProductDetail() {
     return (
       <>
         <Navbar />
-        <div className="px-3 mt-[112px] max-w-[1400px] mx-auto bg-zinc-50">
-          Cargando producto...
+        <div
+          className="flex items-center justify-center"
+          style={{ height: "calc(100vh - 112px)", marginTop: "112px" }}
+        >
+          <LoadingAnimation />
         </div>
         <Footer />
       </>
@@ -129,12 +138,23 @@ export default function ProductDetail() {
     }
   };
 
+  // Función para agregar el producto al carrito utilizando el contexto
+  const handleAddToCart = async () => {
+    try {
+      await addToCart({ id_producto: producto.id_producto, cantidad: qty });
+      alert("Producto agregado al carrito");
+    } catch (error) {
+      console.error("Error al agregar al carrito:", error);
+      alert("Error al agregar al carrito");
+    }
+  };
+
   return (
     <>
       <Navbar />
       <div className="px-3 mt-[112px] max-w-[1400px] mx-auto bg-zinc-50 pb-8">
         <div className="flex pt-5 flex-col md:flex-row gap-6">
-          {/* Left: Image area with vertical thumbnails */}
+          {/* Left: Área de imagen con miniaturas verticales */}
           <div className="md:w-3/5 flex gap-4 h-[600px]">
             <div className="w-20 h-full flex flex-col gap-2">
               {producto.imagenes &&
@@ -205,7 +225,7 @@ export default function ProductDetail() {
               </button>
             </div>
           </div>
-          {/* Right: Product details */}
+          {/* Right: Detalles del producto */}
           <div className="md:w-2/5 flex flex-col gap-4">
             <h1 className="text-4xl heading">{producto.nombre}</h1>
             <p className="text-2xl text-green-600">${producto.precio}</p>
@@ -218,28 +238,46 @@ export default function ProductDetail() {
               className="flex items-center gap-2 cursor-pointer hover:opacity-80 transition"
             >
               <div className="flex items-center">
-                {reviews.length > 0 ? (
-                  Array.from({ length: 5 }).map((_, i) => (
-                    <Image
-                      key={i}
-                      src={
-                        i < displayRating
-                          ? "/SVGs/starIcon.svg"
-                          : "/SVGs/starIconEmpty.svg"
-                      }
-                      alt="star"
-                      width={20}
-                      height={20}
-                    />
-                  ))
-                ) : (
-                  <span className="text-lg">Sin reseñas</span>
-                )}
+                {Array.from({ length: 5 }).map((_, i) => (
+                  <Image
+                    key={i}
+                    src={
+                      i <
+                      (reviews.length > 0
+                        ? Math.floor(
+                            reviews.reduce(
+                              (acc, r) => acc + r.calificacion,
+                              0
+                            ) /
+                              reviews.length +
+                              0.4
+                          )
+                        : 0)
+                        ? "/SVGs/starIcon.svg"
+                        : "/SVGs/starIconEmpty.svg"
+                    }
+                    alt="star"
+                    width={20}
+                    height={20}
+                  />
+                ))}
               </div>
-              <span className="text-lg">{reviews.length} reseñas</span>
+              {reviews.length > 0 && (
+                <span className="text-lg text-gray-600">
+                  {(
+                    reviews.reduce((acc, r) => acc + r.calificacion, 0) /
+                    reviews.length
+                  ).toFixed(1)}
+                </span>
+              )}
             </div>
+
             <div className="flex gap-4 w-full">
-              <button className="w-[80%] bg-blue-500 text-white px-4 py-3 rounded hover:bg-blue-600 transition">
+              {/* Botón "Agregar al carrito" con la función handleAddToCart */}
+              <button
+                onClick={handleAddToCart}
+                className="w-[80%] bg-blue-500 text-white px-4 py-3 rounded hover:bg-blue-600 transition"
+              >
                 Agregar al carrito
               </button>
               <div className="w-[20%] flex items-center justify-center border rounded">
@@ -257,7 +295,11 @@ export default function ProductDetail() {
                 </button>
               </div>
             </div>
-            <button className="w-full bg-green-500 text-white px-4 py-3 rounded hover:bg-green-600 transition">
+            {/* Botón "Comprar ahora" deshabilitado */}
+            <button
+              disabled
+              className="w-full bg-gray-500 text-white px-4 py-3 rounded cursor-not-allowed"
+            >
               Comprar ahora
             </button>
             <div className="flex mt-4">

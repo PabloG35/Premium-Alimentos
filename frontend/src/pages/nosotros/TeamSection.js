@@ -20,7 +20,10 @@ const TeamSection = () => {
       <div className="container mx-auto px-4">
         <h2 className="text-3xl font-semibold mb-4">Nuestro equipo</h2>
         <p className="text-lg text-gray-700 mb-8">
-          Somos un grupo dinámico de personas apasionadas por lo que hacemos...
+          Somos dueños de perros, como tú. Personas que vivimos los mismos
+          retos, y que decidimos hacer algo al respecto. Hoy, convertimos
+          nuestra experiencia en soluciones reales para quienes también buscan
+          lo mejor.
         </p>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 justify-items-center">
           {teamMembers.map((member, index) => (

@@ -13,11 +13,9 @@ export default function Example() {
       <div className="bg-zinc-100 h-[calc(100vh-112px)] mt-[112px] pt-9">
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-4xl heading tracking-tight text-gray-900 sm:text-5xl">
-            Contact sales
+            Contactanos
           </h2>
-          <p className="mt-2 text-lg/8 text-gray-600">
-            Aute magna irure deserunt veniam aliqua magna enim voluptate.
-          </p>
+          <p className="mt-2 text-lg/8 text-gray-600">Queremos escucharte.</p>
         </div>
         <form action="#" method="POST" className="mx-auto max-w-xl mt-10">
           <div className="grid grid-cols-1 gap-x-8 gap-y-3 sm:grid-cols-2">
@@ -26,7 +24,7 @@ export default function Example() {
                 htmlFor="first-name"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                First name
+                Nombre
               </label>
               <div className="mt-2.5">
                 <input
@@ -43,7 +41,7 @@ export default function Example() {
                 htmlFor="last-name"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                Last name
+                Apellido
               </label>
               <div className="mt-2.5">
                 <input
@@ -77,7 +75,7 @@ export default function Example() {
                 htmlFor="phone-number"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                Phone number
+                Numero de Telefono
               </label>
               <div className="mt-2.5">
                 <div className="flex rounded-md bg-white outline-1 -outline-offset-1 outline-gray-300 has-[input:focus-within]:outline-2 has-[input:focus-within]:-outline-offset-2 has-[input:focus-within]:outline-indigo-600">
@@ -89,9 +87,7 @@ export default function Example() {
                       aria-label="Country"
                       className="col-start-1 row-start-1 w-full appearance-none rounded-md py-2 pr-7 pl-3.5 text-base text-gray-500 placeholder:text-gray-400 focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600 sm:text-sm/6"
                     >
-                      <option>US</option>
-                      <option>CA</option>
-                      <option>EU</option>
+                      <option>MX</option>
                     </select>
                     <Image
                       src="/SVGs/abajo.svg"
@@ -116,7 +112,7 @@ export default function Example() {
                 htmlFor="message"
                 className="block text-sm/6 font-semibold text-gray-900"
               >
-                Message
+                Mensaje
               </label>
               <div className="mt-2.5">
                 <textarea

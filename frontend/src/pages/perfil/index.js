@@ -39,12 +39,15 @@ const Perfil = () => {
                 Ordenes
               </Tab>
               <Tab
-                className={({ selected }) =>
-                  `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700 ${
-                    selected
-                      ? "bg-white shadow"
-                      : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
-                  }`
+                disabled
+                className={({ selected, disabled }) =>
+                  disabled
+                    ? "w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-gray-500 opacity-50 cursor-not-allowed"
+                    : `w-full rounded-lg py-2.5 text-sm font-medium leading-5 text-blue-700 ${
+                        selected
+                          ? "bg-white shadow"
+                          : "text-blue-100 hover:bg-white/[0.12] hover:text-white"
+                      }`
                 }
               >
                 Mascotas

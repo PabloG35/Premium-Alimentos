@@ -1,7 +1,5 @@
-// src/pages/home/ProductosRecientes
 import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
-import styles from "../../styles/productosRecientes.module.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ProductTemplate from "@/src/components/ProductTemplate";
@@ -48,18 +46,14 @@ export default function RecentProductsCarousel() {
     const fetchRecentProducts = async () => {
       try {
         const url = `${BACKEND_URL}/api/productos/recientes`;
-        console.log("Fetching productos recientes desde:", url);
         const res = await fetch(url, { mode: "cors" });
-        if (!res.ok) {
-          throw new Error(`HTTP error! status: ${res.status}`);
-        }
+        if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
         const data = await res.json();
         setRecentProducts(Array.isArray(data) ? data : []);
       } catch (error) {
         console.error("Error fetching recent products:", error);
       }
     };
-
     fetchRecentProducts();
   }, []);
 
@@ -92,32 +86,44 @@ export default function RecentProductsCarousel() {
   };
 
   return (
-    <div className="">
+    <div className="mx-auto">
       <Slider ref={sliderRef} {...sliderSettings}>
-        {recentProducts.map((product) => (
-          <div key={product.id_producto} className="p-2">
-            <ProductTemplate
-              product={product}
-              showImage={true}
-              showTitle={true}
-              showPrice={true}
-              showRating={true}
-              showAddButton={true}
-              buttonText="Agregar carrito"
-              customClasses={{
-                imageContainer: styles.productImageContainer,
-                image: styles.productImage,
-                titleContainer: styles.titleContainer,
-                title: styles.productTitle,
-                price: styles.productPrice,
-                rating: styles.starsContainer,
-                star: styles.productStar,
-                ratingText: styles.productRatingText,
-                addButton: styles.addButton,
-              }}
-            />
-          </div>
-        ))}
+        {recentProducts.map((product) => {
+          const outOfStock = product?.stock <= 0;
+          return (
+            <div key={product.id_producto} className="px-6">
+              <ProductTemplate
+                product={product}
+                showImage={true}
+                showTitle={true}
+                showPrice={true}
+                showRating={true}
+                showAddButton={true}
+                showVerMasButton={true}
+                redirectOnImageClick={true}
+                buttonText="Agregar carrito"
+                customClasses={{
+                  container: "w-[100%]",
+                  imageContainer:
+                    "h-80 flex items-center justify-center cursor-pointer",
+                  image: "w-full h-full object-contain",
+                  titleContainer: "h-10 overflow-hidden",
+                  title: "text-sm font-bold text-center",
+                  price: "text-center text-lg",
+                  rating: "h-5 my-2 flex items-center justify-center",
+                  star: "w-5 mx-0.5",
+                  ratingText: "ml-2 text-sm",
+                  buttonContainer: "flex items-center gap-2 mt-2",
+                  addButton: outOfStock
+                    ? "bg-[#89B4FA] text-white py-3 px-4 rounded w-[60%]"
+                    : "bg-blue-500 text-white py-3 px-4 rounded w-[60%] transition-colors duration-300 hover:bg-blue-600",
+                  verMasButton:
+                    "bg-purple-500 text-white py-3 px-4 rounded w-[40%] transition-colors duration-300 hover:bg-purple-600",
+                }}
+              />
+            </div>
+          );
+        })}
       </Slider>
     </div>
   );

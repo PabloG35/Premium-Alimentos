@@ -4,7 +4,7 @@ import styles from "@/src/styles/navbar.module.css";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/src/context/AuthContext";
 import { CartContext } from "@/src/context/CartContext";
-import CartModal from "@/src/components/CartModal"; // Ajusta la ruta según tu estructura
+import CartModal from "@/src/components/CartModal"; 
 
 export default function Navbar() {
   const { token } = useContext(AuthContext);
@@ -53,7 +53,15 @@ export default function Navbar() {
               </Link>
               {/* Dropdown de TIENDA */}
               <div className={`${styles.menu} relative`}>
-                <h2 className={`${styles["menu-title"]}`}>TIENDA</h2>
+                <h2 className={`${styles["menu-title"]}`}>
+                  <Link
+                    href={{
+                      pathname: "/tienda",
+                    }}
+                  >
+                    TIENDA
+                  </Link>
+                </h2>
                 <ul className={`${styles["menu-dropdown"]} text-base`}>
                   <li>
                     <Link

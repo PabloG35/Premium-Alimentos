@@ -4,28 +4,28 @@ import React from "react";
 const ValuesSection = () => {
   const values = [
     {
-      title: "Be world-class",
-      description: "Ali utique ea. Ut enim at nominau omnius. Culpa ipsum...",
+      title: "Excelencia sin excepciones",
+      description: "Solo lo que le daríamos a nuestras propias mascotas",
     },
     {
-      title: "Share everything you know",
-      description: "Mollitia delectus a omnis. Quoe velit aliquid...",
+      title: "Compartimos para ayudarte a elegir mejor",
+      description: "Creemos en dueños informados, no confundidos",
     },
     {
-      title: "Always learning",
-      description: "At velit repellendus et officios fuga possimus...",
+      title: "Aprendemos junto a ti",
+      description: "Cada perro nos enseña a ser mejores",
     },
     {
-      title: "Innovation",
-      description: "Excepteur sint occaecat cupidatat non proident...",
+      title: "Innovación consciente",
+      description: "Traemos marcas que hacen las cosas distinto",
     },
     {
-      title: "Collaboration",
-      description: "Duis aute irure dolor in reprehenderit in voluptate...",
+      title: "Colaboración con propósito",
+      description: "Trabajamos con marcas que comparten nuestra visión",
     },
     {
-      title: "Passion",
-      description: "Sed ut perspiciatis unde omnis iste natus error...",
+      title: "Pasión por lo que importa",
+      description: "Amamos a los perros, y se nota en cada detalle",
     },
   ];
 

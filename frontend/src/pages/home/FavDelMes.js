@@ -1,8 +1,9 @@
+// src/pages/home/FavDelMes.js
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
 import ProductTemplate from "@/src/components/ProductTemplate";
 import { useRouter } from "next/router";
-import LoadingAnimation from "@/src/components/LoadingAnimation"; // Adjust the path if needed
+import LoadingAnimation from "@/src/components/LoadingAnimation";
 
 const FavDelMes = () => {
   const [product, setProduct] = useState(null);
@@ -10,7 +11,7 @@ const FavDelMes = () => {
   const router = useRouter();
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // Load the best-selling product (favorite of the month)
+  // Cargar el producto más vendido (favorito del mes)
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/productos/masvendido`)
       .then((res) => res.json())
@@ -28,7 +29,7 @@ const FavDelMes = () => {
     );
   }
 
-  // Ensure product.imagenes is an array and remove duplicates
+  // Asegurarse de que product.imagenes es un array único
   const images = Array.isArray(product.imagenes)
     ? product.imagenes.reduce((acc, curr) => {
         if (!acc.find((item) => item.url_imagen === curr.url_imagen)) {
@@ -41,9 +42,9 @@ const FavDelMes = () => {
   return (
     <div className="w-full h-[70vh] mt-10">
       <div className="flex h-full">
-        {/* Left Column: Image slider */}
+        {/* Columna Izquierda: Slider de imágenes */}
         <div className="md:w-3/5 flex gap-4 h-full">
-          {/* Vertical thumbnails */}
+          {/* Miniaturas verticales */}
           <div className="w-20 h-full flex flex-col gap-2 overflow-auto">
             {images.map((img, idx) => (
               <div
@@ -65,7 +66,7 @@ const FavDelMes = () => {
               </div>
             ))}
           </div>
-          {/* Main Image */}
+          {/* Imagen principal */}
           <div className="flex-1 relative group h-full">
             {images.length > 0 ? (
               <Image
@@ -80,7 +81,7 @@ const FavDelMes = () => {
                 Sin imagen
               </div>
             )}
-            {/* Previous image button */}
+            {/* Botón para imagen anterior */}
             <button
               onClick={() =>
                 images.length > 0 &&
@@ -90,15 +91,13 @@ const FavDelMes = () => {
               }
               className="absolute top-1/2 left-4 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition"
             >
-              <Image
+              <img
                 src="/SVGs/izquierda.svg"
                 alt="Anterior"
-                width={24}
-                height={24}
                 className="w-6 h-6"
               />
             </button>
-            {/* Next image button */}
+            {/* Botón para imagen siguiente */}
             <button
               onClick={() =>
                 images.length > 0 &&
@@ -106,39 +105,39 @@ const FavDelMes = () => {
               }
               className="absolute top-1/2 right-4 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition"
             >
-              <Image
+              <img
                 src="/SVGs/derecha.svg"
                 alt="Siguiente"
-                width={24}
-                height={24}
                 className="w-6 h-6"
               />
             </button>
           </div>
         </div>
 
-        {/* Right Column: Product details using ProductTemplate */}
+        {/* Columna Derecha: Detalles del producto usando ProductTemplate */}
         <div className="md:w-2/5 p-4 flex flex-col justify-center">
           <ProductTemplate
             product={product}
-            showImage={false} // Image is shown in the slider
+            showImage={false} // La imagen se muestra en el slider
             showTitle={true}
             showPrice={true}
             showRating={true}
-            showAddButton={true} // Button is shown (in green)
+            showAddButton={true}
             showVerMasButton={true}
-            showExtraIcons={true} // Show the 4 extra SVG icons
+            showExtraIcons={true}
+            redirectOnImageClick={true}
+            buttonText="Agregar carrito"
             customClasses={{
               container: "w-full",
               titleContainer: "mb-4",
               title: "text-4xl heading",
               price: "text-2xl text-gray-700 mb-4",
               rating: "flex items-center justify-start",
-              star: "productStar",
+              star: "w-5 mx-0.5",
               ratingText: "ml-2 text-lg text-gray-600",
+              buttonContainer: "flex items-center gap-2 mt-2",
               addButton:
                 "w-full bg-green-500 text-white px-4 py-3 rounded hover:bg-green-600 transition",
-              verMasContainer: "mt-4",
               verMasButton:
                 "w-full bg-purple-500 text-white px-4 py-3 rounded hover:bg-purple-600 transition text-center",
             }}

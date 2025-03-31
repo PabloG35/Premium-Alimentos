@@ -1,3 +1,4 @@
+// src/context/AuthContext.js
 import { createContext, useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/router";
 import jwt_decode from "jwt-decode";
@@ -8,12 +9,13 @@ export const AuthProvider = ({ children }) => {
   const router = useRouter();
   const [token, setToken] = useState(null);
   const [user, setUser] = useState(null);
-  const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "";
+  const [loading, setLoading] = useState(true); // Estado de carga
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "";
 
   const logout = useCallback(async () => {
     const storedToken = localStorage.getItem("token");
     try {
-      const res = await fetch(`${API_BASE_URL}/api/usuario/usuarios/logout`, {
+      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/logout`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -31,13 +33,13 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error de conexión en logout:", error);
     }
-  }, [API_BASE_URL, router]);
+  }, [BACKEND_URL, router]);
 
   const getProfile = useCallback(async () => {
     const storedToken = localStorage.getItem("token");
     if (!storedToken) return;
     try {
-      const res = await fetch(`${API_BASE_URL}/api/usuario/usuarios/perfil`, {
+      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/perfil`, {
         headers: { Authorization: `Bearer ${storedToken}` },
       });
       if (res.ok) {
@@ -49,11 +51,11 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       console.error("Error de conexión en getProfile:", error);
     }
-  }, [API_BASE_URL]);
+  }, [BACKEND_URL]);
 
   const login = async (credentials) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/usuario/usuarios/login`, {
+      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/login`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(credentials),
@@ -74,7 +76,7 @@ export const AuthProvider = ({ children }) => {
 
   const registerUser = async (userData) => {
     try {
-      const res = await fetch(`${API_BASE_URL}/api/usuario/usuarios/registro`, {
+      const res = await fetch(`${BACKEND_URL}/api/usuario/usuarios/registro`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(userData),
@@ -97,21 +99,26 @@ export const AuthProvider = ({ children }) => {
           const decoded = jwt_decode(storedToken);
           if (decoded.exp < Date.now() / 1000) {
             logout();
+            setLoading(false);
           } else {
             setToken(storedToken);
-            getProfile();
+            // getProfile puede ser asíncrono; usamos finally para cambiar loading
+            getProfile().finally(() => setLoading(false));
           }
         } catch (error) {
           console.error("Error decodificando token:", error);
           logout();
+          setLoading(false);
         }
+      } else {
+        setLoading(false);
       }
     }
   }, [logout, getProfile]);
 
   return (
     <AuthContext.Provider
-      value={{ token, user, login, logout, getProfile, registerUser }}
+      value={{ token, user, login, logout, getProfile, registerUser, loading }}
     >
       {children}
     </AuthContext.Provider>

@@ -1,12 +1,15 @@
 // src/pages/perfil/Ordenes.js
 import { useEffect, useState, useContext } from "react";
+import { useRouter } from "next/router";
 import { AuthContext } from "@/src/context/AuthContext";
+import LoadingAnimation from "@/src/components/LoadingAnimation";
 
 const OrdenesTab = () => {
   const { token } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const router = useRouter();
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
   // Función para seleccionar una imagen aleatoria de entre los productos de la orden
@@ -21,6 +24,7 @@ const OrdenesTab = () => {
       : null;
   };
 
+  // Fetch de órdenes del usuario
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -30,7 +34,36 @@ const OrdenesTab = () => {
         if (!res.ok) throw new Error("Error al obtener las órdenes");
         const data = await res.json();
         console.log("Órdenes recibidas:", data.ordenes);
-        setOrders(data.ordenes);
+        // Una vez obtenidas las órdenes, actualizamos cada orden con la información de reviews
+        const ordersWithReviewState = await Promise.all(
+          data.ordenes.map(async (order) => {
+            try {
+              const resReview = await fetch(
+                `${BACKEND_URL}/api/usuario/resenas/estado/${order.id_orden}`
+              );
+              if (resReview.ok) {
+                const reviewData = await resReview.json();
+                const allReviewed = reviewData.productos.every(
+                  (prod) => prod.resenada === true
+                );
+                return {
+                  ...order,
+                  allReviewed,
+                  productos: reviewData.productos,
+                };
+              }
+              return { ...order, allReviewed: false };
+            } catch (error) {
+              console.error(
+                "Error fetching review state for order",
+                order.id_orden,
+                error
+              );
+              return { ...order, allReviewed: false };
+            }
+          })
+        );
+        setOrders(ordersWithReviewState);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -40,7 +73,78 @@ const OrdenesTab = () => {
     fetchOrders();
   }, [BACKEND_URL, token]);
 
-  if (loading) return <p>Cargando órdenes...</p>;
+  // Para cada producto en cada orden, si no tiene la propiedad "imagenes", obtenerla usando la API de productos
+  useEffect(() => {
+    if (
+      orders.length > 0 &&
+      orders.some((order) =>
+        order.productos.some(
+          (prod) => !prod.imagenes || prod.imagenes.length === 0
+        )
+      )
+    ) {
+      const fetchImagesForOrders = async () => {
+        const updatedOrders = await Promise.all(
+          orders.map(async (order) => {
+            const updatedProducts = await Promise.all(
+              order.productos.map(async (producto) => {
+                if (producto.imagenes && producto.imagenes.length > 0)
+                  return producto;
+                try {
+                  const res = await fetch(
+                    `${BACKEND_URL}/api/productos/${producto.id_producto}`
+                  );
+                  if (res.ok) {
+                    const productDetails = await res.json();
+                    const firstImage =
+                      productDetails.imagenes &&
+                      productDetails.imagenes.length > 0
+                        ? productDetails.imagenes[0].url_imagen
+                        : "/SVGs/añadirImagen.svg";
+                    return {
+                      ...producto,
+                      imagenes: [{ url_imagen: firstImage }],
+                    };
+                  } else {
+                    return {
+                      ...producto,
+                      imagenes: [{ url_imagen: "/SVGs/añadirImagen.svg" }],
+                    };
+                  }
+                } catch (error) {
+                  console.error("Error al obtener imagen del producto:", error);
+                  return {
+                    ...producto,
+                    imagenes: [{ url_imagen: "/SVGs/añadirImagen.svg" }],
+                  };
+                }
+              })
+            );
+            return { ...order, productos: updatedProducts };
+          })
+        );
+        setOrders(updatedOrders);
+      };
+      fetchImagesForOrders();
+    }
+  }, [orders, BACKEND_URL]);
+
+  // Función para redirigir a la página de reviews (solo si el estado de la orden es "Entregado" y no están completas)
+  const handleReviewClick = (orderId, estadoOrden, allReviewed) => {
+    if (estadoOrden === "Entregado" && !allReviewed) {
+      router.push(`/reviews/${orderId}`);
+    }
+  };
+
+  if (loading)
+    return (
+      <div
+        className="flex items-center justify-center"
+        style={{ height: "calc(100vh - 112px)", marginTop: "112px" }}
+      >
+        <LoadingAnimation />
+      </div>
+    );
   if (error) return <p className="text-red-500">Error: {error}</p>;
 
   return orders.length > 0 ? (
@@ -87,10 +191,31 @@ const OrdenesTab = () => {
               </td>
               <td className="px-4 py-2">{order.estado_orden}</td>
               <td className="px-4 py-2 flex gap-2">
-                <button className="bg-blue-500 text-white px-2 py-1 rounded">
-                  Review
+                <button
+                  onClick={() =>
+                    handleReviewClick(
+                      order.id_orden,
+                      order.estado_orden,
+                      order.allReviewed
+                    )
+                  }
+                  disabled={
+                    order.estado_orden !== "Entregado" || order.allReviewed
+                  }
+                  className={`text-white px-2 py-1 rounded ${
+                    order.estado_orden !== "Entregado" || order.allReviewed
+                      ? "bg-gray-400 cursor-not-allowed"
+                      : "bg-blue-500 hover:bg-blue-600"
+                  }`}
+                >
+                  {order.allReviewed ? "Reseñas completas" : "Review"}
                 </button>
-                <button className="bg-green-500 text-white px-2 py-1 rounded">
+                <button
+                  onClick={() =>
+                    router.push(`/perfil/Ordenes/${order.id_orden}`)
+                  }
+                  className="bg-green-500 text-white px-2 py-1 rounded"
+                >
                   Ver Orden
                 </button>
                 <button className="bg-gray-500 text-white px-2 py-1 rounded">

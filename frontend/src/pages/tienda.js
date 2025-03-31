@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
-import Link from "next/link";
 import ProductTemplate from "@/src/components/ProductTemplate";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
 import styles from "../styles/tienda.module.css";
@@ -13,19 +12,19 @@ export default function Tienda() {
   const [productos, setProductos] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Filters
+  // Filtros
   const [selectedMarcas, setSelectedMarcas] = useState([]);
   const [selectedEdad, setSelectedEdad] = useState([]);
   const [selectedRazas, setSelectedRazas] = useState([]);
   const [enExistencia, setEnExistencia] = useState(false);
 
-  // States for collapsible sections
+  // Estados para secciones colapsables
   const [openMarcas, setOpenMarcas] = useState(true);
   const [openEdad, setOpenEdad] = useState(true);
   const [openRaza, setOpenRaza] = useState(true);
   const [openExistencia, setOpenExistencia] = useState(true);
 
-  // Options for filters
+  // Opciones para filtros
   const marcasOptions = [
     "Royal Canin",
     "Diamond Naturals",
@@ -119,9 +118,9 @@ export default function Tienda() {
       <div className="p-6 mt-[112px] mb-40">
         <h1 className="text-4xl heading mb-8">Tienda</h1>
         <div className="flex w-full max-w-6xl mx-auto">
-          {/* Sidebar Filters */}
+          {/* Sidebar de filtros */}
           <aside className="w-1/4 pr-4 space-y-4">
-            {/* Marcas Filter */}
+            {/* Filtro de Marcas */}
             <div>
               <div
                 onClick={() => setOpenMarcas(!openMarcas)}
@@ -159,7 +158,7 @@ export default function Tienda() {
                 </div>
               )}
             </div>
-            {/* Edad Filter */}
+            {/* Filtro de Edad */}
             <div>
               <div
                 onClick={() => setOpenEdad(!openEdad)}
@@ -197,7 +196,7 @@ export default function Tienda() {
                 </div>
               )}
             </div>
-            {/* Raza Filter */}
+            {/* Filtro de Raza */}
             <div>
               <div
                 onClick={() => setOpenRaza(!openRaza)}
@@ -235,7 +234,7 @@ export default function Tienda() {
                 </div>
               )}
             </div>
-            {/* Disponibilidad Filter */}
+            {/* Filtro de Disponibilidad */}
             <div>
               <div
                 onClick={() => setOpenExistencia(!openExistencia)}
@@ -298,7 +297,7 @@ export default function Tienda() {
               )}
             </div>
           </aside>
-          {/* Products Area */}
+          {/* Área de Productos */}
           <main className="w-3/4">
             {loading ? (
               <div className="flex items-center justify-center min-h-[300px]">
@@ -307,9 +306,8 @@ export default function Tienda() {
             ) : filteredProductos.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
                 {filteredProductos.map((producto) => (
-                  <Link
+                  <div
                     key={producto.id_producto}
-                    href={`/tienda/${producto.id_producto}`}
                     className="hover:opacity-90 transition-opacity"
                   >
                     <ProductTemplate
@@ -319,6 +317,7 @@ export default function Tienda() {
                       showPrice={true}
                       showRating={true}
                       showAddButton={true}
+                      buttonText="Agregar carrito"
                       customClasses={{
                         imageContainer: styles.productImageContainer,
                         image: styles.productImage,
@@ -330,14 +329,9 @@ export default function Tienda() {
                         ratingText: styles.productRatingText,
                         addButton: styles.addButton,
                       }}
-                      onAddToCart={() =>
-                        console.log(
-                          "Agregar al carrito producto:",
-                          producto.id_producto
-                        )
-                      }
+                      redirectOnImageClick={true}
                     />
-                  </Link>
+                  </div>
                 ))}
               </div>
             ) : (

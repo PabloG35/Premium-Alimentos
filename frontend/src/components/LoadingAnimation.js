@@ -1,4 +1,4 @@
-// components/LoadingAnimation.js
+// src/components/LoadingAnimation.js
 export default function LoadingAnimation() {
   return (
     <svg

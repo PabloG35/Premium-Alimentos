@@ -1,9 +1,12 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
+
+// Puedes definir BACKEND_URL fuera del componente si lo deseas
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function CartModal({ open, setOpen }) {
   const [cartItems, setCartItems] = useState([]);
@@ -12,10 +15,9 @@ export default function CartModal({ open, setOpen }) {
   const [mensaje, setMensaje] = useState("");
   const [stockError, setStockError] = useState("");
   const router = useRouter();
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // Obtiene los items del carrito
-  const fetchCart = async () => {
+  // Función para obtener los items del carrito
+  const fetchCart = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${BACKEND_URL}/api/carrito`, {
@@ -29,10 +31,10 @@ export default function CartModal({ open, setOpen }) {
     } catch (error) {
       console.error("Error fetching cart:", error);
     }
-  };
+  }, []); // BACKEND_URL es constante, no es necesario incluirlo
 
-  // Obtiene los totales
-  const fetchTotals = async () => {
+  // Función para obtener los totales
+  const fetchTotals = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${BACKEND_URL}/api/carrito/total`, {
@@ -50,15 +52,15 @@ export default function CartModal({ open, setOpen }) {
     } catch (error) {
       console.error("Error fetching totals:", error);
     }
-  };
+  }, []);
 
   // Función que carga el carrito y los totales
-  const loadCart = async () => {
+  const loadCart = useCallback(async () => {
     setLoading(true);
     await fetchCart();
     await fetchTotals();
     setLoading(false);
-  };
+  }, [fetchCart, fetchTotals]);
 
   useEffect(() => {
     if (open) {
@@ -68,7 +70,7 @@ export default function CartModal({ open, setOpen }) {
         await loadCart();
       })();
     }
-  }, [open]);
+  }, [open, loadCart]);
 
   // Remueve un producto del carrito
   const removeItem = async (id_producto) => {

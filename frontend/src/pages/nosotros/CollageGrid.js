@@ -10,7 +10,6 @@ const IMAGES = [
   { src: "/Dogs/salchicha.png", caption: "Imagen 6" },
   { src: "/Dogs/golden.png", caption: "Imagen 7" },
   { src: "/Dogs/ingles.png", caption: "Imagen 8" },
-  // Para completar el 3x3, se puede duplicar una imagen o agregar otra imagen
   { src: "/Dogs/french.jpg", caption: "Imagen 9" },
 ];
 

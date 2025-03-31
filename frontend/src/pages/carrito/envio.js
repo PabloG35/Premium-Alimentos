@@ -106,13 +106,15 @@ export default function Envio() {
     setMensaje("");
     try {
       const token = localStorage.getItem("token");
+      // Construir la dirección de envío concatenando los campos
+      const direccion_envio = `${shipping.firstname} ${shipping.lastname}, ${shipping.address}, ${shipping.city}, ${shipping.state}, ${shipping.zipcode}, ${shipping.country}`;
       const res = await fetch(`${BACKEND_URL}/api/ordenes`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ metodo_pago: "Mercado Pago" }),
+        body: JSON.stringify({ metodo_pago: "Mercado Pago", direccion_envio }),
       });
       if (res.ok) {
         const data = await res.json();
@@ -256,7 +258,7 @@ export default function Envio() {
                     required
                   >
                     <option value="">Seleccione un estado</option>
-                    {/* Options... */}
+                    <option value="Sonora">Sonora</option>
                   </select>
                 </div>
               </div>

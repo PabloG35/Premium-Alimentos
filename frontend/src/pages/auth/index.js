@@ -1,12 +1,14 @@
+// src/pages/auth/index.js
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
 import { AuthContext } from "@/src/context/AuthContext";
 import Image from "next/image";
+import LoadingAnimation from "@/src/components/LoadingAnimation";
 
 export default function Login() {
   const router = useRouter();
-  const { token, login, registerUser } = useContext(AuthContext);
+  const { token, loading, login, registerUser } = useContext(AuthContext);
   const [modo, setModo] = useState("login"); // "login" or "register"
   const [correo, setCorreo] = useState("");
   const [contraseña, setContraseña] = useState("");
@@ -15,11 +17,21 @@ export default function Login() {
   const [mensaje, setMensaje] = useState("");
 
   useEffect(() => {
-    // If token exists, redirect to profile
-    if (token) {
+    // Si ya terminó la carga y existe el token, redirige a /perfil
+    if (!loading && token) {
       router.push("/perfil");
     }
-  }, [token, router]);
+  }, [token, loading, router]);
+
+  if (loading) {
+    return (
+      <Layout>
+        <div className="flex items-center justify-center min-h-screen">
+          <LoadingAnimation />
+        </div>
+      </Layout>
+    );
+  }
 
   const handleLoginSubmit = async (e) => {
     e.preventDefault();
@@ -42,6 +54,7 @@ export default function Login() {
         correo,
         contraseña,
       });
+      // Luego de registrar, podrías redirigir a la página de login o intentar iniciar sesión automáticamente
       router.push("/auth");
     } catch (error) {
       console.error("Error al crear cuenta:", error);

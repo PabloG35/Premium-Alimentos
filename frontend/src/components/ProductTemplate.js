@@ -4,7 +4,7 @@ import Image from "next/image";
 import { AuthContext } from "@/src/context/AuthContext";
 import { CartContext } from "@/src/context/CartContext";
 
-
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 export default function ProductTemplate({
   product,
@@ -14,25 +14,21 @@ export default function ProductTemplate({
   showDescription = false,
   showRating = false,
   showIngredients = false,
-  showAddButton = false, // botón para agregar al carrito o comprar
+  showAddButton = false,
   showBuyButton = false,
   showVerMasButton = false,
-  showExtraIcons = false, // grilla de 4 íconos extra
-  buttonText = "Comprar ahora", // Prop para personalizar el texto del botón
-  onAddToCart, // función opcional para carrito
+  showExtraIcons = false,
+  buttonText = "Comprar ahora",
+  onAddToCart,
   onBuyNow = () => {},
   customClasses = {},
+  redirectOnImageClick = false,
 }) {
   const router = useRouter();
   const [fetchedRating, setFetchedRating] = useState(null);
   const { token } = useContext(AuthContext);
   const { addToCart } = useContext(CartContext);
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-
-  // Si stock es 0 o menor, consideramos que está agotado.
   const isOutOfStock = product?.stock <= 0;
-
-  // Extraemos idProducto de forma segura
   const idProducto = product?.id_producto || null;
 
   useEffect(() => {
@@ -51,7 +47,6 @@ export default function ProductTemplate({
 
   const rating = fetchedRating !== null ? fetchedRating : 0;
 
-  // Función por defecto para agregar al carrito
   const handleAddToCartDefault = async () => {
     if (!idProducto) return;
     try {
@@ -67,11 +62,8 @@ export default function ProductTemplate({
 
   return (
     <div
-      className={`${customClasses.container || ""} relative ${
-        isOutOfStock ? "opacity-50" : ""
-      }`}
+      className={`${customClasses.container || ""} relative ${isOutOfStock ? "opacity-50" : ""}`}
     >
-      {/* Si el producto está agotado, mostramos un badge en la esquina superior derecha */}
       {isOutOfStock && (
         <div
           className="absolute top-0 right-0 bg-red-500 text-white text-xs font-bold px-2 py-1"
@@ -81,7 +73,14 @@ export default function ProductTemplate({
         </div>
       )}
       {showImage && (
-        <div className={customClasses.imageContainer || ""}>
+        <div
+          className={`${customClasses.imageContainer || ""} ${redirectOnImageClick ? "cursor-pointer" : ""}`}
+          onClick={
+            redirectOnImageClick
+              ? () => router.push(`/tienda/${idProducto}`)
+              : undefined
+          }
+        >
           {product.imagenes && product.imagenes.length > 0 ? (
             <Image
               src={product.imagenes[0].url_imagen}
@@ -108,10 +107,7 @@ export default function ProductTemplate({
       )}
       {showRating && (
         <div
-          className={
-            customClasses.rating ||
-            "flex items-center justify-start starsContainer"
-          }
+          className={customClasses.rating || "flex items-center justify-start"}
         >
           {Array.from({ length: 5 }).map((_, i) => (
             <Image
@@ -122,7 +118,7 @@ export default function ProductTemplate({
                   : "/SVGs/starIconEmpty.svg"
               }
               alt="star"
-              className={customClasses.star || "productStar"}
+              className={customClasses.star || ""}
               width={16}
               height={16}
             />
@@ -151,15 +147,17 @@ export default function ProductTemplate({
           </ul>
         </div>
       )}
-      {(showAddButton || showBuyButton) && (
-        <div className={customClasses.buttonContainer || ""}>
+      {(showAddButton || showBuyButton || showVerMasButton) && (
+        <div
+          className={
+            customClasses.buttonContainer || "flex items-center gap-2 mt-2"
+          }
+        >
           {showAddButton && (
             <button
               onClick={handleCartClick}
               disabled={isOutOfStock}
-              className={`${customClasses.addButton || ""} ${
-                isOutOfStock ? "bg-gray-400 cursor-not-allowed" : ""
-              }`}
+              className={customClasses.addButton || ""}
             >
               {buttonText}
             </button>
@@ -168,26 +166,19 @@ export default function ProductTemplate({
             <button
               onClick={onBuyNow}
               disabled={isOutOfStock}
-              className={`${customClasses.buyButton || ""} ${
-                isOutOfStock ? "bg-gray-400 cursor-not-allowed" : ""
-              }`}
+              className={customClasses.buyButton || ""}
             >
               {buttonText}
             </button>
           )}
-        </div>
-      )}
-      {showVerMasButton && (
-        <div className={customClasses.verMasContainer || "mt-4"}>
-          <button
-            onClick={() => router.push(`/tienda/${idProducto}`)}
-            className={
-              customClasses.verMasButton ||
-              "w-full bg-gray-700 text-white py-2 px-4 rounded hover:bg-gray-800 transition"
-            }
-          >
-            Ver Más
-          </button>
+          {showVerMasButton && (
+            <button
+              onClick={() => router.push(`/tienda/${idProducto}`)}
+              className={customClasses.verMasButton || ""}
+            >
+              Ver Más
+            </button>
+          )}
         </div>
       )}
       {showExtraIcons && (

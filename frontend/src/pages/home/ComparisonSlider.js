@@ -1,5 +1,5 @@
+// src/components/ComparisonSlider.js
 import React, { useRef, useState } from "react";
-import Image from "next/image";
 
 const ComparisonSlider = ({
   beforeImage,
@@ -11,7 +11,7 @@ const ComparisonSlider = ({
   const containerRef = useRef(null);
   const [offset, setOffset] = useState(50);
 
-  // Update offset based on horizontal pointer position
+  // Función para actualizar el offset basado en la posición horizontal del puntero
   const updateOffset = (clientX) => {
     if (containerRef.current) {
       const rect = containerRef.current.getBoundingClientRect();
@@ -22,7 +22,7 @@ const ComparisonSlider = ({
     }
   };
 
-  // Mouse events
+  // Eventos para mouse
   const handleMouseDown = (e) => {
     e.preventDefault();
     const onMouseMove = (e) => {
@@ -36,7 +36,7 @@ const ComparisonSlider = ({
     window.addEventListener("mouseup", onMouseUp);
   };
 
-  // Touch events
+  // Eventos para touch
   const handleTouchStart = (e) => {
     e.preventDefault();
     const onTouchMove = (e) => {
@@ -56,28 +56,26 @@ const ComparisonSlider = ({
       className={`relative overflow-hidden ${className}`}
       style={style}
     >
-      {/* "Before" image as background */}
-      <Image
+      {/* Imagen "Antes" en fondo */}
+      <img
         src={beforeImage}
         alt="Antes"
-        fill
-        className="object-cover select-none"
+        className="absolute inset-0 w-full h-full object-cover select-none"
         draggable={false}
       />
-      {/* "After" image visible only in the revealed portion */}
+      {/* Imagen "Después" se muestra solo en la parte revelada */}
       <div
         className="absolute inset-0 overflow-hidden"
         style={{ width: `${offset}%` }}
       >
-        <Image
+        <img
           src={afterImage}
           alt="Después"
-          fill
-          className="object-cover select-none"
+          className="absolute inset-0 w-full h-full object-cover select-none"
           draggable={false}
         />
       </div>
-      {/* Slider control */}
+      {/* Control deslizante */}
       <div
         onMouseDown={handleMouseDown}
         onTouchStart={handleTouchStart}
@@ -88,12 +86,10 @@ const ComparisonSlider = ({
           cursor: "ew-resize",
         }}
       >
-        <Image
+        <img
           src={handleImage}
           alt="Handle"
-          width={48}
-          height={48}
-          className="object-contain select-none"
+          className="w-12 h-12 object-contain select-none"
           draggable={false}
         />
       </div>
