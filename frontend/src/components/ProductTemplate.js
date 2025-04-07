@@ -3,10 +3,15 @@ import { useRouter } from "next/router";
 import Image from "next/image";
 import { AuthContext } from "@/src/context/AuthContext";
 import { CartContext } from "@/src/context/CartContext";
+import {
+  useNotification,
+  NOTIFICATION_TYPES,
+} from "@/src/context/NotificationContext";
+import { useGlobalLoading } from "@/src/context/GlobalLoadingContext"; // Import the global loading hook
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-export default function ProductTemplate({
+function ProductTemplate({
   product,
   showImage = true,
   showTitle = true,
@@ -28,6 +33,8 @@ export default function ProductTemplate({
   const [fetchedRating, setFetchedRating] = useState(null);
   const { token } = useContext(AuthContext);
   const { addToCart } = useContext(CartContext);
+  const { addNotification } = useNotification();
+  const { setIsLoading } = useGlobalLoading(); // Destructure the setIsLoading from context
   const isOutOfStock = product?.stock <= 0;
   const idProducto = product?.id_producto || null;
 
@@ -35,9 +42,7 @@ export default function ProductTemplate({
     if (showRating && idProducto) {
       fetch(`${BACKEND_URL}/api/usuario/resenas/promedio/${idProducto}`)
         .then((res) => res.json())
-        .then((data) => {
-          setFetchedRating(data.promedio);
-        })
+        .then((data) => setFetchedRating(data.promedio))
         .catch((err) => {
           console.error("Error fetching rating:", err);
           setFetchedRating(0);
@@ -47,17 +52,32 @@ export default function ProductTemplate({
 
   const rating = fetchedRating !== null ? fetchedRating : 0;
 
+  // Modified default add-to-cart handler with global loading
   const handleAddToCartDefault = async () => {
     if (!idProducto) return;
+    setIsLoading(true); // Start global loading
     try {
       await addToCart({ id_producto: idProducto, cantidad: 1 });
-      alert("Producto agregado al carrito");
+      addNotification({
+        type: NOTIFICATION_TYPES.TOAST,
+        title: "¡Éxito!",
+        description: "Producto agregado al carrito.",
+        variant: "success",
+        duration: 3000,
+      });
     } catch (error) {
       console.error("Error al agregar al carrito:", error);
-      alert("Error al agregar al carrito");
+      addNotification({
+        type: NOTIFICATION_TYPES.TOAST,
+        variant: "destructive",
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false); // End global loading
     }
   };
 
+  // Use the custom handler if provided, otherwise use the default one
   const handleCartClick = onAddToCart ? onAddToCart : handleAddToCartDefault;
 
   return (
@@ -240,3 +260,5 @@ export default function ProductTemplate({
     </div>
   );
 }
+
+export default ProductTemplate;

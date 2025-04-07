@@ -17,6 +17,7 @@ export default function cors(req, res) {
   } else {
     console.log("Origin no permitida:", origin);
   }
+  res.setHeader("Access-Control-Allow-Credentials", "true"); // <-- Agregado
   res.setHeader(
     "Access-Control-Allow-Methods",
     "GET, POST, PUT, DELETE, OPTIONS"

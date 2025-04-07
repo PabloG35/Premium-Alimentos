@@ -4,12 +4,21 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import AdminAuthContext from "@/context/AdminAuthContext";
 import Layout from "@/components/Layout";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableCaption,
+} from "@/components/ui/table";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const obtenerToken = () => localStorage.getItem("adminToken");
 
 async function obtenerProductos() {
-  // Nota: Este endpoint es público, por lo que no requiere token
+  // This endpoint is public, no token needed
   const respuesta = await fetch(`${BASE_URL}/api/productos`);
   if (!respuesta.ok) {
     throw new Error("Error al obtener productos");
@@ -20,16 +29,23 @@ async function obtenerProductos() {
 async function eliminarProducto(id) {
   const token = obtenerToken();
   if (!token) throw new Error("No autorizado");
-
   const respuesta = await fetch(`${BASE_URL}/api/productos/${id}`, {
     method: "DELETE",
     headers: {
       Authorization: `Bearer ${token}`,
     },
   });
-
   if (!respuesta.ok) throw new Error("Error al eliminar producto");
   return await respuesta.json();
+}
+
+async function obtenerReviews() {
+  const respuesta = await fetch(`${BASE_URL}/api/resenas/recientes`);
+  if (!respuesta.ok) {
+    throw new Error("Error al obtener reviews");
+  }
+  const data = await respuesta.json();
+  return data.resenas || [];
 }
 
 export default function AdminDashboardTienda() {
@@ -40,13 +56,14 @@ export default function AdminDashboardTienda() {
   const [reviews, setReviews] = useState([]);
 
   useEffect(() => {
-    if (!loading && !admin) {
-      router.push("/login");
-    }
-    if (activeTab === "productos") {
-      cargarProductos();
-    } else if (activeTab === "reviews") {
-      cargarReviews();
+    if (!loading) {
+      if (!admin) {
+        router.push("/login");
+      } else if (activeTab === "productos") {
+        cargarProductos();
+      } else if (activeTab === "reviews") {
+        cargarReviews();
+      }
     }
   }, [admin, loading, activeTab, router]);
 
@@ -62,9 +79,8 @@ export default function AdminDashboardTienda() {
 
   const cargarReviews = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/api/resenas/recientes`);
-      const data = await res.json();
-      setReviews(data.resenas || []);
+      const data = await obtenerReviews();
+      setReviews(data);
     } catch (error) {
       console.error("❌ Error obteniendo reviews:", error);
     }
@@ -84,121 +100,145 @@ export default function AdminDashboardTienda() {
 
   return (
     <Layout>
-      <div className="p-6">
+      <div className="p-4">
         <h1 className="text-2xl font-bold mb-4">Panel de Administración</h1>
-        {/* Pestañas de navegación */}
-        <div className="flex space-x-4 mb-6">
+        {/* Inline Tabs Navigation */}
+        <div className="flex items-center space-x-4 mb-6">
           <button
             onClick={() => setActiveTab("productos")}
-            className={`px-4 py-2 rounded ${
+            className={`px-4 py-2 rounded transition-colors duration-300 ${
               activeTab === "productos"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-black"
-            } cursor-pointer transition-colors duration-300`}
+            }`}
           >
             Productos
           </button>
           <button
             onClick={() => setActiveTab("reviews")}
-            className={`px-4 py-2 rounded ${
+            className={`px-4 py-2 rounded transition-colors duration-300 ${
               activeTab === "reviews"
                 ? "bg-blue-500 text-white"
                 : "bg-gray-200 text-black"
-            } cursor-pointer transition-colors duration-300`}
+            }`}
           >
             Reviews
           </button>
+          {activeTab === "productos" && (
+            <Link href="/tienda/agregar">
+              <button className="bg-green-500 text-white px-4 py-2 rounded cursor-pointer">
+                Agregar Producto
+              </button>
+            </Link>
+          )}
         </div>
 
         {activeTab === "productos" && (
           <div>
-            <Link href="/tienda/agregar">
-              <button className="bg-green-500 text-white px-4 py-2 rounded mb-4 cursor-pointer">
-                Agregar Producto
-              </button>
-            </Link>
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border p-2">Imagen</th>
-                  <th className="border p-2">Nombre</th>
-                  <th className="border p-2">Precio</th>
-                  <th className="border p-2">Stock</th>
-                  <th className="border p-2">Acciones</th>
-                </tr>
-              </thead>
-              <tbody>
-                {productos.map((producto) => (
-                  <tr key={producto.id_producto} className="border">
-                    <td className="p-2">
-                      <img
-                        src={
-                          producto.imagenes?.[0]?.url_imagen ||
-                          "/placeholder.png"
-                        }
-                        alt={producto.nombre}
-                        className="w-16 h-16 object-cover"
-                        onError={(e) => {
-                          e.target.src = "/placeholder.png";
-                        }}
-                      />
-                    </td>
-                    <td className="border p-2">{producto.nombre}</td>
-                    <td className="border p-2">${producto.precio}</td>
-                    <td className="border p-2">{producto.stock}</td>
-                    <td className="border p-2">
-                      <div className="flex gap-2">
-                        <Link href={`/tienda/${producto.id_producto}`}>
-                          <button className="bg-blue-500 text-white px-3 py-1 rounded cursor-pointer">
-                            Editar
-                          </button>
-                        </Link>
-                        <button
-                          onClick={() =>
-                            handleEliminarProducto(producto.id_producto)
+            <Table className="w-full">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Imagen</TableHead>
+                  <TableHead>Nombre</TableHead>
+                  <TableHead>Precio</TableHead>
+                  <TableHead>Stock</TableHead>
+                  <TableHead>Acciones</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {productos.length > 0 ? (
+                  productos.map((producto) => (
+                    <TableRow key={producto.id_producto}>
+                      <TableCell>
+                        <img
+                          src={
+                            producto.imagenes?.[0]?.url_imagen ||
+                            "/placeholder.png"
                           }
-                          className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer"
-                        >
-                          Eliminar
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                          alt={producto.nombre}
+                          className="w-16 h-16 object-cover"
+                          onError={(e) => {
+                            e.target.src = "/placeholder.png";
+                          }}
+                        />
+                      </TableCell>
+                      <TableCell>{producto.nombre}</TableCell>
+                      <TableCell>${producto.precio}</TableCell>
+                      <TableCell>{producto.stock}</TableCell>
+                      <TableCell>
+                        <div className="flex gap-2">
+                          <Link href={`/tienda/${producto.id_producto}`}>
+                            <button className="bg-blue-500 text-white px-3 py-1 rounded cursor-pointer">
+                              Editar
+                            </button>
+                          </Link>
+                          <button
+                            onClick={() =>
+                              handleEliminarProducto(producto.id_producto)
+                            }
+                            className="bg-red-500 text-white px-3 py-1 rounded cursor-pointer"
+                          >
+                            Eliminar
+                          </button>
+                        </div>
+                      </TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={5} className="p-2 text-center">
+                      No hay productos disponibles
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+              <TableCaption>
+                {productos.length} producto(s) encontrado(s)
+              </TableCaption>
+            </Table>
           </div>
         )}
 
         {activeTab === "reviews" && (
           <div>
             <h2 className="text-2xl font-bold mb-4">Reviews</h2>
-            <table className="w-full border-collapse border border-gray-300">
-              <thead>
-                <tr className="bg-gray-100">
-                  <th className="border p-2">ID Reseña</th>
-                  <th className="border p-2">Producto</th>
-                  <th className="border p-2">Calificación</th>
-                  <th className="border p-2">Comentario</th>
-                  <th className="border p-2">Fecha</th>
-                  <th className="border p-2">Usuario</th>
-                </tr>
-              </thead>
-              <tbody>
-                {reviews.map((review) => (
-                  <tr key={review.id_reseña} className="border">
-                    <td className="p-2">{review.id_reseña}</td>
-                    <td className="p-2">{review.id_producto}</td>
-                    <td className="p-2">{review.calificacion}</td>
-                    <td className="p-2">{review.comentario}</td>
-                    <td className="p-2">
-                      {new Date(review.fecha_reseña).toLocaleString()}
-                    </td>
-                    <td className="p-2">{review.nombre_usuario}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <Table className="w-full">
+              <TableHeader>
+                <TableRow>
+                  <TableHead>ID Reseña</TableHead>
+                  <TableHead>Producto</TableHead>
+                  <TableHead>Calificación</TableHead>
+                  <TableHead>Comentario</TableHead>
+                  <TableHead>Fecha</TableHead>
+                  <TableHead>Usuario</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {reviews.length > 0 ? (
+                  reviews.map((review) => (
+                    <TableRow key={review.id_reseña}>
+                      <TableCell>{review.id_reseña}</TableCell>
+                      <TableCell>{review.id_producto}</TableCell>
+                      <TableCell>{review.calificacion}</TableCell>
+                      <TableCell>{review.comentario}</TableCell>
+                      <TableCell>
+                        {new Date(review.fecha_reseña).toLocaleString()}
+                      </TableCell>
+                      <TableCell>{review.nombre_usuario}</TableCell>
+                    </TableRow>
+                  ))
+                ) : (
+                  <TableRow>
+                    <TableCell colSpan={6} className="p-2 text-center">
+                      No hay reviews disponibles
+                    </TableCell>
+                  </TableRow>
+                )}
+              </TableBody>
+              <TableCaption>
+                {reviews.length} review(s) encontrado(s)
+              </TableCaption>
+            </Table>
           </div>
         )}
       </div>

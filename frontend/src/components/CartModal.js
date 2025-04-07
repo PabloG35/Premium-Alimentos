@@ -4,9 +4,47 @@ import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import { useRouter } from "next/router";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
+import { useGlobalLoading } from "@/src/context/GlobalLoadingContext";
+import {
+  useNotification,
+  NOTIFICATION_TYPES,
+} from "@/src/context/NotificationContext";
+import { Alert, AlertTitle, AlertDescription } from "@/src/components/ui/alert";
 
-// Puedes definir BACKEND_URL fuera del componente si lo deseas
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+// Inline notification genérica para alertas
+function InlineNotification() {
+  const { notifications, removeNotification } = useNotification();
+  const alertNotification = notifications.find(
+    (n) => n.type === NOTIFICATION_TYPES.ALERT && n.displayInline
+  );
+  if (!alertNotification) return null;
+  return (
+    <div className="space-y-2 mb-2">
+      <Alert
+        key={alertNotification.id}
+        variant="destructive"
+        onClick={() => removeNotification(alertNotification.id)}
+      >
+        <AlertTitle>{alertNotification.title}</AlertTitle>
+        <AlertDescription>{alertNotification.description}</AlertDescription>
+      </Alert>
+    </div>
+  );
+}
+
+// Inline alert fijo para cuando el carrito está vacío
+function EmptyCartAlert() {
+  return (
+    <Alert variant="destructive" className="text-center mb-4">
+      <AlertTitle>Carrito Vacío</AlertTitle>
+      <AlertDescription>
+        ¡Agrega algún producto para continuar!
+      </AlertDescription>
+    </Alert>
+  );
+}
 
 export default function CartModal({ open, setOpen }) {
   const [cartItems, setCartItems] = useState([]);
@@ -15,8 +53,10 @@ export default function CartModal({ open, setOpen }) {
   const [mensaje, setMensaje] = useState("");
   const [stockError, setStockError] = useState("");
   const router = useRouter();
+  const { setIsLoading } = useGlobalLoading();
+  const { addNotification } = useNotification();
 
-  // Función para obtener los items del carrito
+  // Función para obtener items del carrito
   const fetchCart = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
@@ -31,9 +71,9 @@ export default function CartModal({ open, setOpen }) {
     } catch (error) {
       console.error("Error fetching cart:", error);
     }
-  }, []); // BACKEND_URL es constante, no es necesario incluirlo
+  }, []);
 
-  // Función para obtener los totales
+  // Función para obtener totales
   const fetchTotals = useCallback(async () => {
     try {
       const token = localStorage.getItem("token");
@@ -54,7 +94,7 @@ export default function CartModal({ open, setOpen }) {
     }
   }, []);
 
-  // Función que carga el carrito y los totales
+  // Carga el carrito y los totales
   const loadCart = useCallback(async () => {
     setLoading(true);
     await fetchCart();
@@ -72,8 +112,9 @@ export default function CartModal({ open, setOpen }) {
     }
   }, [open, loadCart]);
 
-  // Remueve un producto del carrito
+  // Elimina un item del carrito
   const removeItem = async (id_producto) => {
+    setIsLoading(true);
     try {
       const token = localStorage.getItem("token");
       const res = await fetch(`${BACKEND_URL}/api/carrito/${id_producto}`, {
@@ -83,18 +124,70 @@ export default function CartModal({ open, setOpen }) {
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await res.json();
-      setMensaje(data.message);
-      // Re-cargar carrito y totales
+      await res.json();
+      addNotification({
+        type: NOTIFICATION_TYPES.ALERT,
+        title: "Producto Eliminado",
+        description: "Se ha eliminado el producto del carrito.",
+        displayInline: true,
+      });
       await fetchCart();
       await fetchTotals();
     } catch (error) {
       console.error("Error removing item:", error);
       setMensaje("Error al eliminar el producto");
+    } finally {
+      setIsLoading(false);
     }
   };
 
-  // Valida stock antes de proceder al pago
+  // Actualiza cantidad en el carrito
+  const updateQuantity = async (id_producto, nuevaCantidad) => {
+    if (nuevaCantidad < 1) return;
+    setIsLoading(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${BACKEND_URL}/api/carrito/editarCantidad`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id_producto, cantidad: nuevaCantidad }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        addNotification({
+          type: NOTIFICATION_TYPES.ALERT,
+          title: "Error",
+          description: data.error || "Error al actualizar la cantidad",
+          displayInline: true,
+        });
+        return;
+      }
+      await fetchCart();
+      await fetchTotals();
+      // Notificación de éxito
+      addNotification({
+        type: NOTIFICATION_TYPES.ALERT,
+        title: "Cantidad Actualizada",
+        description: "La cantidad se actualizó correctamente.",
+        displayInline: true,
+      });
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      addNotification({
+        type: NOTIFICATION_TYPES.ALERT,
+        title: "Error",
+        description: error.message || "Error al actualizar la cantidad",
+        displayInline: true,
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Valida stock antes de pagar
   const validateStockAndPay = async () => {
     setStockError("");
     try {
@@ -103,7 +196,6 @@ export default function CartModal({ open, setOpen }) {
           `${BACKEND_URL}/api/productos/${item.id_producto}`
         );
         const productData = await res.json();
-        // Se asume que productData tiene el campo "stock"
         if (productData.stock < item.cantidad) {
           setStockError(
             `El producto "${item.nombre}" no tiene suficiente stock.`
@@ -119,11 +211,6 @@ export default function CartModal({ open, setOpen }) {
     }
   };
 
-  // Placeholders para envío y tax (ahora solo tax = $0)
-  const shippingEstimate = 8.32;
-  const taxEstimate = 0;
-  const orderTotal = totals.total || 0;
-
   return (
     <Transition appear show={open} as="div">
       <Dialog
@@ -131,7 +218,7 @@ export default function CartModal({ open, setOpen }) {
         className="relative z-[100]"
         onClose={() => setOpen(false)}
       >
-        {/* Backdrop con blur */}
+        {/* Backdrop */}
         <Transition.Child
           as="div"
           enter="ease-out duration-300"
@@ -158,17 +245,17 @@ export default function CartModal({ open, setOpen }) {
               >
                 <Dialog.Panel className="pointer-events-auto w-screen max-w-md h-full">
                   <div className="flex flex-col h-full bg-white shadow-xl">
-                    {/* Header fijo */}
+                    {/* Header */}
                     <div className="px-4 py-6 sm:px-6 flex items-center justify-between border-b border-gray-200">
                       <Dialog.Title className="text-lg font-medium text-gray-900">
-                        Shopping cart
+                        Tu Carrito
                       </Dialog.Title>
                       <button
                         type="button"
                         onClick={() => setOpen(false)}
                         className="relative -m-2 p-2 text-gray-400 hover:text-gray-500"
                       >
-                        <span className="sr-only">Close panel</span>
+                        <span className="sr-only">Cerrar modal</span>
                         <Image
                           src="/SVGs/equis.svg"
                           alt="Cerrar modal"
@@ -177,6 +264,11 @@ export default function CartModal({ open, setOpen }) {
                           className="w-6 h-6"
                         />
                       </button>
+                    </div>
+
+                    {/* Inline notifications */}
+                    <div className="px-4 py-2">
+                      <InlineNotification />
                     </div>
 
                     {/* Área scrollable para productos */}
@@ -189,7 +281,8 @@ export default function CartModal({ open, setOpen }) {
                           <LoadingAnimation />
                         </div>
                       ) : cartItems.length === 0 ? (
-                        <p className="mt-4">El carrito está vacío.</p>
+                        // 2. En vez del texto, muestra un inline alert fijo:
+                        <EmptyCartAlert />
                       ) : (
                         <ul
                           role="list"
@@ -223,19 +316,72 @@ export default function CartModal({ open, setOpen }) {
                                   <p className="mt-1 text-sm text-gray-500">
                                     {product.color || ""}
                                   </p>
+                                  {/* Quantity Editor */}
                                   <div className="flex flex-1 items-end justify-between text-sm">
-                                    <p className="text-gray-500">
-                                      Qty {product.cantidad}
-                                    </p>
+                                    <div className="flex items-center">
+                                      <button
+                                        type="button"
+                                        onClick={() =>
+                                          updateQuantity(
+                                            product.id_producto,
+                                            product.cantidad - 1
+                                          )
+                                        }
+                                        disabled={product.cantidad <= 1}
+                                      >
+                                        <Image
+                                          src="/SVGs/menos.svg"
+                                          alt="Menos"
+                                          width={16}
+                                          height={16}
+                                        />
+                                      </button>
+                                      <span className="px-2">
+                                        {product.cantidad}
+                                      </span>
+                                      <button
+                                        type="button"
+                                        onClick={() => {
+                                          if (
+                                            product.cantidad >= product.stock
+                                          ) {
+                                            addNotification({
+                                              type: NOTIFICATION_TYPES.ALERT,
+                                              title: "Alerta",
+                                              description:
+                                                "Sobrepasas la cantidad de unidades disponibles",
+                                              displayInline: true,
+                                            });
+                                            return;
+                                          }
+                                          updateQuantity(
+                                            product.id_producto,
+                                            product.cantidad + 1
+                                          );
+                                        }}
+                                        disabled={
+                                          product.stock !== undefined
+                                            ? product.cantidad >= product.stock
+                                            : false
+                                        }
+                                      >
+                                        <Image
+                                          src="/SVGs/mas.svg"
+                                          alt="Más"
+                                          width={16}
+                                          height={16}
+                                        />
+                                      </button>
+                                    </div>
                                     <div className="flex">
                                       <button
                                         type="button"
                                         onClick={() =>
                                           removeItem(product.id_producto)
                                         }
-                                        className="font-medium text-indigo-600 hover:text-indigo-500"
+                                        className="font-medium text-orange-500 hover:text-pm-naranja"
                                       >
-                                        Remove
+                                        Eliminar
                                       </button>
                                     </div>
                                   </div>
@@ -248,7 +394,7 @@ export default function CartModal({ open, setOpen }) {
                     </div>
 
                     {/* Sección fija de totales y botones */}
-                    {!loading && cartItems.length > 0 && (
+                    {!loading && (
                       <div className="border-t border-gray-200 px-4 py-6 sm:px-6">
                         <div className="flex justify-between text-base font-medium text-gray-900">
                           <p>Subtotal</p>
@@ -258,17 +404,24 @@ export default function CartModal({ open, setOpen }) {
                           <p className="text-red-500 mt-2">{stockError}</p>
                         )}
                         <div className="mt-6 flex w-full gap-4">
+                          {/* 1. El botón Ver Carrito siempre habilitado */}
                           <button
                             type="button"
                             onClick={() => router.push("/carrito")}
-                            className="w-[35%] flex items-center justify-center rounded-md border border-transparent text-indigo-600 px-4 py-4 text-base font-medium"
+                            className="w-[35%] flex items-center justify-center rounded-md border border-transparent text-pm-azulFuerte px-4 py-4 text-base font-medium"
                           >
                             Ver carrito
                           </button>
+                          {/* El botón Pagar Pedido solo si hay productos */}
                           <button
                             type="button"
                             onClick={validateStockAndPay}
-                            className="w-[65%] flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-4 py-5 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
+                            disabled={cartItems.length === 0}
+                            className={`w-[65%] flex items-center justify-center rounded-md border border-transparent px-4 py-5 text-base font-medium text-white shadow-sm ${
+                              cartItems.length === 0
+                                ? "bg-gray-400 cursor-not-allowed"
+                                : "bg-pm-azul hover:bg-pm-azulFuerte"
+                            }`}
                           >
                             Pagar Pedido
                           </button>

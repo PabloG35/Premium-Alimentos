@@ -132,7 +132,7 @@ export default function Envio() {
 
   return (
     <Layout>
-      <div className="mt-[112px] h-[calc(100vh-112px)] p-4 max-w-6xl mx-auto">
+      <div className="h-[calc(100vh-112px)] p-4 max-w-6xl mx-auto">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 h-full">
           {/* Left: Shipping Form */}
           <div className="p-4">

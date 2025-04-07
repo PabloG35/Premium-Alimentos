@@ -115,7 +115,7 @@ export default function Tienda() {
 
   return (
     <Layout>
-      <div className="p-6 mt-[112px] mb-40">
+      <div className="p-6 mb-40">
         <h1 className="text-4xl heading mb-8">Tienda</h1>
         <div className="flex w-full max-w-6xl mx-auto">
           {/* Sidebar de filtros */}

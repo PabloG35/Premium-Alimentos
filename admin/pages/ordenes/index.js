@@ -1,10 +1,18 @@
-// pages/ordenes/index.js
 import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import AdminAuthContext from "@/context/AdminAuthContext";
 import Layout from "@/components/Layout";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableCaption,
+} from "@/components/ui/table";
 
-const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const obtenerToken = () => localStorage.getItem("adminToken");
 
@@ -12,7 +20,8 @@ async function obtenerTodasOrdenes() {
   const token = obtenerToken();
   if (!token) throw new Error("No autorizado");
 
-  const respuesta = await fetch(`${BASE_URL}/api/ordenes/recientes`, {
+  // Utilizamos el endpoint que obtiene TODAS las órdenes:
+  const respuesta = await fetch(`${BACKEND_URL}/api/ordenes`, {
     headers: { Authorization: `Bearer ${token}` },
   });
 
@@ -29,14 +38,17 @@ async function editarEstadoOrden(id, nuevoEstado) {
   const token = obtenerToken();
   if (!token) throw new Error("No hay token disponible");
 
-  const respuesta = await fetch(`${BASE_URL}/api/ordenes/editar-estado/${id}`, {
-    method: "PUT",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({ nuevoEstado }),
-  });
+  const respuesta = await fetch(
+    `${BACKEND_URL}/api/ordenes/editar-estado/${id}`,
+    {
+      method: "PUT",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ nuevoEstado }),
+    }
+  );
 
   if (!respuesta.ok) throw new Error("Error al actualizar estado de orden");
   return await respuesta.json();
@@ -46,7 +58,7 @@ async function eliminarOrden(id_orden) {
   const token = obtenerToken();
   if (!token) throw new Error("No autorizado");
 
-  const respuesta = await fetch(`${BASE_URL}/api/ordenes/${id_orden}`, {
+  const respuesta = await fetch(`${BACKEND_URL}/api/ordenes/${id_orden}`, {
     method: "DELETE",
     headers: {
       "Content-Type": "application/json",
@@ -69,7 +81,6 @@ export default function Ordenes() {
   const [filtroEstado, setFiltroEstado] = useState("");
   const [filtroPago, setFiltroPago] = useState("");
 
-  // Cargar órdenes sólo cuando se confirme la autenticación del admin
   useEffect(() => {
     if (!loading) {
       if (!admin) {
@@ -119,7 +130,7 @@ export default function Ordenes() {
 
   if (loading || !admin) return <p>Cargando...</p>;
 
-  // Aplicar filtros en la lista de órdenes
+  // Filtrar órdenes según estado de orden y estado de pago
   const ordenesFiltradas = ordenes.filter(
     (orden) =>
       (!filtroEstado || orden.estado_orden === filtroEstado) &&
@@ -128,118 +139,138 @@ export default function Ordenes() {
 
   return (
     <Layout>
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-4">Gestión de Órdenes</h1>
+      <div className="flex flex-col h-screen">
+        {/* Header: título y filtros */}
+        <div className="px-6 py-4 flex-shrink-0">
+          <h1 className="text-2xl font-bold mb-4">Gestión de Órdenes</h1>
+          <div className="flex gap-4">
+            <select
+              className="p-2 border rounded"
+              value={filtroEstado}
+              onChange={(e) => setFiltroEstado(e.target.value)}
+            >
+              <option value="">Estado de Orden: Todas</option>
+              <option value="Preparando">Preparando</option>
+              <option value="Enviado">Enviado</option>
+              <option value="Entregado">Entregado</option>
+              <option value="Cancelado">Cancelado</option>
+              <option value="Reembolsados">Reembolsados</option>
+              <option value="En devolución">En devolución</option>
+              <option value="Parcialmente reembolsado">
+                Parcialmente reembolsado
+              </option>
+            </select>
 
-        {/* Filtros */}
-        <div className="flex gap-4 mb-4">
-          <select
-            className="p-2 border rounded"
-            value={filtroEstado}
-            onChange={(e) => setFiltroEstado(e.target.value)}
-          >
-            <option value="">Estado de Orden: Todas</option>
-            <option value="Preparando">Preparando</option>
-            <option value="Enviado">Enviado</option>
-            <option value="Entregado">Entregado</option>
-            <option value="Cancelado">Cancelado</option>
-            <option value="Reembolsados">Reembolsados</option>
-            <option value="En devolución">En devolución</option>
-            <option value="Parcialmente reembolsado">
-              Parcialmente reembolsado
-            </option>
-          </select>
-
-          <select
-            className="p-2 border rounded"
-            value={filtroPago}
-            onChange={(e) => setFiltroPago(e.target.value)}
-          >
-            <option value="">Estado de Pago: Todos</option>
-            <option value="Pendiente">Pendiente</option>
-            <option value="Completado">Completado</option>
-            <option value="Expirado">Expirado</option>
-            <option value="Rechazado">Rechazado</option>
-            <option value="Cancelado">Cancelado</option>
-          </select>
+            <select
+              className="p-2 border rounded"
+              value={filtroPago}
+              onChange={(e) => setFiltroPago(e.target.value)}
+            >
+              <option value="">Estado de Pago: Todos</option>
+              <option value="Pendiente">Pendiente</option>
+              <option value="Completado">Completado</option>
+              <option value="Expirado">Expirado</option>
+              <option value="Rechazado">Rechazado</option>
+              <option value="Cancelado">Cancelado</option>
+            </select>
+          </div>
         </div>
 
-        {/* Tabla de órdenes */}
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border p-2">Orden ID</th>
-              <th className="border p-2">Usuario</th>
-              <th className="border p-2">Total</th>
-              <th className="border p-2">Método Pago</th>
-              <th className="border p-2">Estado Pago</th>
-              <th className="border p-2">Estado Orden</th>
-              <th className="border p-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
-            {ordenesFiltradas.length > 0 ? (
-              ordenesFiltradas.map((orden) => (
-                <tr key={orden.id_orden} className="border">
-                  <td className="p-2">{orden.id_orden}</td>
-                  <td className="p-2">{orden.usuario}</td>
-                  <td className="p-2">${orden.total}</td>
-                  <td className="p-2">{orden.metodo_pago}</td>
-                  <td
-                    className={`p-2 font-bold ${
-                      orden.estado_pago === "Completado"
-                        ? "text-green-600"
-                        : orden.estado_pago === "Pendiente"
-                        ? "text-yellow-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {orden.estado_pago}
-                  </td>
-                  <td className="p-2">{orden.estado_orden}</td>
-                  <td className="p-2 flex gap-2">
-                    <select
-                      className="p-2 border rounded"
-                      value={orden.estado_orden}
-                      onChange={(e) =>
-                        actualizarEstado(orden.id_orden, e.target.value)
-                      }
-                    >
-                      <option value="Preparando">Preparando</option>
-                      <option value="Enviado">Enviado</option>
-                      <option value="Entregado">Entregado</option>
-                      <option value="Cancelado">Cancelado</option>
-                      <option value="Reembolsados">Reembolsados</option>
-                      <option value="En devolución">En devolución</option>
-                      <option value="Parcialmente reembolsado">
-                        Parcialmente reembolsado
-                      </option>
-                    </select>
-                    {(admin?.rol === "CEO" || admin?.rol === "Director") && (
-                      <button
-                        className="bg-red-500 text-white p-2 rounded flex items-center gap-1"
-                        onClick={() => handleEliminarOrden(orden.id_orden)}
+        {/* Área de la tabla */}
+        <div className="flex-1 overflow-y-auto px-6">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Orden ID</TableHead>
+                <TableHead>Usuario</TableHead>
+                <TableHead>Total</TableHead>
+                <TableHead>Método Pago</TableHead>
+                <TableHead>Estado Pago</TableHead>
+                {/* Se elimina la columna "Estado Orden" y se renombra la siguiente a "Estado de Orden" */}
+                <TableHead>Estado de Orden</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {ordenesFiltradas.length > 0 ? (
+                ordenesFiltradas.map((orden) => (
+                  <TableRow key={orden.id_orden}>
+                    <TableCell>{orden.id_orden}</TableCell>
+                    <TableCell>{orden.usuario}</TableCell>
+                    <TableCell>${orden.total}</TableCell>
+                    <TableCell>{orden.metodo_pago}</TableCell>
+                    <TableCell className="font-bold">
+                      <span
+                        className={
+                          orden.estado_pago === "Completado"
+                            ? "text-green-600"
+                            : orden.estado_pago === "Pendiente"
+                            ? "text-yellow-600"
+                            : "text-red-600"
+                        }
                       >
-                        <img
-                          src="/assets/SVGs/basura.svg"
-                          alt="Eliminar"
-                          className="w-5 h-5"
-                        />
-                        <span>Eliminar</span>
+                        {orden.estado_pago}
+                      </span>
+                    </TableCell>
+                    <TableCell className="flex gap-2">
+                      <select
+                        className="p-2 border rounded"
+                        value={orden.estado_orden}
+                        onChange={(e) =>
+                          actualizarEstado(orden.id_orden, e.target.value)
+                        }
+                      >
+                        <option value="Preparando">Preparando</option>
+                        <option value="Enviado">Enviado</option>
+                        <option value="Entregado">Entregado</option>
+                        <option value="Cancelado">Cancelado</option>
+                        <option value="Reembolsados">Reembolsados</option>
+                        <option value="En devolución">En devolución</option>
+                        <option value="Parcialmente reembolsado">
+                          Parcialmente reembolsado
+                        </option>
+                      </select>
+                      {(admin?.rol === "CEO" || admin?.rol === "Director") && (
+                        <button
+                          className="bg-red-500 text-white p-2 rounded flex items-center gap-1"
+                          onClick={() => handleEliminarOrden(orden.id_orden)}
+                        >
+                          Eliminar
+                        </button>
+                      )}
+                      <button
+                        className={`bg-blue-500 text-white p-2 rounded flex items-center gap-1 ${
+                          orden.estado_orden !== "Entregado"
+                            ? "opacity-50 cursor-not-allowed"
+                            : ""
+                        }`}
+                        onClick={() => {
+                          if (orden.estado_orden === "Entregado") {
+                            window.open(
+                              `/review-orden-${orden.id_orden}`,
+                              "_blank"
+                            );
+                          }
+                        }}
+                        disabled={orden.estado_orden !== "Entregado"}
+                      >
+                        Review
                       </button>
-                    )}
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="7" className="p-2 text-center">
-                  No hay órdenes disponibles
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+                    </TableCell>
+                  </TableRow>
+                ))
+              ) : (
+                <TableRow>
+                  <TableCell colSpan={6} className="p-2 text-center">
+                    No hay órdenes disponibles
+                  </TableCell>
+                </TableRow>
+              )}
+            </TableBody>
+            <TableCaption>
+              {ordenesFiltradas.length} orden(es) encontrada(s)
+            </TableCaption>
+          </Table>
+        </div>
       </div>
     </Layout>
   );

@@ -1,10 +1,11 @@
 // controllers/mercadopago.js
 import mercadopago from "@/config/mercadopago";
 import { getPool } from "@/db";
+import { sendOrderCompletedEmail } from "@/pages/api/contact/orderEmail"; 
 
 export const procesarWebhook = async (req, res) => {
   try {
-    // Obtener el ID de pago desde query o body
+    // Obtener el ID de pago y consultar a Mercado Pago (sin cambios)
     const pagoId =
       req.query["id"] ||
       req.query["data.id"] ||
@@ -13,7 +14,6 @@ export const procesarWebhook = async (req, res) => {
       return res.status(400).json({ error: "ID de pago no encontrado" });
     }
 
-    // Consultar el pago en Mercado Pago
     let pago;
     try {
       const response = await mercadopago.payment.findById(pagoId);
@@ -35,7 +35,6 @@ export const procesarWebhook = async (req, res) => {
         .json({ error: "Pago sin referencia externa a orden." });
     }
 
-    // Obtener el pool de conexiones (Railway se conecta a través de DATABASE_URL)
     const pool = await getPool();
     const { rows: ordenes } = await pool.query(
       `SELECT * FROM ordenes WHERE id_orden = $1`,
@@ -45,7 +44,6 @@ export const procesarWebhook = async (req, res) => {
       return res.status(404).json({ error: "Orden no encontrada" });
     }
 
-    // Mapear el estado de pago de Mercado Pago al formato deseado
     const estadoPagoMap = {
       pending: "Pendiente",
       approved: "Completado",
@@ -60,13 +58,20 @@ export const procesarWebhook = async (req, res) => {
     const nuevoEstado = estadoPagoMap[pago.status] || "Pendiente";
     const metodoPago = pago.payment_method_id || "Mercado Pago";
 
-    const { rowCount } = await pool.query(
+    const { rowCount, rows } = await pool.query(
       `UPDATE ordenes SET estado_pago = $1, metodo_pago = $2 WHERE id_orden = $3 RETURNING *`,
       [nuevoEstado, metodoPago, id_orden]
     );
     if (rowCount === 0) {
       return res.status(404).json({ error: "Orden no encontrada" });
     }
+
+    // Si el estado es "Completado", enviar el correo de notificación
+    if (nuevoEstado === "Completado") {
+      const orden = rows[0];
+      await sendOrderCompletedEmail(orden);
+    }
+
     return res.status(200).end();
   } catch (error) {
     console.error("Error en procesarWebhook:", error);

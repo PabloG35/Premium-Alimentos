@@ -46,7 +46,11 @@ export function AdminAuthProvider({ children }) {
       }
       localStorage.setItem("adminToken", data.token);
       // Guardar también el objeto admin
-      const adminData = { nombre: data.nombre_usuario, rol: data.rol };
+      const adminData = {
+        nombre: data.user.nombre_usuario,
+        rol: data.user.rol,
+      };
+
       localStorage.setItem("admin", JSON.stringify(adminData));
       setAdmin(adminData);
       router.push("/");

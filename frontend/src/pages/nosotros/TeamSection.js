@@ -1,41 +1,52 @@
 // src/pages/nosotros/TeamSection.js
 import React from "react";
+import {
+  Avatar,
+  AvatarImage,
+  AvatarFallback,
+} from "@/src/components/ui/avatar";
 
 const TeamSection = () => {
   const teamMembers = [
     {
-      name: "Michael Foster",
-      role: "Co-Founder / CTO",
-      imgSrc: "/SVGs/añadirImagen.svg",
+      name: "Pablo Gaxiola",
+      role: "CEO/Fundador",
+      imgSrc: "",
     },
     {
-      name: "Dries Vincent",
-      role: "Business Relations",
-      imgSrc: "/SVGs/añadirImagen.svg",
+      name: "Sofia Gaxiola",
+      role: "Gerente General",
+      imgSrc: "",
     },
   ];
 
+  // Función para obtener las iniciales del nombre
+  const getInitials = (name) => {
+    const parts = name.split(" ");
+    if (parts.length === 1) return parts[0].charAt(0);
+    return parts[0].charAt(0) + parts[parts.length - 1].charAt(0);
+  };
+
   return (
     <section className="h-[50vh] flex flex-col justify-center text-center">
-      <div className="container mx-auto px-4">
-        <h2 className="text-3xl font-semibold mb-4">Nuestro equipo</h2>
+      <div className="px-4">
+        <h2 className="text-3xl heading mb-4">Nuestro equipo</h2>
         <p className="text-lg text-gray-700 mb-8">
           Somos dueños de perros, como tú. Personas que vivimos los mismos
           retos, y que decidimos hacer algo al respecto. Hoy, convertimos
           nuestra experiencia en soluciones reales para quienes también buscan
           lo mejor.
         </p>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 justify-items-center">
+        <div className="w-full flex flex-row justify-center gap-28 items-center mt-4">
           {teamMembers.map((member, index) => (
-            <div key={index} className="flex flex-col items-center">
-              <div className="w-16 h-16 rounded-full overflow-hidden mb-4">
-                <img
-                  src={member.imgSrc}
-                  alt={member.name}
-                  className="object-cover w-full h-full"
-                />
+            <div key={index} className="flex flex-col justify-end items-center">
+              <div className="mb-4">
+                <Avatar className="w-16 h-16">
+                  <AvatarImage src={member.imgSrc} alt={member.name} />
+                  <AvatarFallback>{getInitials(member.name)}</AvatarFallback>
+                </Avatar>
               </div>
-              <h3 className="text-xl font-bold">{member.name}</h3>
+              <h3 className="text-xl heading">{member.name}</h3>
               <p className="text-gray-600 text-sm">{member.role}</p>
             </div>
           ))}

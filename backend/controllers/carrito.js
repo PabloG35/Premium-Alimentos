@@ -128,3 +128,49 @@ export const calcularTotal = async (req, res) => {
     return res.status(500).json({ error: "Error interno del servidor" });
   }
 };
+
+export const actualizarCantidadCarrito = async (req, res) => {
+  try {
+    const { id_usuario } = req.usuario;
+    const { id_producto, cantidad } = req.body;
+
+    if (!id_producto || cantidad == null || cantidad < 0) {
+      return res.status(400).json({ error: "Datos inválidos" });
+    }
+
+    const pool = await getPool();
+
+    // Verificar stock del producto
+    const productoResult = await pool.query(
+      "SELECT stock FROM productos WHERE id_producto = $1",
+      [id_producto]
+    );
+    if (productoResult.rowCount === 0) {
+      return res.status(404).json({ error: "Producto no encontrado" });
+    }
+    const { stock } = productoResult.rows[0];
+    if (stock < cantidad) {
+      return res.status(400).json({ error: "Stock insuficiente" });
+    }
+
+    // Actualizar la cantidad en el carrito
+    const result = await pool.query(
+      "UPDATE carrito SET cantidad = $1 WHERE id_usuario = $2 AND id_producto = $3 RETURNING *",
+      [cantidad, id_usuario, id_producto]
+    );
+
+    if (result.rowCount === 0) {
+      return res
+        .status(404)
+        .json({ error: "Producto no encontrado en el carrito" });
+    }
+
+    return res.json({
+      message: "Cantidad actualizada correctamente",
+      item: result.rows[0],
+    });
+  } catch (error) {
+    console.error("Error al actualizar cantidad en el carrito:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+};

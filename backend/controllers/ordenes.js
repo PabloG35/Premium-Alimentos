@@ -288,3 +288,44 @@ export const editarEstadoOrden = async (req, res) => {
     return res.status(500).json({ msg: "Error en el servidor" });
   }
 };
+
+export const obtenerEstadoResenasYOrden = async (req, res) => {
+  try {
+    const { id_orden } = req.query;
+    if (!id_orden) {
+      return res.status(400).json({ error: "Falta el id_orden" });
+    }
+    const pool = await getPool();
+    const { rows } = await pool.query(
+      `
+      SELECT 
+        d.id_producto, 
+        p.nombre, 
+        p.precio,
+        d.cantidad,
+        CASE WHEN r.id_reseña IS NULL THEN false ELSE true END AS resenada,
+        r.calificacion,
+        r.comentario,
+        r.fecha_reseña,
+        COALESCE(
+          (
+            SELECT json_agg(json_build_object('url_imagen', i.url_imagen))
+            FROM imagenes_producto i
+            WHERE i.id_producto = p.id_producto
+          ), '[]'
+        ) AS imagenes
+      FROM detalles_orden d
+      JOIN productos p ON d.id_producto = p.id_producto
+      LEFT JOIN resenas r 
+        ON r.id_producto = d.id_producto 
+        AND r.id_orden = $1
+      WHERE d.id_orden = $1
+      `,
+      [id_orden]
+    );
+    return res.status(200).json({ id_orden, productos: rows });
+  } catch (error) {
+    console.error("Error al obtener estado de reseñas de la orden:", error);
+    return res.status(500).json({ error: "Error interno del servidor" });
+  }
+};

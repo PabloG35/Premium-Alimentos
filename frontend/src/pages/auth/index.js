@@ -1,4 +1,4 @@
-// src/pages/auth/index.js
+// pages/auth/index.js
 import { useState, useContext, useEffect } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
@@ -64,7 +64,7 @@ export default function Login() {
 
   return (
     <Layout>
-      <div className="w-full min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="w-full h-[calc(100vh-112px)] flex items-center justify-center">
         <div className="w-full max-w-md">
           {modo === "login" ? (
             <form

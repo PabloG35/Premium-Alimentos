@@ -3,7 +3,7 @@
   display: block;
   position: relative;
   cursor: pointer;
-  width: 200px; /* Se fija el ancho para que el título y el dropdown coincidan */
+  width: 200px;
 }
 
 /* Estilos del título del menú */
@@ -27,7 +27,7 @@
   display: block;
   height: 0;
   border-top: 5px solid var(--pm-naranja);
-  border-left: 100px solid transparent; /* 200px / 2 */
+  border-left: 100px solid transparent;
   border-right: 100px solid transparent;
   border-bottom: 0 solid #e4e4e7;
   position: absolute;
@@ -76,7 +76,7 @@
 
 /* Estilos para el Dropdown propiamente dicho */
 .menu-dropdown {
-  width: 100%; /* Igual que el contenedor del menú */
+  width: 100%;
   padding: 15px 0;
   position: absolute;
   background: #ebebeb;
@@ -144,7 +144,7 @@
   z-index: 99;
 }
 
-/* Opcional: Estilos para enlaces del menú (INICIO, NOSOTROS, CONTACTO) exclusivos de la navbar */
+/* Estilos para enlaces del menú */
 .menuLink {
   position: relative;
   display: inline-block;
@@ -167,11 +167,11 @@
   width: 100%;
 }
 
-/* Nueva animación para los links dentro de los elementos li del dropdown */
+/* Animación para los links dentro de los items del dropdown */
 .menu-dropdown li a {
   position: relative;
   display: inline-block;
-  color: inherit; /* Hereda el color del contenedor */
+  color: inherit;
   transition: color 200ms ease;
 }
 
@@ -180,7 +180,7 @@
   position: absolute;
   width: 100%;
   height: 2px;
-  bottom: 0; /* Ajustado para que quede dentro y se vea a pesar del overflow hidden */
+  bottom: 0;
   left: 0;
   background-color: var(--pm-naranja);
   transform: scaleX(0);

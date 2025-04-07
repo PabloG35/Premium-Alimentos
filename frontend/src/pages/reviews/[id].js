@@ -1,15 +1,106 @@
 // src/pages/reviews/[id].js
-import { Fragment, useEffect, useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Layout from "@/src/components/Layout";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
-import Slider from "react-slick";
-import { Dialog, Transition, Listbox } from "@headlessui/react";
-import React from "react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/src/components/ui/carousel";
+import { Dialog, DialogContent, DialogTitle } from "@/src/components/ui/dialog";
+import { Alert, AlertTitle, AlertDescription } from "@/src/components/ui/alert";
+import { ToastAction } from "@/src/components/ui/toast";
+import {
+  useNotification,
+  NOTIFICATION_TYPES,
+} from "@/src/context/NotificationContext";
 
-const ratings = [1, 2, 3, 4, 5];
+// 1. Notificación inline usando componentes de Shadcn
+function InlineNotification() {
+  const { notifications, removeNotification } = useNotification();
+  const alertNotification = notifications.find(
+    (n) => n.type === NOTIFICATION_TYPES.ALERT && n.displayInline
+  );
+  if (!alertNotification) return null;
 
-// Componente ProductCard
+  return (
+    <div className="flex justify-center my-4">
+      <Alert
+        key={alertNotification.id}
+        variant="destructive"
+        onClick={() => removeNotification(alertNotification.id)}
+      >
+        <AlertTitle>{alertNotification.title}</AlertTitle>
+        <AlertDescription>{alertNotification.description}</AlertDescription>
+      </Alert>
+    </div>
+  );
+}
+
+// 2. Componente de estrellas personalizado (Rating)
+const CustomRating = ({ value = 0, onChange, max = 5, editable = false }) => {
+  const [permanentRating, setPermanentRating] = useState(value);
+  const [temporaryRating, setTemporaryRating] = useState(null);
+  const [isFixed, setIsFixed] = useState(false);
+
+  const handleMouseEnter = (index) => {
+    if (editable && !isFixed) {
+      setTemporaryRating(index + 1);
+    }
+  };
+
+  const handleMouseLeave = () => {
+    if (!isFixed) {
+      setTemporaryRating(null);
+    }
+  };
+
+  const handleClick = (index) => {
+    if (editable) {
+      const newRating = index + 1;
+      setPermanentRating(newRating);
+      onChange(newRating);
+      setIsFixed(true);
+    }
+  };
+
+  const ratingToShow =
+    temporaryRating !== null ? temporaryRating : permanentRating;
+
+  return (
+    <div className="flex justify-center" onMouseLeave={handleMouseLeave}>
+      {Array.from({ length: max }).map((_, index) => (
+        <div
+          key={index}
+          className={editable ? "cursor-pointer" : "cursor-default"}
+          onMouseEnter={() => handleMouseEnter(index)}
+          onClick={() => handleClick(index)}
+        >
+          {index < ratingToShow ? (
+            <img
+              src="/SVGs/starIcon.svg"
+              alt="Estrella llena"
+              className="w-6 h-6"
+            />
+          ) : (
+            <img
+              src="/SVGs/starIconEmpty.svg"
+              alt="Estrella vacía"
+              className="w-6 h-6"
+            />
+          )}
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// 3. Tarjeta de producto que usa CustomRating y textarea
 const ProductCard = React.memo(
   ({
     producto,
@@ -21,7 +112,7 @@ const ProductCard = React.memo(
     disabled,
   }) => {
     return (
-      <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center">
+      <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
         <img
           src={
             producto.imagenes && producto.imagenes.length > 0
@@ -29,34 +120,19 @@ const ProductCard = React.memo(
               : "/SVGs/añadirImagen.svg"
           }
           alt={producto.nombre}
-          className="w-48 h-48 object-cover mb-4 rounded-lg"
+          className="w-48 h-48 object-cover mb-4 rounded-lg mx-auto"
         />
-        <h2 className="text-2xl font-semibold text-center mb-4">
-          {producto.nombre}
-        </h2>
+        <h2 className="text-2xl font-semibold mb-4">{producto.nombre}</h2>
         <div className="w-full mb-4">
-          <Listbox value={selectedRating} onChange={onRatingChange}>
-            <Listbox.Label className="block text-center mb-2">
-              Calificación (1-5):
-            </Listbox.Label>
-            <Listbox.Button className="w-full border rounded p-2 text-center">
-              {selectedRating} ⭐
-            </Listbox.Button>
-            <Listbox.Options className="border rounded mt-1">
-              {ratings.map((num) => (
-                <Listbox.Option
-                  key={num}
-                  value={num}
-                  className="cursor-pointer p-2 hover:bg-blue-100"
-                >
-                  {num} ⭐
-                </Listbox.Option>
-              ))}
-            </Listbox.Options>
-          </Listbox>
+          <CustomRating
+            value={selectedRating}
+            onChange={onRatingChange}
+            editable={true}
+            max={5}
+          />
         </div>
         <div className="w-full mb-4">
-          <label className="block text-center mb-2">Comentario:</label>
+          <label className="block mb-2">Comentario:</label>
           <textarea
             value={comment}
             onChange={(e) => onCommentChange(e.target.value)}
@@ -88,15 +164,25 @@ export default function ReviewsPage() {
   const [reviews, setReviews] = useState({});
   const [thankYouOpen, setThankYouOpen] = useState(false);
 
-  // 1. Obtener datos de la orden
+  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
+  const { addNotification } = useNotification();
+
+  // 4. Fetch de datos de la orden y filtrado de productos ya reseñados
   useEffect(() => {
     if (!id) return;
     const fetchOrderData = async () => {
       try {
-        const res = await fetch(`/api/usuario/resenas/estado/${id}`);
+        const res = await fetch(`/api/ordenes/estado/${id}`);
         if (!res.ok) throw new Error("Error al obtener datos de la orden");
         const data = await res.json();
-        setOrderData(data);
+
+        // Filtrar productos ya reseñados (asumimos que "resenada" es true cuando ya fue evaluado)
+        const filteredData = {
+          ...data,
+          productos: data.productos.filter((prod) => !prod.resenada),
+        };
+
+        setOrderData(filteredData);
       } catch (err) {
         setError(err.message);
       } finally {
@@ -106,7 +192,7 @@ export default function ReviewsPage() {
     fetchOrderData();
   }, [id]);
 
-  // 2. Para cada producto sin imágenes, obtener la primera imagen
+  // 5. Obtener imagen si el producto no tiene
   useEffect(() => {
     if (
       orderData &&
@@ -120,8 +206,9 @@ export default function ReviewsPage() {
       const fetchImages = async () => {
         const updatedProducts = await Promise.all(
           orderData.productos.map(async (producto) => {
-            if (producto.imagenes && producto.imagenes.length > 0)
+            if (producto.imagenes && producto.imagenes.length > 0) {
               return producto;
+            }
             try {
               const res = await fetch(`/api/productos/${producto.id_producto}`);
               if (res.ok) {
@@ -151,6 +238,7 @@ export default function ReviewsPage() {
     }
   }, [orderData]);
 
+  // Manejo de rating y comentario
   const handleRatingChange = (productId, rating) => {
     setReviews((prev) => ({
       ...prev,
@@ -165,12 +253,31 @@ export default function ReviewsPage() {
     }));
   };
 
+  // 6. Validar y enviar reseña
   const handleSubmitReview = async (productId) => {
     const reviewData = reviews[productId];
+
+    // Validaciones usando notificación inline (ALERT)
     if (!reviewData || !reviewData.rating) {
-      alert("Por favor, selecciona una calificación");
+      addNotification({
+        type: NOTIFICATION_TYPES.ALERT,
+        title: "Error",
+        description: "Por favor, selecciona una calificación.",
+        displayInline: true,
+      });
       return;
     }
+
+    if (!reviewData.comment || reviewData.comment.trim().length < 25) {
+      addNotification({
+        type: NOTIFICATION_TYPES.ALERT,
+        title: "Error",
+        description: "El comentario debe tener al menos 25 caracteres.",
+        displayInline: true,
+      });
+      return;
+    }
+
     try {
       const res = await fetch(`/api/usuario/resenas`, {
         method: "POST",
@@ -186,67 +293,54 @@ export default function ReviewsPage() {
         const errData = await res.json();
         throw new Error(errData.error || "Error al enviar la reseña");
       }
-      // Remover el producto revisado de la lista
+
+      // Se actualiza el estado filtrando el producto reseñado
       setOrderData((prev) => ({
         ...prev,
         productos: prev.productos.filter(
           (prod) => prod.id_producto !== productId
         ),
       }));
-      // Si al remover ya no quedan productos, mostrar Dialog
+
+      addNotification({
+        type: NOTIFICATION_TYPES.TOAST,
+        title: "Gracias!",
+        description: "Tu feedback se agradece.",
+        variant: "success",
+        duration: 3000,
+      });
+
       if (orderData.productos.length === 1) {
         setThankYouOpen(true);
       }
     } catch (err) {
-      alert(err.message);
+      addNotification({
+        type: NOTIFICATION_TYPES.TOAST,
+        variant: "destructive",
+        duration: 3000,
+        action: (
+          <ToastAction
+            altText="Ir a FAQ"
+            onClick={() => (window.location.href = "/")}
+          >
+            FAQ
+          </ToastAction>
+        ),
+      });
     }
   };
 
-  // Slider responsive según el ejemplo proporcionado
-  const sliderSettings = {
-    dots: true,
-    infinite: false,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 4,
-    initialSlide: 0,
-    responsive: [
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 3,
-          infinite: true,
-          dots: true,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 2,
-          initialSlide: 2,
-        },
-      },
-      {
-        breakpoint: 480,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
-
+  // 7. Render según estado de datos
   if (loading) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen">
+        <div className="flex items-center justify-center h-screen">
           <LoadingAnimation />
         </div>
       </Layout>
     );
   }
+
   if (error) {
     return (
       <Layout>
@@ -254,11 +348,12 @@ export default function ReviewsPage() {
       </Layout>
     );
   }
+
   if (!orderData || !orderData.productos || orderData.productos.length === 0) {
     return (
       <Layout>
-        <div className="flex items-center justify-center min-h-screen">
-          <h1 className="text-4xl font-bold text-center">
+        <div className="flex items-center justify-center h-screen">
+          <h1 className="text-4xl heading text-center">
             ¡Gracias por su retroalimentación!
           </h1>
         </div>
@@ -266,33 +361,40 @@ export default function ReviewsPage() {
     );
   }
 
+  // 8. Mostrar productos: Carousel si hay varios, o lista simple si hay uno
   const content =
     orderData.productos.length > 1 ? (
-      <Slider {...sliderSettings}>
-        {orderData.productos.map((producto) => (
-          <div key={producto.id_producto} className="p-4">
-            <ProductCard
-              producto={producto}
-              selectedRating={reviews[producto.id_producto]?.rating || 3}
-              comment={reviews[producto.id_producto]?.comment || ""}
-              onRatingChange={(value) =>
-                handleRatingChange(producto.id_producto, value)
-              }
-              onCommentChange={(value) =>
-                handleCommentChange(producto.id_producto, value)
-              }
-              onSubmit={() => handleSubmitReview(producto.id_producto)}
-              disabled={producto.resenada}
-            />
-          </div>
-        ))}
-      </Slider>
+      <Carousel className="w-full">
+        <CarouselContent>
+          {orderData.productos.map((producto) => (
+            <CarouselItem key={producto.id_producto}>
+              <div className="p-4">
+                <ProductCard
+                  producto={producto}
+                  selectedRating={reviews[producto.id_producto]?.rating || 0}
+                  comment={reviews[producto.id_producto]?.comment || ""}
+                  onRatingChange={(value) =>
+                    handleRatingChange(producto.id_producto, value)
+                  }
+                  onCommentChange={(value) =>
+                    handleCommentChange(producto.id_producto, value)
+                  }
+                  onSubmit={() => handleSubmitReview(producto.id_producto)}
+                  disabled={producto.resenada}
+                />
+              </div>
+            </CarouselItem>
+          ))}
+        </CarouselContent>
+        <CarouselPrevious />
+        <CarouselNext />
+      </Carousel>
     ) : (
       orderData.productos.map((producto) => (
         <ProductCard
           key={producto.id_producto}
           producto={producto}
-          selectedRating={reviews[producto.id_producto]?.rating || 3}
+          selectedRating={reviews[producto.id_producto]?.rating || 0}
           comment={reviews[producto.id_producto]?.comment || ""}
           onRatingChange={(value) =>
             handleRatingChange(producto.id_producto, value)
@@ -306,68 +408,35 @@ export default function ReviewsPage() {
       ))
     );
 
+  // 9. Render final con InlineNotification y Dialog, todo centrado
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto py-8">
-        <h1 className="text-3xl font-bold text-center mb-8">
+      <div className="max-w-xl h-[calc(100vh-112px)] pt-9 mx-auto text-center">
+        <h1 className="text-3xl heading mb-4">
           Reseñas para la Orden: {orderData.id_orden}
         </h1>
+
+        <InlineNotification />
+
         {content}
       </div>
-      <Transition appear show={thankYouOpen} as={Fragment}>
-        <Dialog
-          as="div"
-          className="fixed inset-0 z-50 overflow-y-auto"
-          onClose={() => {}}
-        >
-          <div className="min-h-screen px-4 text-center">
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
+
+      <Dialog open={thankYouOpen} onOpenChange={setThankYouOpen}>
+        <DialogContent className="max-w-md p-6 text-center">
+          <DialogTitle className="text-2xl font-bold">
+            ¡Gracias por su retroalimentación!
+          </DialogTitle>
+          <div className="mt-4">
+            <button
+              type="button"
+              className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200"
+              onClick={() => router.push("/perfil")}
             >
-              <Dialog.Overlay className="fixed inset-0 bg-black opacity-30" />
-            </Transition.Child>
-            <span
-              className="inline-block h-screen align-middle"
-              aria-hidden="true"
-            >
-              &#8203;
-            </span>
-            <Transition.Child
-              as={Fragment}
-              enter="ease-out duration-300"
-              enterFrom="opacity-0 scale-95"
-              enterTo="opacity-100 scale-100"
-              leave="ease-in duration-200"
-              leaveFrom="opacity-100 scale-100"
-              leaveTo="opacity-0 scale-95"
-            >
-              <div className="inline-block w-full max-w-md p-6 my-8 overflow-hidden text-center align-middle transition-all transform bg-white shadow-xl rounded-2xl">
-                <Dialog.Title
-                  as="h3"
-                  className="text-2xl font-bold leading-6 text-gray-900"
-                >
-                  ¡Gracias por su retroalimentación!
-                </Dialog.Title>
-                <div className="mt-4">
-                  <button
-                    type="button"
-                    className="inline-flex justify-center px-4 py-2 text-sm font-medium text-blue-900 bg-blue-100 border border-transparent rounded-md hover:bg-blue-200"
-                    onClick={() => router.push("/perfil")}
-                  >
-                    Volver a Perfil
-                  </button>
-                </div>
-              </div>
-            </Transition.Child>
+              Volver a Perfil
+            </button>
           </div>
-        </Dialog>
-      </Transition>
+        </DialogContent>
+      </Dialog>
     </Layout>
   );
 }

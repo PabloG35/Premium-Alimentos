@@ -1,4 +1,4 @@
-// src/pages/home/Reviews.js
+// pages/home/Reviews.js
 import React, { useState, useEffect, useRef } from "react";
 import Slider from "react-slick";
 import LoadingAnimation from "@/src/components/LoadingAnimation";

@@ -3,6 +3,15 @@ import { useState, useEffect, useContext } from "react";
 import { useRouter } from "next/router";
 import AdminAuthContext from "@/context/AdminAuthContext";
 import Layout from "@/components/Layout";
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableHead,
+  TableCell,
+  TableCaption,
+} from "@/components/ui/table";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -12,7 +21,7 @@ async function obtenerUsuarios() {
   const token = obtenerToken();
   if (!token) throw new Error("No hay token disponible");
 
-  const response = await fetch(`${BASE_URL}/api/usuarios`, {
+  const response = await fetch(`${BASE_URL}/api/usuario/usuarios`, {
     method: "GET",
     credentials: "include",
     headers: {
@@ -33,17 +42,18 @@ async function eliminarUsuario(id) {
   const token = obtenerToken();
   if (!token) throw new Error("No hay token disponible");
 
-  const response = await fetch(`${BASE_URL}/api/usuarios/eliminar/${id}`, {
-    method: "DELETE",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const response = await fetch(
+    `${BASE_URL}/api/usuario/usuarios/eliminar/${id}`,
+    {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
 
-  if (!response.ok) {
-    throw new Error("Error al eliminar usuario");
-  }
+  if (!response.ok) throw new Error("Error al eliminar usuario");
 
   return await response.json();
 }
@@ -52,7 +62,7 @@ async function crearAdmin(data) {
   const token = obtenerToken();
   if (!token) throw new Error("No hay token disponible");
 
-  const response = await fetch(`${BASE_URL}/api/usuarios/crear-admin`, {
+  const response = await fetch(`${BASE_URL}/api/usuario/usuarios/crear-admin`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -61,9 +71,7 @@ async function crearAdmin(data) {
     body: JSON.stringify(data),
   });
 
-  if (!response.ok) {
-    throw new Error("Error al crear usuario");
-  }
+  if (!response.ok) throw new Error("Error al crear usuario");
 
   return await response.json();
 }
@@ -107,7 +115,17 @@ export default function Usuarios() {
 
   const cargarSuscripciones = async () => {
     try {
-      const res = await fetch(`${BASE_URL}/api/usuarios/obtenerSuscripciones`);
+      const token = localStorage.getItem("adminToken");
+      const res = await fetch(
+        `${BASE_URL}/api/usuario/usuarios/obtenerSuscripciones`,
+        {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
       const data = await res.json();
       setSuscripciones(data.suscripciones || []);
     } catch (error) {
@@ -173,22 +191,21 @@ export default function Usuarios() {
           ))}
         </div>
 
-        {/* Tabla de Usuarios */}
-        <table className="w-full border-collapse border border-gray-300">
-          <thead>
-            <tr className="bg-gray-100">
-              <th className="border p-2">ID</th>
-              <th className="border p-2">Nombre</th>
-              <th className="border p-2">Correo</th>
-              <th className="border p-2">Rol</th>
-              <th className="border p-2">Suscrito</th>
-              <th className="border p-2">Acciones</th>
-            </tr>
-          </thead>
-          <tbody>
+        {/* Tabla de Usuarios usando shadcn/ui Table components */}
+        <Table className="w-full">
+          <TableHeader>
+            <TableRow>
+              <TableHead>ID</TableHead>
+              <TableHead>Nombre</TableHead>
+              <TableHead>Correo</TableHead>
+              <TableHead>Rol</TableHead>
+              <TableHead>Suscrito</TableHead>
+              <TableHead>Acciones</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
             {usuariosFiltrados.length > 0 ? (
               usuariosFiltrados.map((user) => {
-                // Determinar si el usuario está suscrito
                 let suscrito = "";
                 let color = "";
                 if (user.rol === "usuario") {
@@ -199,36 +216,39 @@ export default function Usuarios() {
                   color = sub ? "text-green-500" : "text-red-500";
                 }
                 return (
-                  <tr key={user.id_usuario} className="border">
-                    <td className="p-2">{user.id_usuario}</td>
-                    <td className="p-2">{user.nombre_usuario}</td>
-                    <td className="p-2">{user.correo}</td>
-                    <td className="p-2">{user.rol}</td>
-                    <td className="p-2">
+                  <TableRow key={user.id_usuario}>
+                    <TableCell>{user.id_usuario}</TableCell>
+                    <TableCell>{user.nombre_usuario}</TableCell>
+                    <TableCell>{user.correo}</TableCell>
+                    <TableCell>{user.rol}</TableCell>
+                    <TableCell>
                       {user.rol === "usuario" && (
                         <span className={`${color} font-bold`}>{suscrito}</span>
                       )}
-                    </td>
-                    <td className="p-2">
+                    </TableCell>
+                    <TableCell>
                       <button
                         onClick={() => eliminar(user.id_usuario)}
                         className="bg-red-500 text-white p-2 rounded"
                       >
                         Eliminar
                       </button>
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 );
               })
             ) : (
-              <tr>
-                <td colSpan="6" className="p-2 text-center">
+              <TableRow>
+                <TableCell colSpan={6} className="p-2 text-center">
                   No hay usuarios disponibles
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             )}
-          </tbody>
-        </table>
+          </TableBody>
+          <TableCaption>
+            {usuariosFiltrados.length} usuario(s) encontrado(s)
+          </TableCaption>
+        </Table>
 
         {/* Formulario para crear nuevo usuario (Solo para CEO) */}
         {admin.rol === "CEO" && (
@@ -263,7 +283,10 @@ export default function Usuarios() {
                 placeholder="Contraseña"
                 value={nuevoUsuario.password}
                 onChange={(e) =>
-                  setNuevoUsuario({ ...nuevoUsuario, password: e.target.value })
+                  setNuevoUsuario({
+                    ...nuevoUsuario,
+                    password: e.target.value,
+                  })
                 }
                 className="p-2 border rounded"
                 required

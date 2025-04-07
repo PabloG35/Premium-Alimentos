@@ -1,69 +1,113 @@
-// components/Sidebar.js
+"use client";
+
+import { useContext } from "react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import {
+  Sidebar,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+  SidebarMenu,
+  SidebarMenuItem,
+  SidebarMenuButton,
+  SidebarMenuSub,
+  SidebarMenuSubItem,
+} from "@/components/ui/sidebar";
+import {
+  Collapsible,
+  CollapsibleTrigger,
+  CollapsibleContent,
+} from "@/components/ui/collapsible";
+import { Button } from "@/components/ui/button";
+import AdminAuthContext from "@/context/AdminAuthContext";
 
-export default function Sidebar() {
-  const router = useRouter();
-
-  const logout = async () => {
-    try {
-      await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/usuarios/logout`,
-        {
-          method: "POST",
-        }
-      );
-    } catch (error) {
-      console.error("Error cerrando sesión:", error);
-    } finally {
-      // Limpiar tokens y redirigir al login
-      localStorage.removeItem("adminToken");
-      localStorage.removeItem("userToken"); // Si aplica para el frontend de la tienda
-      router.push("/login");
-    }
-  };
+export function AppSidebar() {
+  const { admin, logout } = useContext(AdminAuthContext);
 
   return (
-    <nav className="sticky top-0 w-64 bg-gray-800 text-white h-screen p-5 flex flex-col justify-between">
-      <div>
-        <h2 className="text-xl font-bold mb-5">Admin Panel</h2>
-        <ul>
-          <li className="mb-2">
-            <Link href="/tienda">
-              <span className="block p-2 hover:bg-gray-700 rounded cursor-pointer">
-                Gestión de Productos
-              </span>
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link href="/ordenes">
-              <span className="block p-2 hover:bg-gray-700 rounded cursor-pointer">
-                Órdenes
-              </span>
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link href="/usuarios">
-              <span className="block p-2 hover:bg-gray-700 rounded cursor-pointer">
-                Usuarios
-              </span>
-            </Link>
-          </li>
-          <li className="mb-2">
-            <Link href="/usuarios/suscripciones">
-              <span className="block p-2 hover:bg-gray-700 rounded cursor-pointer">
-                Suscripciones
-              </span>
-            </Link>
-          </li>
-        </ul>
-      </div>
-      <button
-        onClick={logout}
-        className="bg-red-500 text-white px-4 py-2 rounded w-full hover:bg-red-600 cursor-pointer"
-      >
-        Cerrar Sesión
-      </button>
-    </nav>
+    <Sidebar className="flex flex-col h-full">
+      {/* Sidebar Header */}
+      <SidebarHeader className="p-4">
+        {admin ? (
+          <>
+            <h1 className="text-2xl font-bold">{admin.nombre}</h1>
+            <p className="text-sm text-muted-foreground">{admin.rol}</p>
+          </>
+        ) : (
+          <>
+            <h1 className="text-2xl font-bold">Admin Panel</h1>
+            <p className="text-sm text-muted-foreground">Rol desconocido</p>
+          </>
+        )}
+      </SidebarHeader>
+
+      {/* Sidebar Menu with Collapsible items */}
+      <SidebarContent>
+        <SidebarMenu>
+          {/* First Menu: Dashboard (index.js) */}
+          <Collapsible defaultOpen className="group/collapsible">
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <Link href="/" passHref>
+                  <SidebarMenuButton>Dashboard</SidebarMenuButton>
+                </Link>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                {/* Leave SidebarMenuSubItem area blank */}
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+
+          {/* Second Menu: Órdenes */}
+          <Collapsible defaultOpen className="group/collapsible">
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <Link href="/ordenes" passHref>
+                  <SidebarMenuButton>Órdenes</SidebarMenuButton>
+                </Link>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                {/* SidebarMenuSubItem area left blank */}
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+
+          {/* Third Menu: Tienda */}
+          <Collapsible defaultOpen className="group/collapsible">
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <Link href="/tienda" passHref>
+                  <SidebarMenuButton>Tienda</SidebarMenuButton>
+                </Link>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                {/* SidebarMenuSubItem area left blank */}
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+
+          {/* Fourth Menu: Usuarios */}
+          <Collapsible defaultOpen className="group/collapsible">
+            <SidebarMenuItem>
+              <CollapsibleTrigger asChild>
+                <Link href="/usuarios" passHref>
+                  <SidebarMenuButton>Usuarios</SidebarMenuButton>
+                </Link>
+              </CollapsibleTrigger>
+              <CollapsibleContent>
+                {/* SidebarMenuSubItem area left blank */}
+              </CollapsibleContent>
+            </SidebarMenuItem>
+          </Collapsible>
+        </SidebarMenu>
+      </SidebarContent>
+
+      {/* Sidebar Footer */}
+      <SidebarFooter className="p-4">
+        <Button variant="destructive" onClick={logout} className="w-full">
+          Cerrar Sesión
+        </Button>
+      </SidebarFooter>
+    </Sidebar>
   );
 }

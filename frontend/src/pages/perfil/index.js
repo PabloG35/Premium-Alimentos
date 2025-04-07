@@ -10,9 +10,9 @@ const Perfil = () => {
   return (
     <ProtectedRoute>
       <Layout>
-        <div className="min-h-screen mt-[112px] p-4">
+        <div className="h-screen pt-8">
           {/* Título de la página */}
-          <h1 className="text-3xl font-bold mb-4">Perfil</h1>
+          <h1 className="text-3xl heading mb-4">Perfil</h1>
           {/* Tabs debajo del título */}
           <Tab.Group>
             <Tab.List className="flex space-x-1 rounded-xl bg-blue-900/20 p-1 mb-4">
