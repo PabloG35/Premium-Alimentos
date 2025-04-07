@@ -1,5 +1,4 @@
-// pages/index.js
-import { useEffect, useState, useContext } from "react";
+import { useEffect, useState, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import jwt_decode from "jwt-decode";
 import AdminAuthContext from "@/context/AdminAuthContext";
@@ -38,17 +37,8 @@ export default function Dashboard() {
     }
   }, [token, logout, router]);
 
-  // Fetch dashboard data
-  useEffect(() => {
-    if (!admin) {
-      router.push("/login");
-    } else {
-      fetchRecentOrders();
-      fetchRecentReviews();
-    }
-  }, [admin, router]);
-
-  const fetchRecentOrders = async () => {
+  // Wrap the fetch functions with useCallback to avoid warnings in useEffect
+  const fetchRecentOrders = useCallback(async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/ordenes/recientes`);
       if (res.ok) {
@@ -60,9 +50,9 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Error en fetchRecentOrders:", error);
     }
-  };
+  }, [BASE_URL]);
 
-  const fetchRecentReviews = async () => {
+  const fetchRecentReviews = useCallback(async () => {
     try {
       const res = await fetch(`${BASE_URL}/api/usuario/resenas/recientes`);
       if (res.ok) {
@@ -74,7 +64,17 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Error en fetchRecentReviews:", error);
     }
-  };
+  }, [BASE_URL]);
+
+  // Fetch dashboard data
+  useEffect(() => {
+    if (!admin) {
+      router.push("/login");
+    } else {
+      fetchRecentOrders();
+      fetchRecentReviews();
+    }
+  }, [admin, router, fetchRecentOrders, fetchRecentReviews]);
 
   if (!admin) return <p>Cargando...</p>;
 

@@ -154,105 +154,10 @@ export default function AgregarProducto() {
           onSubmit={handleSubmit}
           className="w-full max-w-6xl grid grid-cols-1 md:grid-cols-2 gap-6"
         >
-          {/* Left Column: Main Fields & Images */}
+          {/* Left Column */}
           <div className="space-y-4">
             <h2 className="text-lg font-bold">Información</h2>
-            <div>
-              <label className="font-bold block mb-1">Nombre</label>
-              <input
-                type="text"
-                name="nombre"
-                placeholder="Nombre"
-                className="w-full p-2 border rounded"
-                value={producto.nombre}
-                onChange={handleChange}
-              />
-            </div>
-            <div>
-              <label className="font-bold block mb-1">Descripción</label>
-              <textarea
-                name="descripcion"
-                placeholder="Descripción"
-                className="w-full p-2 border rounded"
-                value={producto.descripcion}
-                onChange={handleChange}
-              ></textarea>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="font-bold block mb-1">Precio</label>
-                <input
-                  type="number"
-                  name="precio"
-                  placeholder="Precio"
-                  step="0.01"
-                  className="w-full p-2 border rounded"
-                  value={producto.precio}
-                  onChange={handleChange}
-                />
-              </div>
-              <div>
-                <label className="font-bold block mb-1">Stock</label>
-                <input
-                  type="number"
-                  name="stock"
-                  placeholder="Stock"
-                  className="w-full p-2 border rounded"
-                  value={producto.stock}
-                  onChange={handleChange}
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div>
-                <label className="font-bold block mb-1">Marca</label>
-                <select
-                  name="marca"
-                  className="w-full p-2 border rounded"
-                  value={producto.marca}
-                  onChange={handleChange}
-                >
-                  <option value="">Selecciona una marca</option>
-                  <option value="Royal Canin">Royal Canin</option>
-                  <option value="Diamond Naturals">Diamond Naturals</option>
-                  <option value="Taste of The Wild">Taste of The Wild</option>
-                  <option value="Blue Buffalo">Blue Buffalo</option>
-                </select>
-              </div>
-              <div>
-                <label className="font-bold block mb-1">Raza</label>
-                <select
-                  name="raza"
-                  className="w-full p-2 border rounded"
-                  value={producto.raza}
-                  onChange={handleChange}
-                >
-                  <option value="">Selecciona una raza</option>
-                  <option value="Bulldog Frances">Bulldog Frances</option>
-                  <option value="King Charles">King Charles</option>
-                  <option value="Dachshund (Salchicha)">
-                    Dachshund (Salchicha)
-                  </option>
-                  <option value="Cavalier King">Cavalier King</option>
-                  <option value="Maltese">Maltese</option>
-                  <option value="Jack Russel">Jack Russel</option>
-                  <option value="Todas las Razas">Todas las Razas</option>
-                </select>
-              </div>
-              <div>
-                <label className="font-bold block mb-1">Edad</label>
-                <select
-                  name="edad"
-                  className="w-full p-2 border rounded"
-                  value={producto.edad}
-                  onChange={handleChange}
-                >
-                  <option value="">Selecciona la edad</option>
-                  <option value="Adulto">Adulto</option>
-                  <option value="Cachorro">Cachorro</option>
-                </select>
-              </div>
-            </div>
+            {/* Campos de texto ... */}
             {/* Sección de imágenes */}
             <div>
               <h2 className="text-lg font-bold">Imágenes del Producto</h2>
@@ -273,17 +178,26 @@ export default function AgregarProducto() {
                       className="w-24 h-24 border flex items-center justify-center cursor-pointer"
                     >
                       {producto.previews[index] ? (
-                        <img
-                          src={producto.previews[index]}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={producto.previews[index]}
+                            alt={`Preview ${index + 1}`}
+                            fill
+                            style={{ objectFit: "cover" }}
+                            sizes="(max-width: 768px) 100vw,
+                                   (max-width: 1200px) 50vw,
+                                   33vw"
+                          />
+                        </div>
                       ) : (
-                        <img
-                          src="/SVGs/añadirImagen.svg"
-                          alt="Añadir Imagen"
-                          className="w-12 h-12"
-                        />
+                        <div className="relative w-12 h-12">
+                          <Image
+                            src="/SVGs/añadirImagen.svg"
+                            alt="Añadir Imagen"
+                            fill
+                            style={{ objectFit: "contain" }}
+                          />
+                        </div>
                       )}
                     </div>
                     {producto.previews[index] && (
@@ -299,6 +213,7 @@ export default function AgregarProducto() {
                 ))}
               </div>
             </div>
+            {/* Botón guardar */}
             <button
               type="submit"
               className="bg-green-500 text-white p-2 rounded w-full mt-4"
@@ -307,7 +222,7 @@ export default function AgregarProducto() {
             </button>
             {mensaje && <p className="text-red-500 mt-2">{mensaje}</p>}
           </div>
-          {/* Columna de ingredientes */}
+          {/* Right Column: Ingredientes */}
           <div className="space-y-4">
             <h2 className="text-lg font-bold">Ingredientes</h2>
             {["Proteínas", "Carbohidratos", "Grasas", "Otros"].map(

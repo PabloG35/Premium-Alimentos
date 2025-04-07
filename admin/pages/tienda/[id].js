@@ -294,17 +294,26 @@ export default function EditarProducto() {
                       className="w-24 h-24 border flex items-center justify-center cursor-pointer"
                     >
                       {producto.previews[index] ? (
-                        <img
-                          src={producto.previews[index]}
-                          alt={`Preview ${index + 1}`}
-                          className="w-full h-full object-cover"
-                        />
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={producto.previews[index]}
+                            alt={`Preview ${index + 1}`}
+                            fill
+                            style={{ objectFit: "cover" }}
+                            sizes="(max-width: 768px) 100vw,
+                                   (max-width: 1200px) 50vw,
+                                   33vw"
+                          />
+                        </div>
                       ) : (
-                        <img
-                          src="/SVGs/añadirImagen.svg"
-                          alt="Añadir Imagen"
-                          className="w-12 h-12"
-                        />
+                        <div className="relative w-12 h-12">
+                          <Image
+                            src="/SVGs/añadirImagen.svg"
+                            alt="Añadir Imagen"
+                            fill
+                            style={{ objectFit: "contain" }}
+                          />
+                        </div>
                       )}
                     </div>
                     {producto.previews[index] && (

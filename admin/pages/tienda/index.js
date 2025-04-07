@@ -1,7 +1,8 @@
 // pages/tienda/index.js
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect, useContext, useCallback } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
+import Image from "next/image";
 import AdminAuthContext from "@/context/AdminAuthContext";
 import Layout from "@/components/Layout";
 import {
@@ -17,16 +18,16 @@ import {
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const obtenerToken = () => localStorage.getItem("adminToken");
 
-async function obtenerProductos() {
-  // This endpoint is public, no token needed
+// Envuelve con useCallback para evitar advertencias en useEffect
+const obtenerProductos = async () => {
   const respuesta = await fetch(`${BASE_URL}/api/productos`);
   if (!respuesta.ok) {
     throw new Error("Error al obtener productos");
   }
   return await respuesta.json();
-}
+};
 
-async function eliminarProducto(id) {
+const eliminarProducto = async (id) => {
   const token = obtenerToken();
   if (!token) throw new Error("No autorizado");
   const respuesta = await fetch(`${BASE_URL}/api/productos/${id}`, {
@@ -37,16 +38,16 @@ async function eliminarProducto(id) {
   });
   if (!respuesta.ok) throw new Error("Error al eliminar producto");
   return await respuesta.json();
-}
+};
 
-async function obtenerReviews() {
+const obtenerReviews = async () => {
   const respuesta = await fetch(`${BASE_URL}/api/resenas/recientes`);
   if (!respuesta.ok) {
     throw new Error("Error al obtener reviews");
   }
   const data = await respuesta.json();
   return data.resenas || [];
-}
+};
 
 export default function AdminDashboardTienda() {
   const { admin, loading } = useContext(AdminAuthContext);
@@ -54,6 +55,26 @@ export default function AdminDashboardTienda() {
   const [activeTab, setActiveTab] = useState("productos");
   const [productos, setProductos] = useState([]);
   const [reviews, setReviews] = useState([]);
+
+  // Para evitar warnings de dependencias, encapsulamos en funciones con useCallback si las usamos en un useEffect posterior
+  const cargarProductos = useCallback(async () => {
+    try {
+      const data = await obtenerProductos();
+      console.log("📥 Productos recibidos:", data);
+      setProductos(data);
+    } catch (error) {
+      console.error("❌ Error obteniendo productos:", error);
+    }
+  }, []);
+
+  const cargarReviews = useCallback(async () => {
+    try {
+      const data = await obtenerReviews();
+      setReviews(data);
+    } catch (error) {
+      console.error("❌ Error obteniendo reviews:", error);
+    }
+  }, []);
 
   useEffect(() => {
     if (!loading) {
@@ -65,32 +86,17 @@ export default function AdminDashboardTienda() {
         cargarReviews();
       }
     }
-  }, [admin, loading, activeTab, router]);
-
-  const cargarProductos = async () => {
-    try {
-      const data = await obtenerProductos();
-      console.log("📥 Productos recibidos:", data);
-      setProductos(data);
-    } catch (error) {
-      console.error("❌ Error obteniendo productos:", error);
-    }
-  };
-
-  const cargarReviews = async () => {
-    try {
-      const data = await obtenerReviews();
-      setReviews(data);
-    } catch (error) {
-      console.error("❌ Error obteniendo reviews:", error);
-    }
-  };
+    // Agrega las funciones a la lista de dependencias
+  }, [admin, loading, activeTab, router, cargarProductos, cargarReviews]);
 
   const handleEliminarProducto = async (id) => {
     if (!confirm("¿Estás seguro de eliminar este producto?")) return;
     try {
       await eliminarProducto(id);
-      cargarProductos();
+      // Recargamos lista de productos
+      if (activeTab === "productos") {
+        cargarProductos();
+      }
     } catch (error) {
       console.error("❌ Error eliminando producto:", error);
     }
@@ -133,6 +139,7 @@ export default function AdminDashboardTienda() {
           )}
         </div>
 
+        {/* TAB: Productos */}
         {activeTab === "productos" && (
           <div>
             <Table className="w-full">
@@ -150,17 +157,20 @@ export default function AdminDashboardTienda() {
                   productos.map((producto) => (
                     <TableRow key={producto.id_producto}>
                       <TableCell>
-                        <img
-                          src={
-                            producto.imagenes?.[0]?.url_imagen ||
-                            "/placeholder.png"
-                          }
-                          alt={producto.nombre}
-                          className="w-16 h-16 object-cover"
-                          onError={(e) => {
-                            e.target.src = "/placeholder.png";
-                          }}
-                        />
+                        <div className="w-16 h-16 relative">
+                          <Image
+                            src={
+                              producto.imagenes?.[0]?.url_imagen ||
+                              "/placeholder.png"
+                            }
+                            alt={producto.nombre}
+                            fill
+                            style={{ objectFit: "cover" }}
+                            sizes="(max-width: 768px) 100vw,
+                                   (max-width: 1200px) 50vw,
+                                   33vw"
+                          />
+                        </div>
                       </TableCell>
                       <TableCell>{producto.nombre}</TableCell>
                       <TableCell>${producto.precio}</TableCell>
@@ -199,6 +209,7 @@ export default function AdminDashboardTienda() {
           </div>
         )}
 
+        {/* TAB: Reviews */}
         {activeTab === "reviews" && (
           <div>
             <h2 className="text-2xl font-bold mb-4">Reviews</h2>

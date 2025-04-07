@@ -3,6 +3,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image"; // <-- Importamos Image
 import Layout from "@/src/components/Layout";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
 import {
@@ -82,16 +83,18 @@ const CustomRating = ({ value = 0, onChange, max = 5, editable = false }) => {
           onClick={() => handleClick(index)}
         >
           {index < ratingToShow ? (
-            <img
+            <Image
               src="/SVGs/starIcon.svg"
               alt="Estrella llena"
-              className="w-6 h-6"
+              width={24}
+              height={24}
             />
           ) : (
-            <img
+            <Image
               src="/SVGs/starIconEmpty.svg"
               alt="Estrella vacía"
-              className="w-6 h-6"
+              width={24}
+              height={24}
             />
           )}
         </div>
@@ -101,58 +104,63 @@ const CustomRating = ({ value = 0, onChange, max = 5, editable = false }) => {
 };
 
 // 3. Tarjeta de producto que usa CustomRating y textarea
-const ProductCard = React.memo(
-  ({
-    producto,
-    selectedRating,
-    comment,
-    onRatingChange,
-    onCommentChange,
-    onSubmit,
-    disabled,
-  }) => {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-        <img
+//    -> Agregamos nombre a la función para evitar "missing display name"
+const ProductCard = React.memo(function ProductCard({
+  producto,
+  selectedRating,
+  comment,
+  onRatingChange,
+  onCommentChange,
+  onSubmit,
+  disabled,
+}) {
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+      <div className="w-48 h-48 mb-4 rounded-lg mx-auto relative">
+        <Image
           src={
             producto.imagenes && producto.imagenes.length > 0
               ? producto.imagenes[0].url_imagen
               : "/SVGs/añadirImagen.svg"
           }
           alt={producto.nombre}
-          className="w-48 h-48 object-cover mb-4 rounded-lg mx-auto"
+          fill
+          style={{ objectFit: "cover" }}
+          sizes="(max-width: 768px) 100vw,
+                 (max-width: 1200px) 50vw,
+                 33vw"
         />
-        <h2 className="text-2xl font-semibold mb-4">{producto.nombre}</h2>
-        <div className="w-full mb-4">
-          <CustomRating
-            value={selectedRating}
-            onChange={onRatingChange}
-            editable={true}
-            max={5}
-          />
-        </div>
-        <div className="w-full mb-4">
-          <label className="block mb-2">Comentario:</label>
-          <textarea
-            value={comment}
-            onChange={(e) => onCommentChange(e.target.value)}
-            className="w-full border border-gray-300 rounded p-2"
-            placeholder="Escribe tu reseña..."
-          />
-        </div>
-        <button
-          onClick={onSubmit}
-          disabled={disabled}
-          className={`bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 ${
-            disabled ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {disabled ? "Reseña completada" : "Enviar Reseña"}
-        </button>
       </div>
-    );
-  }
-);
+      <h2 className="text-2xl font-semibold mb-4">{producto.nombre}</h2>
+      <div className="w-full mb-4">
+        <CustomRating
+          value={selectedRating}
+          onChange={onRatingChange}
+          editable={true}
+          max={5}
+        />
+      </div>
+      <div className="w-full mb-4">
+        <label className="block mb-2">Comentario:</label>
+        <textarea
+          value={comment}
+          onChange={(e) => onCommentChange(e.target.value)}
+          className="w-full border border-gray-300 rounded p-2"
+          placeholder="Escribe tu reseña..."
+        />
+      </div>
+      <button
+        onClick={onSubmit}
+        disabled={disabled}
+        className={`bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+      >
+        {disabled ? "Reseña completada" : "Enviar Reseña"}
+      </button>
+    </div>
+  );
+});
 
 export default function ReviewsPage() {
   const router = useRouter();
