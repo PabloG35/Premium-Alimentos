@@ -61,7 +61,7 @@ export default function OrderDetailsPage() {
                     productDetails.imagenes &&
                     productDetails.imagenes.length > 0
                       ? productDetails.imagenes
-                      : [{ url_imagen: "/SVGs/añadirImagen.svg" }],
+                      : [{ url_imagen: "/SVGs/imagePlaceHolder.svg" }],
                 };
               }
               return {
@@ -69,7 +69,7 @@ export default function OrderDetailsPage() {
                 raza: "N/A",
                 etapa: "N/A",
                 precio_unitario: "0.00",
-                imagenes: [{ url_imagen: "/SVGs/añadirImagen.svg" }],
+                imagenes: [{ url_imagen: "/SVGs/imagePlaceHolder.svg" }],
               };
             } catch (error) {
               console.error("Error al obtener detalles del producto:", error);
@@ -78,7 +78,7 @@ export default function OrderDetailsPage() {
                 raza: "N/A",
                 etapa: "N/A",
                 precio_unitario: "0.00",
-                imagenes: [{ url_imagen: "/SVGs/añadirImagen.svg" }],
+                imagenes: [{ url_imagen: "/SVGs/imagePlaceHolder.svg" }],
               };
             }
           })
@@ -160,7 +160,7 @@ export default function OrderDetailsPage() {
                     src={
                       producto.imagenes && producto.imagenes.length > 0
                         ? producto.imagenes[0].url_imagen
-                        : "/SVGs/añadirImagen.svg"
+                        : "/SVGs/imagePlaceHolder.svg"
                     }
                     alt={producto.nombre}
                     className="w-16 h-16 object-cover rounded"

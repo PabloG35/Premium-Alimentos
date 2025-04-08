@@ -293,7 +293,7 @@ export default function CartModal({ open, setOpen }) {
                               Array.isArray(product.imagenes) &&
                               product.imagenes.length > 0
                                 ? product.imagenes[0].url_imagen
-                                : "/SVGs/añadirImagen.svg";
+                                : "/SVGs/imagePlaceHolder.svg";
                             return (
                               <li
                                 key={product.id_producto}

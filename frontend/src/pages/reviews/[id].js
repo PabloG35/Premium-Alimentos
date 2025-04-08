@@ -121,7 +121,7 @@ const ProductCard = React.memo(function ProductCard({
           src={
             producto.imagenes && producto.imagenes.length > 0
               ? producto.imagenes[0].url_imagen
-              : "/SVGs/añadirImagen.svg"
+              : "/SVGs/imagePlaceHolder.svg"
           }
           alt={producto.nombre}
           fill
@@ -224,18 +224,18 @@ export default function ReviewsPage() {
                 const firstImage =
                   productDetails.imagenes && productDetails.imagenes.length > 0
                     ? productDetails.imagenes[0].url_imagen
-                    : "/SVGs/añadirImagen.svg";
+                    : "/SVGs/imagePlaceHolder.svg";
                 return { ...producto, imagenes: [{ url_imagen: firstImage }] };
               }
               return {
                 ...producto,
-                imagenes: [{ url_imagen: "/SVGs/añadirImagen.svg" }],
+                imagenes: [{ url_imagen: "/SVGs/imagePlaceHolder.svg" }],
               };
             } catch (error) {
               console.error("Error al obtener imagen del producto:", error);
               return {
                 ...producto,
-                imagenes: [{ url_imagen: "/SVGs/añadirImagen.svg" }],
+                imagenes: [{ url_imagen: "/SVGs/imagePlaceHolder.svg" }],
               };
             }
           })

@@ -8,26 +8,18 @@ import ProductosRecientes from "@/src/pages/home/ProductosRecientes";
 import Reviews from "@/src/pages/home/Reviews";
 import TextoEnMovimiento from "@/src/pages/home/TextoEnMovimiento";
 
+
 export default function Home() {
   return (
     <>
       <HeroCarousel />
       <Layout>
-        <Section>
-          <BrandsSection />
-        </Section>
+        <BrandsSection/>
         <FavDelMes />
-
         <TextoEnMovimiento />
-        <Section>
-          <ProductosRecientes />
-        </Section>
-        <Section>
-          <Reviews />
-        </Section>
-        <Section>
-          <ExtraInfo />
-        </Section>
+        <ProductosRecientes />
+        <Reviews />
+        <ExtraInfo />
       </Layout>
     </>
   );

@@ -1,114 +1,75 @@
-// pages/home/Reviews.js
-import React, { useState, useEffect, useRef } from "react";
-import Slider from "react-slick";
+import React, { useState, useEffect } from "react";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
 import styles from "@/src/styles/reviews.module.css";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
 import ScrollHighlight from "@/src/components/Highlight";
+import { Separator } from "@/src/components/ui/separator";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+} from "@/src/components/ui/carousel";
+
+const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 const Reviews = () => {
   const [reviews, setReviews] = useState([]);
-  const [products, setProducts] = useState({}); // Mapea id_producto -> producto
-  const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
-  const sliderRef = useRef(null);
+  // Mapea id_producto -> producto
+  const [products, setProducts] = useState({});
+  // Índice del slide actualmente activo
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  // Cargar las reseñas más recientes
+  // Cargar reseñas recientes
   useEffect(() => {
-    fetch(`${BACKEND_URL}/api/usuario/resenas/recientes`)
-      .then((res) => res.json())
-      .then((data) =>
-        setReviews(Array.isArray(data.resenas) ? data.resenas : [])
-      )
-      .catch((err) => console.error("Error al cargar reseñas:", err));
+    const fetchReviews = async () => {
+      try {
+        const res = await fetch(`${BACKEND_URL}/api/usuario/resenas/recientes`);
+        const data = await res.json();
+        setReviews(Array.isArray(data.resenas) ? data.resenas : []);
+      } catch (error) {
+        console.error("Error al cargar reseñas:", error);
+      }
+    };
+    fetchReviews();
   }, [BACKEND_URL]);
 
-  // Cargar la información de cada producto relacionado de forma concurrente
+  // Auto-avanzar el slide cada 3 segundos
   useEffect(() => {
-    if (reviews.length > 0) {
-      const fetchProductsForReviews = async () => {
-        const missingReviews = reviews.filter(
-          (review) => !products[review.id_producto]
-        );
-        const productRequests = missingReviews.map((review) => {
-          const prodId = review.id_producto;
-          return fetch(`${BACKEND_URL}/api/productos/${prodId}`)
-            .then((res) => res.json())
-            .then((data) => ({ prodId, data }))
-            .catch((err) => {
-              console.error("Error al cargar producto:", err);
-              return null;
-            });
-        });
-        const productResults = await Promise.all(productRequests);
-        const newProducts = {};
-        productResults.forEach((result) => {
-          if (result) {
-            newProducts[result.prodId] = result.data;
-          }
-        });
-        setProducts((prev) => ({ ...prev, ...newProducts }));
-      };
-      fetchProductsForReviews();
-    }
-  }, [reviews, BACKEND_URL]);
+    if (reviews.length === 0) return;
+    const interval = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % reviews.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [reviews]);
 
-  // Flechas personalizadas para el slider
-  const CustomNextArrow = ({ className, style, onClick, pauseAutoplay }) => {
-    const handleClick = () => {
-      pauseAutoplay();
-      onClick();
-    };
-    return (
-      <div
-        className={className}
-        style={{ ...style, display: "block" }}
-        onClick={handleClick}
-      >
-        <img src="/SVGs/derecha.svg" alt="Siguiente" />
-      </div>
-    );
-  };
-
-  const CustomPrevArrow = ({ className, style, onClick, pauseAutoplay }) => {
-    const handleClick = () => {
-      pauseAutoplay();
-      onClick();
-    };
-    return (
-      <div
-        className={className}
-        style={{ ...style, display: "block" }}
-        onClick={handleClick}
-      >
-        <img src="/SVGs/izquierda.svg" alt="Anterior" />
-      </div>
-    );
-  };
-
-  const sliderSettings = {
-    dots: true,
-    infinite: reviews.length > 1, // Solo infinito si hay más de una review
-    speed: 500,
-    autoplay: reviews.length > 1, // Autoplay solo si hay más de una review
-    autoplaySpeed: 4000,
-    slidesToShow: 1,
-    slidesToScroll: 1,
-    nextArrow: (
-      <CustomNextArrow
-        pauseAutoplay={() =>
-          sliderRef.current && sliderRef.current.slickPause()
+  // Cargar información de productos relacionados con las reseñas (si no se han cargado)
+  useEffect(() => {
+    if (reviews.length === 0) return;
+    const fetchProductsForReviews = async () => {
+      const missingReviews = reviews.filter(
+        (review) => !products[review.id_producto]
+      );
+      const productRequests = missingReviews.map(async (review) => {
+        const prodId = review.id_producto;
+        try {
+          const res = await fetch(`${BACKEND_URL}/api/productos/${prodId}`);
+          const data = await res.json();
+          return { prodId, data };
+        } catch (err) {
+          console.error("Error al cargar producto:", err);
+          return null;
         }
-      />
-    ),
-    prevArrow: (
-      <CustomPrevArrow
-        pauseAutoplay={() =>
-          sliderRef.current && sliderRef.current.slickPause()
+      });
+      const productResults = await Promise.all(productRequests);
+      const newProducts = {};
+      productResults.forEach((result) => {
+        if (result) {
+          newProducts[result.prodId] = result.data;
         }
-      />
-    ),
-  };
+      });
+      setProducts((prev) => ({ ...prev, ...newProducts }));
+    };
+    fetchProductsForReviews();
+  }, [reviews, BACKEND_URL, products]);
 
   if (reviews.length === 0) {
     return (
@@ -129,55 +90,65 @@ const Reviews = () => {
           Lo que opinan nuestros clientes
         </h2>
       </ScrollHighlight>
+      <Separator className="mt-2 mb-4" />
       <div className={styles.sliderContainer}>
-        <Slider
-          ref={sliderRef}
-          {...sliderSettings}
-          className={styles.slickSlider}
-        >
-          {reviews.map((review) => {
-            const product = products[review.id_producto];
-            const fullStars = parseInt(review.calificacion, 10);
-            const emptyStars = 5 - fullStars;
-            return (
-              <div key={review.id_reseña} className={styles.slideItem}>
-                <div className={styles.imageContainer}>
-                  <img
-                    src={
-                      product && product.imagenes && product.imagenes.length > 0
-                        ? product.imagenes[0].url_imagen
-                        : "/SVGs/añadirImagen.svg"
-                    }
-                    alt={product?.nombre || "Producto"}
-                    className={styles.productImage}
-                  />
-                </div>
-                <div className={styles.reviewContent}>
-                  <div className={styles.starsContainer}>
-                    {Array.from({ length: fullStars }).map((_, i) => (
-                      <img
-                        key={`full-${i}`}
-                        src="/SVGs/starIcon.svg"
-                        alt="star full"
-                        className={styles.productStar}
-                      />
-                    ))}
-                    {Array.from({ length: emptyStars }).map((_, i) => (
-                      <img
-                        key={`empty-${i}`}
-                        src="/SVGs/starIconEmpty.svg"
-                        alt="star empty"
-                        className={styles.productStar}
-                      />
-                    ))}
+        <Carousel className="w-full">
+          <CarouselContent
+            className="flex pointer-events-none transition-transform duration-500 ease-out"
+            style={{ transform: `translateX(-${activeIndex * 100}%)` }}
+          >
+            {reviews.map((review) => {
+              const productData = products[review.id_producto];
+              const fullStars = parseInt(review.calificacion, 10);
+              const emptyStars = 5 - fullStars;
+              return (
+                <CarouselItem
+                  key={review.id_reseña}
+                  className={styles.slideItem}
+                >
+                  <div className={styles.imageContainer}>
+                    <img
+                      src={
+                        productData &&
+                        productData.imagenes &&
+                        productData.imagenes.length > 0
+                          ? productData.imagenes[0].url_imagen
+                          : "/SVGs/imagePlaceHolder.svg"
+                      }
+                      alt={productData?.nombre || "Producto"}
+                      className={styles.productImage}
+                    />
                   </div>
-                  <p className={styles.reviewText}>“{review.comentario}”</p>
-                  <p className={styles.reviewUser}>- {review.nombre_usuario}</p>
-                </div>
-              </div>
-            );
-          })}
-        </Slider>
+                  <div className={styles.reviewContent}>
+                    <div className={styles.starsContainer}>
+                      {Array.from({ length: fullStars }).map((_, i) => (
+                        <img
+                          key={`full-${i}`}
+                          src="/SVGs/starIcon.svg"
+                          alt="star full"
+                          className={styles.productStar}
+                        />
+                      ))}
+                      {Array.from({ length: emptyStars }).map((_, i) => (
+                        <img
+                          key={`empty-${i}`}
+                          src="/SVGs/starIconEmpty.svg"
+                          alt="star empty"
+                          className={styles.productStar}
+                        />
+                      ))}
+                    </div>
+                    <p className={styles.reviewText}>“{review.comentario}”</p>
+                    <p className={styles.reviewUser}>
+                      - {review.nombre_usuario}
+                    </p>
+                  </div>
+                </CarouselItem>
+              );
+            })}
+          </CarouselContent>
+          {/* No se incluyen flechas ni interacciones */}
+        </Carousel>
       </div>
     </div>
   );

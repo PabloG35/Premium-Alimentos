@@ -2,29 +2,31 @@ import ScrollHighlight from "@/src/components/Highlight";
 import Image from "next/image";
 import { useState } from "react";
 
-// Componente Slider (Before/After)
+// Componente Slider (Before/After) con eventos pointer
 function Slider() {
   const [sliderPosition, setSliderPosition] = useState(50);
   const [isDragging, setIsDragging] = useState(false);
 
-  const handleMove = (event) => {
+  const handlePointerDown = () => setIsDragging(true);
+  const handlePointerMove = (event) => {
     if (!isDragging) return;
-
     const rect = event.currentTarget.getBoundingClientRect();
     const x = Math.max(0, Math.min(event.clientX - rect.left, rect.width));
     const percent = Math.max(0, Math.min((x / rect.width) * 100, 100));
     setSliderPosition(percent);
   };
-
-  const handleMouseDown = () => setIsDragging(true);
-  const handleMouseUp = () => setIsDragging(false);
+  const handlePointerUp = () => setIsDragging(false);
 
   return (
-    <div className="w-full h-full relative" onMouseUp={handleMouseUp}>
+    <div
+      className="w-full h-full relative"
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+    >
       <div
         className="relative w-full h-full overflow-hidden select-none"
-        onMouseMove={handleMove}
-        onMouseDown={handleMouseDown}
+        onPointerMove={handlePointerMove}
+        onPointerDown={handlePointerDown}
       >
         {/* Imagen "Antes" */}
         <Image
@@ -58,7 +60,7 @@ function Slider() {
           className="absolute top-0 bottom-0 w-1 bg-white cursor-ew-resize"
           style={{ left: `calc(${sliderPosition}% - 1px)` }}
         >
-          <div className="bg-white absolute rounded-full h-3 w-3 -left-1 top-[calc(50%-5px)]" />
+          <div className="bg-white absolute rounded-full h-3 w-3 -left-1 top-1/2 transform -translate-y-1/2" />
         </div>
       </div>
     </div>
@@ -77,15 +79,20 @@ export default function SliderWithInfo() {
   ];
 
   return (
-    <div className="w-full h-[70vh] flex">
+    <div className="w-full h-[70vh] flex my-14">
       {/* Columna izquierda: Slider */}
-      <div className="w-1/2 h-full">
+      <div className="w-full md:w-1/2 h-full flex justify-center items-center">
         <Slider />
       </div>
-      {/* Columna derecha: Información textual */}
-      <div className="w-1/2 flex flex-col justify-center p-16">
-        <p className="text-xl font-semibold mb-4">#PremiumAlimentos</p>
 
+      {/* Columna derecha: Información textual
+          Se muestra solo en md y superiores */}
+      <div
+        className="hidden md:flex w-1/2 p-16 flex-col 
+                      md:justify-center md:items-center md:text-center 
+                      lg:justify-center lg:items-start lg:text-left"
+      >
+        <p className="text-xl font-semibold mb-4">#PremiumAlimentos</p>
         <h1 className="text-3xl heading uppercase mb-4">
           {shortMessage.split("\n").map((line, index) => {
             if (index === 1) {
@@ -109,8 +116,7 @@ export default function SliderWithInfo() {
             );
           })}
         </h1>
-
-        <ul className="list-disc pl-5 space-y-2">
+        <ul className="list-disc pl-5 space-y-2 hidden lg:block">
           {bulletPoints.map((point, index) => (
             <li key={index} className="text-lg">
               {point}

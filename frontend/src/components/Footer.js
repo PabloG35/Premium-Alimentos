@@ -43,10 +43,10 @@ export default function Footer() {
   return (
     <footer className="bg-pm-azulFuerte text-white py-12">
       <div className="container mx-auto px-8">
-        {/* Parte superior: 4 columnas */}
-        <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
-          {/* Columna 1: Logo, descripción y redes sociales */}
-          <div>
+        {/* Parte superior: Grid de columnas */}
+        <div className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {/* Columna 1: Logo, descripción y redes sociales (siempre visible) */}
+          <div className="flex flex-col items-center text-center md:items-start md:text-left">
             <Link href="/">
               <Image
                 src="/PremiumAlimentos/logo.png"
@@ -57,7 +57,7 @@ export default function Footer() {
                 className="cursor-pointer transition-colors duration-300 hover:opacity-75"
               />
             </Link>
-            <p className="text-md leading-6 w-72 pt-4">
+            <p className="pt-4 max-w-[18rem] text-base leading-6">
               En Premium Alimentos vendemos tranquilidad, salud y felicidad en
               cada entrega. Solo marcas en las que confiarías con los ojos
               cerrados.
@@ -102,8 +102,9 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Columna 2: Enlaces de la Compañía */}
-          <div>
+          {/* Columna 2: Enlaces de la Compañía  
+              Se muestra en md y lg (oculta en sm) */}
+          <div className="hidden md:block">
             <h3 className="text-2xl text-pm-orange mb-2 pt-6">
               <Link
                 href="/tienda"
@@ -156,8 +157,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Columna 3: Avisos de Privacidad */}
-          <div>
+          {/* Columna 3: Avisos de Privacidad  
+              Se oculta en md y sm; visible solo en lg */}
+          <div className="hidden lg:block">
             <h3 className="text-2xl text-pm-orange mb-2 pt-6">
               <Link
                 href="/privacidad/privacidad"
@@ -202,8 +204,9 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Columna 4: Registro por correo */}
-          <div>
+          {/* Columna 4: Registro por correo  
+              Se muestra en md y lg (oculta en sm) */}
+          <div className="hidden md:block">
             <h3 className="text-2xl heading text-pm-orange mb-2 pt-6 cursor-pointer">
               Regístrate
             </h3>
@@ -239,7 +242,8 @@ export default function Footer() {
 
         {/* Parte inferior */}
         <div className="mt-8 border-t border-gray-200 pt-6 pb-6 text-center text-sm">
-          <div className="flex justify-center items-center space-x-4 mb-4">
+          {/* Grupo de SVGs oculto en sm */}
+          <div className="hidden sm:flex justify-center items-center space-x-4 mb-4">
             <Image
               src="/SVGs/spei.svg"
               alt="spei"

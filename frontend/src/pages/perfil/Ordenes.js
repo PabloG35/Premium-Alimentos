@@ -109,7 +109,7 @@ const OrdenesTab = () => {
                       productDetails.imagenes &&
                       productDetails.imagenes.length > 0
                         ? productDetails.imagenes[0].url_imagen
-                        : "/SVGs/añadirImagen.svg";
+                        : "/SVGs/imagePlaceHolder.svg";
                     return {
                       ...producto,
                       imagenes: [{ url_imagen: firstImage }],
@@ -117,14 +117,14 @@ const OrdenesTab = () => {
                   } else {
                     return {
                       ...producto,
-                      imagenes: [{ url_imagen: "/SVGs/añadirImagen.svg" }],
+                      imagenes: [{ url_imagen: "/SVGs/imagePlaceHolder.svg" }],
                     };
                   }
                 } catch (error) {
                   console.error("Error al obtener imagen del producto:", error);
                   return {
                     ...producto,
-                    imagenes: [{ url_imagen: "/SVGs/añadirImagen.svg" }],
+                    imagenes: [{ url_imagen: "/SVGs/imagePlaceHolder.svg" }],
                   };
                 }
               })

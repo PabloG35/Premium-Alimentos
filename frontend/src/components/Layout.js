@@ -9,11 +9,11 @@ import { AppSidebar } from "@/src/components/NavSideBar";
 function Layout({ children }) {
   return (
     <SidebarProvider>
-      <div className="layout-container w-full bg-zinc-50">
+      <div className="w-full bg-zinc-50 overflow-x-hidden">
         {/* Sidebar for tablet/mobile */}
         <AppSidebar />
 
-        <div className="fixed top-0 w-full z-50">
+        <div className="fixed top-0 left-0 right-0 z-50">
           <Navbar />
         </div>
         {/* Main Content with top padding to avoid navbar overlap */}
