@@ -18,7 +18,6 @@ export default function Home() {
         <FavDelMes />
         <TextoEnMovimiento />
         <ProductosRecientes />
-        <Reviews />
         <ExtraInfo />
       </Layout>
     </>
