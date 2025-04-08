@@ -3,6 +3,7 @@ import { useState, useContext } from "react";
 import { useRouter } from "next/router";
 import AdminAuthContext from "@/context/AdminAuthContext";
 import Layout from "@/components/Layout";
+import Image from "next/image";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 const obtenerToken = () => localStorage.getItem("adminToken");
