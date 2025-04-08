@@ -4,6 +4,7 @@
 
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
+import Image from "next/image"; // Importamos Image de Next.js
 import LoadingAnimation from "@/components/LoadingAnimation";
 import { useGlobalLoading } from "@/context/GlobalLoadingContext";
 import {
@@ -12,7 +13,7 @@ import {
   CarouselItem,
   CarouselNext,
   CarouselPrevious,
-} from "@/components/ui/carousel"; // Asegúrate de que la ruta es la correcta para admin
+} from "@/components/ui/carousel";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { ToastAction } from "@/components/ui/toast";
@@ -21,7 +22,6 @@ import {
   NOTIFICATION_TYPES,
 } from "@/context/NotificationContext";
 
-// 1. Notificación inline para mostrar alertas en pantalla
 function InlineNotification() {
   const { notifications, removeNotification } = useNotification();
   const alertNotification = notifications.find(
@@ -43,7 +43,7 @@ function InlineNotification() {
   );
 }
 
-// 2. Componente de estrellas personalizado (Rating)
+// 1. Componente de estrellas personalizado (Rating)
 const CustomRating = ({ value = 0, onChange, max = 5, editable = false }) => {
   const [permanentRating, setPermanentRating] = useState(value);
   const [temporaryRating, setTemporaryRating] = useState(null);
@@ -83,16 +83,18 @@ const CustomRating = ({ value = 0, onChange, max = 5, editable = false }) => {
           onClick={() => handleClick(index)}
         >
           {index < ratingToShow ? (
-            <img
+            <Image
               src="/SVGs/starIcon.svg"
               alt="Estrella llena"
-              className="w-6 h-6"
+              width={24}
+              height={24}
             />
           ) : (
-            <img
+            <Image
               src="/SVGs/starIconEmpty.svg"
               alt="Estrella vacía"
-              className="w-6 h-6"
+              width={24}
+              height={24}
             />
           )}
         </div>
@@ -101,59 +103,64 @@ const CustomRating = ({ value = 0, onChange, max = 5, editable = false }) => {
   );
 };
 
-// 3. Tarjeta de producto que usa el CustomRating y un textarea para el comentario
-const ProductCard = React.memo(
-  ({
-    producto,
-    selectedRating,
-    comment,
-    onRatingChange,
-    onCommentChange,
-    onSubmit,
-    disabled,
-  }) => {
-    return (
-      <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-        <img
+// 2. Tarjeta de producto que usa el CustomRating y un textarea
+//    => Asignamos un nombre a la función interna para evitar "missing display name"
+const ProductCard = React.memo(function ProductCard({
+  producto,
+  selectedRating,
+  comment,
+  onRatingChange,
+  onCommentChange,
+  onSubmit,
+  disabled,
+}) {
+  return (
+    <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
+      <div className="w-48 h-48 mb-4 relative rounded-lg mx-auto">
+        <Image
           src={
             producto.imagenes && producto.imagenes.length > 0
               ? producto.imagenes[0].url_imagen
               : "/SVGs/añadirImagen.svg"
           }
           alt={producto.nombre}
-          className="w-48 h-48 object-cover mb-4 rounded-lg mx-auto"
+          fill
+          style={{ objectFit: "cover" }}
+          sizes="(max-width: 768px) 100vw,
+                 (max-width: 1200px) 50vw,
+                 33vw"
         />
-        <h2 className="text-2xl font-semibold mb-4">{producto.nombre}</h2>
-        <div className="w-full mb-4">
-          <CustomRating
-            value={selectedRating}
-            onChange={onRatingChange}
-            editable={true}
-            max={5}
-          />
-        </div>
-        <div className="w-full mb-4">
-          <label className="block mb-2">Comentario:</label>
-          <textarea
-            value={comment}
-            onChange={(e) => onCommentChange(e.target.value)}
-            className="w-full border border-gray-300 rounded p-2"
-            placeholder="Escribe tu reseña..."
-          />
-        </div>
-        <button
-          onClick={onSubmit}
-          disabled={disabled}
-          className={`bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 ${
-            disabled ? "opacity-50 cursor-not-allowed" : ""
-          }`}
-        >
-          {disabled ? "Reseña completada" : "Enviar Reseña"}
-        </button>
       </div>
-    );
-  }
-);
+      <h2 className="text-2xl font-semibold mb-4">{producto.nombre}</h2>
+      <div className="w-full mb-4">
+        <CustomRating
+          value={selectedRating}
+          onChange={onRatingChange}
+          editable={true}
+          max={5}
+        />
+      </div>
+      <div className="w-full mb-4">
+        <label className="block mb-2">Comentario:</label>
+        <textarea
+          value={comment}
+          onChange={(e) => onCommentChange(e.target.value)}
+          className="w-full border border-gray-300 rounded p-2"
+          placeholder="Escribe tu reseña..."
+        />
+      </div>
+      <button
+        onClick={onSubmit}
+        disabled={disabled}
+        className={`bg-blue-500 text-white px-6 py-3 rounded hover:bg-blue-600 ${
+          disabled ? "opacity-50 cursor-not-allowed" : ""
+        }`}
+      >
+        {disabled ? "Reseña completada" : "Enviar Reseña"}
+      </button>
+    </div>
+  );
+});
 
 export default function ReviewsPage() {
   const router = useRouter();
@@ -168,7 +175,7 @@ export default function ReviewsPage() {
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // 4. Fetch de datos de la orden para admin usando el endpoint correspondiente
+  // 3. Fetch de datos de la orden para admin usando el endpoint correspondiente
   useEffect(() => {
     if (!id) return;
     const fetchOrderData = async () => {
@@ -177,7 +184,7 @@ export default function ReviewsPage() {
         if (!res.ok) throw new Error("Error al obtener datos de la orden");
         const data = await res.json();
 
-        // Filtramos los productos ya reseñados (asumiendo que la propiedad "resenada" es true si ya se hizo la reseña)
+        // Filtramos los productos ya reseñados
         const filteredData = {
           ...data,
           productos: data.productos.filter((prod) => !prod.resenada),
@@ -193,7 +200,7 @@ export default function ReviewsPage() {
     fetchOrderData();
   }, [id, BACKEND_URL]);
 
-  // 5. Obtener imagen en caso de que el producto no la tenga, usando la API de productos
+  // 4. Obtener imagen en caso de que el producto no la tenga
   useEffect(() => {
     if (
       orderData &&
@@ -241,7 +248,7 @@ export default function ReviewsPage() {
     }
   }, [orderData, BACKEND_URL]);
 
-  // 6. Manejo de rating y comentario para cada producto
+  // 5. Manejo de rating y comentario para cada producto
   const handleRatingChange = (productId, rating) => {
     setReviews((prev) => ({
       ...prev,
@@ -256,7 +263,7 @@ export default function ReviewsPage() {
     }));
   };
 
-  // 7. Validate and send review with global loading overlay
+  // 6. Validar y enviar reseña (con overlay)
   const handleSubmitReview = async (productId) => {
     const reviewData = reviews[productId];
 
@@ -280,8 +287,7 @@ export default function ReviewsPage() {
       return;
     }
 
-    // Activate global loading overlay
-    setIsLoading(true);
+    setIsLoading(true); // Overlay ON
     try {
       const res = await fetch(`${BACKEND_URL}/api/usuario/resenas`, {
         method: "POST",
@@ -298,7 +304,7 @@ export default function ReviewsPage() {
         throw new Error(errData.error || "Error al enviar la reseña");
       }
 
-      // Update state by filtering out the reviewed product
+      // Filtrar el producto reseñado
       setOrderData((prev) => ({
         ...prev,
         productos: prev.productos.filter(
@@ -314,6 +320,7 @@ export default function ReviewsPage() {
         duration: 3000,
       });
 
+      // Si era el último producto
       if (orderData.productos.length === 1) {
         setThankYouOpen(true);
       }
@@ -332,12 +339,11 @@ export default function ReviewsPage() {
         ),
       });
     } finally {
-      // Deactivate global loading overlay regardless of outcome
-      setIsLoading(false);
+      setIsLoading(false); // Overlay OFF
     }
   };
 
-  // 8. Render de carga, error o sin productos para reseñar
+  // 7. Render de carga, error o sin productos
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
@@ -360,7 +366,7 @@ export default function ReviewsPage() {
     );
   }
 
-  // Si hay más de un producto, se muestra en un Carousel; de lo contrario, se lista directamente
+  // 8. Múltiples productos: Carousel, uno solo: lista simple
   const content =
     orderData.productos.length > 1 ? (
       <Carousel className="w-full">
@@ -407,7 +413,7 @@ export default function ReviewsPage() {
       ))
     );
 
-  // 9. Render final: muestra el formulario de reseñas y un diálogo que redirige a la gestión de órdenes
+  // 9. Render final con InlineNotification y Dialog
   return (
     <>
       <div className="max-w-xl h-[calc(100vh-112px)] pt-9 mx-auto text-center">
