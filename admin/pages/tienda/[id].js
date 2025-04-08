@@ -58,9 +58,9 @@ export default function EditarProducto() {
     if (id) {
       cargarProducto();
     }
-  }, [id, admin, loading, router, cargarProducto]);
+  }, [id, admin, loading, router]);
 
-  const cargarProducto = useCallback(async () => {
+  const cargarProducto = async () => {
     try {
       const data = await obtenerProductoPorId(id);
       let ingredientesData = data.ingredientes;
@@ -86,7 +86,7 @@ export default function EditarProducto() {
       console.error("Error obteniendo producto:", error);
       setMensaje("Error al cargar producto.");
     }
-  }, [id]);
+  };
 
   const handleChange = (e) => {
     setProducto((prev) => ({ ...prev, [e.target.name]: e.target.value }));
