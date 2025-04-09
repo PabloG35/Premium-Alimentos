@@ -4,8 +4,6 @@ import Image from "next/image";
 import ProductTemplate from "@/src/components/ProductTemplate";
 import LoadingAnimation from "@/src/components/LoadingAnimation";
 import { Separator } from "@/src/components/ui/separator";
-
-// Importamos componentes del carousel de shadcn
 import { Card, CardContent } from "@/src/components/ui/card";
 import {
   Carousel,
@@ -17,15 +15,12 @@ import {
 
 export default function FavDelMes() {
   const [product, setProduct] = useState(null);
-  // Para la vista de miniaturas en md+: autoplay cada 3 seg
   const [selectedImage, setSelectedImage] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(true);
-  // Estado para controlar la animación de pulso
   const [flashIndex, setFlashIndex] = useState(-1);
 
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // 1. Cargar el producto más vendido (favorito del mes)
   useEffect(() => {
     fetch(`${BACKEND_URL}/api/productos/masvendido`)
       .then((res) => res.json())
@@ -35,7 +30,6 @@ export default function FavDelMes() {
       );
   }, [BACKEND_URL]);
 
-  // 2. Procesar las imágenes únicas sin invertir el orden
   const images = useMemo(() => {
     if (!product || !Array.isArray(product.imagenes)) return [];
     const unique = product.imagenes.reduce((acc, curr) => {
@@ -47,7 +41,6 @@ export default function FavDelMes() {
     return unique.slice();
   }, [product]);
 
-  // 3. Auto-play en “md+” cada 3 segundos (si isAutoPlay es true)
   useEffect(() => {
     if (!isAutoPlay || images.length === 0) return;
     const interval = setInterval(() => {
@@ -56,7 +49,6 @@ export default function FavDelMes() {
     return () => clearInterval(interval);
   }, [isAutoPlay, images.length]);
 
-  // 4. Disparar la animación de pulso cada vez que cambie la imagen
   useEffect(() => {
     if (images.length === 0) return;
     setFlashIndex(selectedImage);
@@ -79,13 +71,11 @@ export default function FavDelMes() {
       <h1 className="heading text-5xl mt-16">Favorito del Mes</h1>
       <Separator className="mt-2 mb-6" />
       <div className="w-full">
-        {/* -- LAYOUT SM (pantallas chicas): columna con carousel shadcn -- */}
+        {/* Layout SM: columna con carousel shadcn */}
         <div className="flex flex-col gap-4 md:hidden">
-          {/* Título */}
           <h1 className="text-3xl heading text-center mt-4">
             {product.nombre}
           </h1>
-          {/* Carousel de imágenes */}
           <div className="w-full flex justify-center">
             <Carousel className="w-full max-w-xs">
               <CarouselContent>
@@ -108,12 +98,11 @@ export default function FavDelMes() {
               <CarouselNext />
             </Carousel>
           </div>
-          {/* Detalles del producto */}
           <div className="px-4">
             <ProductTemplate
               product={product}
               showImage={false}
-              showTitle={false} // Ya está arriba
+              showTitle={false}
               showPrice={true}
               showRating={true}
               showAddButton={true}
@@ -139,9 +128,8 @@ export default function FavDelMes() {
           </div>
         </div>
 
-        {/* -- LAYOUT MD+ (pantallas grandes): Barra miniatura izquierda + imagen principal + info -- */}
+        {/* Layout MD+: miniaturas, imagen principal e info */}
         <div className="hidden md:flex h-[70vh]">
-          {/* Columna Izquierda: miniaturas */}
           <div className="md:w-3/5 flex gap-4 h-full">
             <div className="w-20 h-full flex flex-col gap-2 overflow-auto">
               {images.map((img, idx) => {
@@ -154,9 +142,9 @@ export default function FavDelMes() {
                       setSelectedImage(idx);
                       setIsAutoPlay(false);
                     }}
-                    className={`cursor-pointer border-2 p-1 rounded transition-colors duration-300
-                    ${isSelected ? "border-blue-500" : "border-transparent"}
-                    ${isFlashing ? "animate-pulse" : ""}`}
+                    className={`cursor-pointer border-2 p-1 rounded transition-colors duration-300 ${
+                      isSelected ? "border-blue-500" : "border-transparent"
+                    } ${isFlashing ? "animate-pulse" : ""}`}
                   >
                     <Image
                       src={img.url_imagen}
@@ -169,7 +157,6 @@ export default function FavDelMes() {
                 );
               })}
             </div>
-            {/* Imagen principal */}
             <div className="flex-1 relative group h-full">
               {images.length > 0 ? (
                 <Image
@@ -183,8 +170,8 @@ export default function FavDelMes() {
                   Sin imagen
                 </div>
               )}
-              {/* Botones de navegación */}
-              // Botón "Anterior"
+              {/* Botón "Anterior" */}
+              {/* Se usa comentario JSX en lugar de "//" */}
               <button
                 onClick={() =>
                   images.length > 0 &&
@@ -193,9 +180,7 @@ export default function FavDelMes() {
                   )
                 }
                 aria-label="Imagen anterior"
-                className="hidden md:block absolute top-1/2 left-4 
-             transform -translate-y-1/2 opacity-0 
-             group-hover:opacity-100 transition"
+                className="hidden md:block absolute top-1/2 left-4 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition"
               >
                 <Image
                   src="/SVGs/izquierda.svg"
@@ -205,16 +190,14 @@ export default function FavDelMes() {
                   className="w-6 h-6"
                 />
               </button>
-              // Botón "Siguiente"
+              {/* Botón "Siguiente" */}
               <button
                 onClick={() =>
                   images.length > 0 &&
                   setSelectedImage((prev) => (prev + 1) % images.length)
                 }
                 aria-label="Imagen siguiente"
-                className="hidden md:block absolute top-1/2 right-4 
-             transform -translate-y-1/2 opacity-0 
-             group-hover:opacity-100 transition"
+                className="hidden md:block absolute top-1/2 right-4 transform -translate-y-1/2 opacity-0 group-hover:opacity-100 transition"
               >
                 <Image
                   src="/SVGs/derecha.svg"
@@ -226,12 +209,11 @@ export default function FavDelMes() {
               </button>
             </div>
           </div>
-          {/* Columna Derecha: Detalles del producto (incluye título) */}
           <div className="md:w-2/5 p-4 flex flex-col justify-center">
             <ProductTemplate
               product={product}
               showImage={false}
-              showTitle={true} // Título se muestra aquí en pantallas grandes
+              showTitle={true}
               showPrice={true}
               showRating={true}
               showAddButton={true}

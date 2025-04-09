@@ -8,6 +8,7 @@ import {
   CarouselContent,
   CarouselItem,
 } from "@/src/components/ui/carousel";
+import Image from "next/image";
 
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
@@ -30,7 +31,7 @@ const Reviews = () => {
       }
     };
     fetchReviews();
-  }, []);
+  }, []); // Eliminamos BACKEND_URL porque es una constante
 
   // Auto-avanzar el slide cada 3 segundos
   useEffect(() => {
@@ -41,7 +42,7 @@ const Reviews = () => {
     return () => clearInterval(interval);
   }, [reviews]);
 
-  // Cargar información de productos relacionados con las reseñas (si no se han cargado)
+  // Cargar detalles de productos relacionados (si no se han cargado)
   useEffect(() => {
     if (reviews.length === 0) return;
     const fetchProductsForReviews = async () => {
@@ -69,7 +70,7 @@ const Reviews = () => {
       setProducts((prev) => ({ ...prev, ...newProducts }));
     };
     fetchProductsForReviews();
-  }, [reviews, BACKEND_URL, products]);
+  }, [reviews, products]); // Eliminamos BACKEND_URL de las dependencias
 
   if (reviews.length === 0) {
     return (
@@ -123,7 +124,6 @@ const Reviews = () => {
                       className={styles.productImage}
                     />
                   </div>
-
                   <div className={styles.reviewContent}>
                     <div className={styles.starsContainer}>
                       {Array.from({ length: fullStars }).map((_, i) => (
@@ -131,12 +131,11 @@ const Reviews = () => {
                           key={`full-${i}`}
                           src="/SVGs/starIcon.svg"
                           alt="star full"
-                          width={16} // Ajusta el tamaño según tu diseño
-                          height={16} // Ajusta el tamaño según tu diseño
+                          width={16}
+                          height={16}
                           className={styles.productStar}
                         />
                       ))}
-
                       {Array.from({ length: emptyStars }).map((_, i) => (
                         <Image
                           key={`empty-${i}`}
