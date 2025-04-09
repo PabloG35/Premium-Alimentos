@@ -1,4 +1,3 @@
-// src/pages/perfil/Ordenes.js
 import { useEffect, useState, useContext } from "react";
 import { useRouter } from "next/router";
 import { AuthContext } from "@/src/context/AuthContext";
@@ -11,7 +10,8 @@ import {
   TableHead,
   TableCell,
   TableCaption,
-} from "@/src/components/ui/table"; // Adjust path if needed
+} from "@/src/components/ui/table";
+import Image from "next/image";
 
 const OrdenesTab = () => {
   const { token } = useContext(AuthContext);
@@ -21,7 +21,7 @@ const OrdenesTab = () => {
   const router = useRouter();
   const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
-  // Function to get a random image from the products in the order
+  // Devuelve una imagen aleatoria de los productos de la orden
   const getRandomImage = (productos) => {
     if (!productos || productos.length === 0) return null;
     const randomIndex = Math.floor(Math.random() * productos.length);
@@ -33,7 +33,7 @@ const OrdenesTab = () => {
       : null;
   };
 
-  // Fetch orders for the user
+  // Obtiene las órdenes del usuario
   useEffect(() => {
     const fetchOrders = async () => {
       try {
@@ -42,8 +42,7 @@ const OrdenesTab = () => {
         });
         if (!res.ok) throw new Error("Error al obtener las órdenes");
         const data = await res.json();
-        console.log("Órdenes recibidas:", data.ordenes);
-        // Update each order with review state
+        // Actualiza cada orden con el estado de reseña
         const ordersWithReviewState = await Promise.all(
           data.ordenes.map(async (order) => {
             try {
@@ -82,7 +81,7 @@ const OrdenesTab = () => {
     fetchOrders();
   }, [BACKEND_URL, token]);
 
-  // For products that lack "imagenes", fetch them via the product API
+  // Para productos sin imagen, se obtienen mediante la API de productos
   useEffect(() => {
     if (
       orders.length > 0 &&
@@ -138,7 +137,7 @@ const OrdenesTab = () => {
     }
   }, [orders, BACKEND_URL]);
 
-  // Function to redirect to reviews page if the order is "Entregado" and not fully reviewed
+  // Redirige a la página de reseñas si la orden está "Entregado" y no se han reseñado todos los productos
   const handleReviewClick = (orderId, estadoOrden, allReviewed) => {
     if (estadoOrden === "Entregado" && !allReviewed) {
       router.push(`/reviews/${orderId}`);
@@ -173,10 +172,12 @@ const OrdenesTab = () => {
               <TableCell>{order.id_orden}</TableCell>
               <TableCell>
                 {getRandomImage(order.productos) ? (
-                  <img
+                  <Image
                     src={getRandomImage(order.productos)}
                     alt="Producto aleatorio"
-                    className="w-12 h-12 object-cover"
+                    width={48} // 12 * 4px = 48px
+                    height={48}
+                    className="object-cover"
                   />
                 ) : (
                   "Sin imagen"

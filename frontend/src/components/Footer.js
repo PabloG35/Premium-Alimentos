@@ -232,7 +232,7 @@ export default function Footer() {
                   alt="Enviar"
                   width={20}
                   height={20}
-                  className="reverse"
+                  className="invert"
                 />
               </button>
             </div>

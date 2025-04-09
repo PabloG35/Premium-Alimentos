@@ -30,7 +30,7 @@ const Reviews = () => {
       }
     };
     fetchReviews();
-  }, [BACKEND_URL]);
+  }, []);
 
   // Auto-avanzar el slide cada 3 segundos
   useEffect(() => {
@@ -106,8 +106,11 @@ const Reviews = () => {
                   key={review.id_reseña}
                   className={styles.slideItem}
                 >
-                  <div className={styles.imageContainer}>
-                    <img
+                  <div
+                    className={styles.imageContainer}
+                    style={{ position: "relative" }}
+                  >
+                    <Image
                       src={
                         productData &&
                         productData.imagenes &&
@@ -116,24 +119,31 @@ const Reviews = () => {
                           : "/SVGs/imagePlaceHolder.svg"
                       }
                       alt={productData?.nombre || "Producto"}
+                      fill
                       className={styles.productImage}
                     />
                   </div>
+
                   <div className={styles.reviewContent}>
                     <div className={styles.starsContainer}>
                       {Array.from({ length: fullStars }).map((_, i) => (
-                        <img
+                        <Image
                           key={`full-${i}`}
                           src="/SVGs/starIcon.svg"
                           alt="star full"
+                          width={16} // Ajusta el tamaño según tu diseño
+                          height={16} // Ajusta el tamaño según tu diseño
                           className={styles.productStar}
                         />
                       ))}
+
                       {Array.from({ length: emptyStars }).map((_, i) => (
-                        <img
+                        <Image
                           key={`empty-${i}`}
                           src="/SVGs/starIconEmpty.svg"
                           alt="star empty"
+                          width={16}
+                          height={16}
                           className={styles.productStar}
                         />
                       ))}

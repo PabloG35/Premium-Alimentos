@@ -74,7 +74,13 @@ export default function HeroCarousel() {
           onClick={handlePrev}
           className="bg-white rounded-full shadow p-2"
         >
-          <img src="/SVGs/izquierda.svg" alt="Anterior" className="w-4 h-4" />
+          <Image
+            src="/SVGs/izquierda.svg"
+            alt="Anterior"
+            width={16} 
+            height={16} 
+            className="w-4 h-4"
+          />
         </button>
         <span className="text-black text-lg">
           {currentSlide + 1}/{images.length}
@@ -83,7 +89,13 @@ export default function HeroCarousel() {
           onClick={handleNext}
           className="bg-white rounded-full shadow p-2"
         >
-          <img src="/SVGs/derecha.svg" alt="Siguiente" className="w-4 h-4" />
+          <Image
+            src="/SVGs/derecha.svg"
+            alt="Siguiente"
+            width={16} 
+            height={16} 
+            className="w-4 h-4"
+          />
         </button>
       </div>
     </div>

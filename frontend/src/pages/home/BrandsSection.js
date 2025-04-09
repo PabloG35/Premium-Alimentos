@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Separator } from "@/src/components/ui/separator";
 
 const callouts = [
@@ -40,10 +41,12 @@ export default function BrandsSection() {
         <div className="mt-6 grid max-md:grid-cols-2 grid-cols-4 gap-y-12 gap-x-6 max-md:gap-4">
           {callouts.map((callout) => (
             <div key={callout.name} className="group relative">
-              <img
+              <Image
                 src={callout.imageSrc}
                 alt={callout.imageAlt}
                 className="w-full rounded-lg bg-white object-cover group-hover:opacity-75"
+                width={400} 
+                height={300} 
               />
               <h3 className="mt-6 text-sm text-gray-500">
                 <a href={callout.href} className="relative">

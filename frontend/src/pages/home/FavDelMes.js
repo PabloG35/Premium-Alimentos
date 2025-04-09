@@ -184,6 +184,7 @@ export default function FavDelMes() {
                 </div>
               )}
               {/* Botones de navegación */}
+              // Botón "Anterior"
               <button
                 onClick={() =>
                   images.length > 0 &&
@@ -193,15 +194,18 @@ export default function FavDelMes() {
                 }
                 aria-label="Imagen anterior"
                 className="hidden md:block absolute top-1/2 left-4 
-                         transform -translate-y-1/2 opacity-0 
-                         group-hover:opacity-100 transition"
+             transform -translate-y-1/2 opacity-0 
+             group-hover:opacity-100 transition"
               >
-                <img
+                <Image
                   src="/SVGs/izquierda.svg"
                   alt="Anterior"
+                  width={24}
+                  height={24}
                   className="w-6 h-6"
                 />
               </button>
+              // Botón "Siguiente"
               <button
                 onClick={() =>
                   images.length > 0 &&
@@ -209,12 +213,14 @@ export default function FavDelMes() {
                 }
                 aria-label="Imagen siguiente"
                 className="hidden md:block absolute top-1/2 right-4 
-                         transform -translate-y-1/2 opacity-0 
-                         group-hover:opacity-100 transition"
+             transform -translate-y-1/2 opacity-0 
+             group-hover:opacity-100 transition"
               >
-                <img
+                <Image
                   src="/SVGs/derecha.svg"
                   alt="Siguiente"
+                  width={24}
+                  height={24}
                   className="w-6 h-6"
                 />
               </button>

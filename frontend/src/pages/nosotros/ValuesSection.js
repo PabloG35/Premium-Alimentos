@@ -1,37 +1,37 @@
-// src/pages/nosotros/ValuesSection.js
 import React from "react";
+import Image from "next/image";
 
 const ValuesSection = () => {
   const values = [
     {
       title: "Excelencia sin excepciones",
       description: "Solo lo que le daríamos a nuestras propias mascotas",
-      image: "/SVGs/estrella3D.svg", // Dirección de imagen a definir
+      image: "/SVGs/estrella3D.svg",
     },
     {
       title: "Compartimos para ayudarte a elegir mejor",
       description: "Creemos en dueños informados, no confundidos",
-      image: "/SVGs/compartir3D.svg", // Dirección de imagen a definir
+      image: "/SVGs/compartir3D.svg",
     },
     {
       title: "Aprendemos junto a ti",
       description: "Cada perro nos enseña a ser mejores",
-      image: "/SVGs/estadisticas3D.svg", // Dirección de imagen a definir
+      image: "/SVGs/estadisticas3D.svg",
     },
     {
       title: "Innovación consciente",
       description: "Traemos marcas que hacen las cosas distinto",
-      image: "/SVGs/engrane3D.svg", // Dirección de imagen a definir
+      image: "/SVGs/engrane3D.svg",
     },
     {
       title: "Colaboración con propósito",
       description: "Trabajamos con marcas que comparten nuestra visión",
-      image: "/SVGs/conectar3D.svg", // Dirección de imagen a definir
+      image: "/SVGs/conectar3D.svg",
     },
     {
       title: "Pasión por lo que importa",
       description: "Amamos a los perros, y se nota en cada detalle",
-      image: "/SVGs/corazon3D.svg", // Dirección de imagen a definir
+      image: "/SVGs/corazon3D.svg",
     },
   ];
 
@@ -45,11 +45,14 @@ const ValuesSection = () => {
               key={index}
               className="p-6 rounded-lg shadow-sm flex flex-col items-center"
             >
-              <img
-                src={value.image}
-                alt={`Valor ${index}`}
-                className="mb-4 w-16 h-16"
-              />
+              <div className="relative mb-4 w-16 h-16">
+                <Image
+                  src={value.image}
+                  alt={`Valor ${index}`}
+                  fill
+                  className="object-contain"
+                />
+              </div>
               <h3 className="text-xl heading mb-2">{value.title}</h3>
               <p className="text-gray-600">{value.description}</p>
             </div>
